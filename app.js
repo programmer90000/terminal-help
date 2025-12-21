@@ -17,18 +17,18 @@ const commands = [
     example: '[Example command]',
     detailed: `${colors.bold('[Command Name] - Full Command Title')}
 
-${colors.green('DESCRIPTION:')}
-    [Detailed description paragraph]
+    ${colors.green('DESCRIPTION:')}
+        [Detailed description paragraph]
 
-${colors.cyan('COMMON OPTIONS:')}
-    • [Option 1 description]
+    ${colors.green('COMMON OPTIONS:')}
+        • [Option 1 description]
 
-${colors.cyan('EXAMPLES:')}
-    1. [Example 1 description]:
-       {green}$ [Example 1 command]{/green}
+    ${colors.green('EXAMPLES:')}
+        1. [Example 1 description]:
+        ${colors.green(`$ [Example 1 command]`)}
 
-${colors.cyan('PRO TIPS:')}
-    • [Tip 1 description]`
+    ${colors.green('PRO TIPS:')}
+        • [Tip 1 description]`
 },
 {
     name: '[Command Name]',
@@ -38,18 +38,18 @@ ${colors.cyan('PRO TIPS:')}
     example: '[Example command]',
     detailed: `{bold}[Command Name] - Full Command Title{/bold}
 
-{cyan}DESCRIPTION:{/cyan}
-    [Detailed description paragraph]
+    ${colors.green('DESCRIPTION:')}
+        [Detailed description paragraph]
 
-{cyan}COMMON OPTIONS:{/cyan}
-    • [Option 1 description]
+    ${colors.green('COMMON OPTIONS:')}
+        • [Option 1 description]
 
-{cyan}EXAMPLES:{/cyan}
-    1. [Example 1 description]:
-       {green}$ [Example 1 command]{/green}
+    ${colors.green('EXAMPLES:')}
+        1. [Example 1 description]:
+        ${colors.green(`$ [Example 1 command]`)}
 
-{cyan}PRO TIPS:{/cyan}
-    • [Tip 1 description]`
+    ${colors.green('PRO TIPS:')}
+        • [Tip 1 description]`
 },
 {
     name: '[Command Name]',
@@ -59,18 +59,18 @@ ${colors.cyan('PRO TIPS:')}
     example: '[Example command]',
     detailed: `{bold}[Command Name] - Full Command Title{/bold}
 
-{cyan}DESCRIPTION:{/cyan}
-    [Detailed description paragraph]
+    ${colors.green('DESCRIPTION:')}
+        [Detailed description paragraph]
 
-{cyan}COMMON OPTIONS:{/cyan}
-    • [Option 1 description]
+    ${colors.green('COMMON OPTIONS:')}
+        • [Option 1 description]
 
-{cyan}EXAMPLES:{/cyan}
-    1. [Example 1 description]:
-       {green}$ [Example 1 command]{/green}
+    ${colors.green('EXAMPLES:')}
+        1. [Example 1 description]:
+        ${colors.green(`$ [Example 1 command]`)}
 
-{cyan}PRO TIPS:{/cyan}
-    • [Tip 1 description]`
+    ${colors.green('PRO TIPS:')}
+        • [Tip 1 description]`
 },
 {
     name: '[Command Name]',
@@ -80,18 +80,18 @@ ${colors.cyan('PRO TIPS:')}
     example: '[Example command]',
     detailed: `{bold}[Command Name] - Full Command Title{/bold}
 
-{cyan}DESCRIPTION:{/cyan}
-    [Detailed description paragraph]
+    ${colors.green('DESCRIPTION:')}
+        [Detailed description paragraph]
 
-{cyan}COMMON OPTIONS:{/cyan}
-    • [Option 1 description]
+    ${colors.green('COMMON OPTIONS:')}
+        • [Option 1 description]
 
-{cyan}EXAMPLES:{/cyan}
-    1. [Example 1 description]:
-       {green}$ [Example 1 command]{/green}
+    ${colors.green('EXAMPLES:')}
+        1. [Example 1 description]:
+        ${colors.green(`$ [Example 1 command]`)}
 
-{cyan}PRO TIPS:{/cyan}
-    • [Tip 1 description]`
+    ${colors.green('PRO TIPS:')}
+        • [Tip 1 description]`
 },
 {
     name: '[Command Name]',
@@ -101,23 +101,21 @@ ${colors.cyan('PRO TIPS:')}
     example: '[Example command]',
     detailed: `{bold}[Command Name] - Full Command Title{/bold}
 
-{cyan}DESCRIPTION:{/cyan}
-    [Detailed description paragraph]
+    ${colors.green('DESCRIPTION:')}
+        [Detailed description paragraph]
 
-{cyan}COMMON OPTIONS:{/cyan}
-    • [Option 1 description]
+    ${colors.green('COMMON OPTIONS:')}
+        • [Option 1 description]
 
-{cyan}EXAMPLES:{/cyan}
-    1. [Example 1 description]:
-       {green}$ [Example 1 command]{/green}
+    ${colors.green('EXAMPLES:')}
+        1. [Example 1 description]:
+        ${colors.green(`$ [Example 1 command]`)}
 
-{cyan}PRO TIPS:{/cyan}
-    • [Tip 1 description]`
+    ${colors.green('PRO TIPS:')}
+        • [Tip 1 description]`
 }];
 
-const categories = ['all', 'text',
-    'files', 'archives'
-];
+const categories = ['all', 'text', 'files', 'archives'];
 
 let screen;
 let mainLayout;
@@ -135,25 +133,13 @@ let currentScreen = 'main';
 
 function createMainScreen()
 {
-    screen = blessed.screen({
-        smartCSR: true,
-        title: 'Terminal Help',
-        fullUnicode: true,
-        dockBorders: true
-    });
+    screen = blessed.screen({ smartCSR: true, title: 'Terminal Help', fullUnicode: true, dockBorders: true });
 
     // Clear previous screen if exists
-    if (mainLayout) {
-        mainLayout.destroy();
-    }
+    if (mainLayout) { mainLayout.destroy(); }
 
     // Main layout container
-    mainLayout = blessed.box({
-        parent: screen,
-        width: '100%',
-        height: '100%',
-        padding: 1
-    });
+    mainLayout = blessed.box({ parent: screen, width: '100%', height: '100%', padding: 1 });
 
     const searchWidth = '100%-15';
     const buttonWidth = 14;
@@ -165,15 +151,10 @@ function createMainScreen()
         left: 0,
         width: searchWidth,
         height: 3,
-        border: {
-            type: 'line',
-            fg: 'cyan'
-        },
+        border: { type: 'line', fg: 'cyan' },
         style: {
             fg: 'white',
-            border: {
-                fg: 'cyan'
-            }
+            border: { fg: 'cyan' }
         }
     });
 
@@ -188,10 +169,7 @@ function createMainScreen()
         style: { // Normal state
             fg: 'white',
             bg: '#ff5555',
-            focus: {
-                fg: 'white',
-                bg: '#ff5555'
-            }
+            focus: { fg: 'white', bg: '#ff5555' }
         }
     });
 
@@ -206,26 +184,14 @@ function createMainScreen()
         width: buttonWidth,
         height: 3,
         content: 'Category: all',
-        padding:{
-            left: 1,
-            right: 1
-        },
+        padding:{ left: 1, right: 1 },
         style:{
             fg: 'white',
             bg: 'blue',
-            focus:{
-                bg: 'cyan',
-                fg: 'black'
-            },
-            hover:{
-                bg: 'cyan',
-                fg: 'black'
-            }
+            focus:{ bg: 'cyan', fg: 'black' },
+            hover:{ bg: 'cyan', fg: 'black' }
         },
-        border:{
-            type: 'line',
-            fg: 'blue'
-        }
+        border:{ type: 'line', fg: 'blue' }
     });
 
     // Category selection list (hidden by default)
@@ -234,26 +200,17 @@ function createMainScreen()
         top: 3,
         left: searchWidth,
         width: buttonWidth,
-        height: categories
-            .length + 2,
+        height: categories.length + 2,
         hidden: true,
         items: categories,
         tags: true,
         keys: true,
         mouse: true,
         style:{
-            selected:{
-                bg: 'cyan',
-                fg: 'black'
-            },
-            item:{
-                fg: 'white'
-            }
+            selected:{ bg: 'cyan', fg: 'black' },
+            item:{ fg: 'white' }
         },
-        border: {
-            type: 'line',
-            fg: 'blue'
-        }
+        border: { type: 'line', fg: 'blue' }
     });
 
     // Commands table
@@ -267,19 +224,10 @@ function createMainScreen()
         keys: true,
         mouse: true,
         style: {
-            selected: {
-                bg: 'yellow',
-                fg: 'black',
-                bold: true
-            },
-            item: {
-                fg: 'white'
-            }
+            selected: { bg: 'yellow', fg: 'black', bold: true },
+            item: { fg: 'white' }
         },
-        border: {
-            type: 'line',
-            fg: 'green'
-        }
+        border: { type: 'line', fg: 'green' }
     });
 
     // Command details panel
@@ -294,20 +242,11 @@ function createMainScreen()
         alwaysScroll: true,
         scrollbar: {
             ch: ' ',
-            track: {
-                bg: 'gray'
-            },
-            style: {
-                inverse: true
-            }
+            track: { bg: 'gray' },
+            style: { inverse: true }
         },
-        style: {
-            fg: 'white'
-        },
-        border: {
-            type: 'line',
-            fg: 'magenta'
-        }
+        style: { fg: 'white' },
+        border: { type: 'line', fg: 'magenta' }
     });
 
     // Help information
@@ -319,14 +258,8 @@ function createMainScreen()
         height: 3,
         content: '{bold}Navigation:{/bold} ↑↓: Select command | TAB: Switch focus | ENTER: View details | /: Search | ESC: Back/Exit | c: Change category',
         tags: true,
-        style: {
-            fg: 'gray',
-            bg: 'black'
-        },
-        border: {
-            type: 'line',
-            fg: 'gray'
-        }
+        style: { fg: 'gray', bg: 'black' },
+        border: { type: 'line', fg: 'gray' }
     });
 
     // Update commands list based on search and category
@@ -342,12 +275,7 @@ function createDetailScreen(command) {
     // Clear main screen
     mainLayout.destroy();
 
-    const detailLayout = blessed.box({
-        parent: screen,
-        width: '100%',
-        height: '100%',
-        padding: 1
-    });
+    const detailLayout = blessed.box({ parent: screen, width: '100%', height: '100%', padding: 1 });
 
     const header = blessed.box({
         parent: detailLayout,
@@ -357,15 +285,8 @@ function createDetailScreen(command) {
         height: 3,
         content: `{bold}${command.name}{/bold} - ${command.description}`,
         tags: true,
-        style: {
-            fg: 'white',
-            bold: true,
-            bg: 'blue'
-        },
-        border: {
-            type: 'line',
-            fg: 'cyan'
-        }
+        style: { fg: 'white', bold: true, bg: 'blue' },
+        border: { type: 'line', fg: 'cyan' }
     });
 
     const usageBox = blessed.box({
@@ -374,15 +295,10 @@ function createDetailScreen(command) {
         left: 0,
         width: '100%',
         height: 3,
-        content: `{bold}Usage:{/bold} {green}${command.usage}{/green}`,
+        content: `{bold}Usage:{/bold} ${colors.green(command.usage)}`,
         tags: true,
-        style: {
-            fg: 'yellow'
-        },
-        border: {
-            type: 'line',
-            fg: 'green'
-        }
+        style: { fg: 'yellow' },
+        border: { type: 'line', fg: 'green' }
     });
 
     const exampleBox = blessed.box({
@@ -391,15 +307,10 @@ function createDetailScreen(command) {
         left: 0,
         width: '100%',
         height: 3,
-        content: `{bold}Example:{/bold} $ {yellow}${command.example}{/yellow}`,
+        content: `{bold}Example:{/bold} ${colors.yellow (`$ ${command.example}`)}`,
         tags: true,
-        style: {
-            fg: 'white'
-        },
-        border: {
-            type: 'line',
-            fg: 'yellow'
-        }
+        style: { fg: 'white' },
+        border: { type: 'line', fg: 'yellow' }
     });
 
     const detailContent = blessed.box({
@@ -414,26 +325,12 @@ function createDetailScreen(command) {
         alwaysScroll: true,
         scrollbar: {
             ch: '█',
-            track: {
-                bg: 'gray'
-            },
-            style: {
-                inverse: true
-            }
+            track: { bg: 'gray' },
+            style: { inverse: true }
         },
-        style: {
-            fg: 'white'
-        },
-        border: {
-            type: 'line',
-            fg: 'magenta'
-        },
-        padding: {
-            left: 1,
-            right: 1,
-            top: 1,
-            bottom: 1
-        }
+        style: { fg: 'white' },
+        border: { type: 'line', fg: 'magenta' },
+        padding: { left: 1, right: 1, top: 1, bottom: 1 }
     });
 
     const detailHelp = blessed.box({
@@ -444,14 +341,8 @@ function createDetailScreen(command) {
         height: 3,
         content: '{bold}Navigation:{/bold} ↑↓: Scroll | ESC: Back to main screen | q: Exit',
         tags: true,
-        style: {
-            fg: 'gray',
-            bg: 'black'
-        },
-        border: {
-            type: 'line',
-            fg: 'gray'
-        }
+        style: { fg: 'gray', bg: 'black' },
+        border: { type: 'line', fg: 'gray' }
     });
 
     detailContent.on('wheeldown', () => {
@@ -465,12 +356,8 @@ function createDetailScreen(command) {
     });
 
     screen.key(['up', 'down', 'pageup', 'pagedown'], (ch, key) => {
-        if (key.name === 'up' || key.name === 'pageup') {
-            detailContent.scroll(-1);
-        }
-        else if (key.name === 'down' || key.name === 'pagedown') {
-            detailContent.scroll(1);
-        }
+        if (key.name === 'up' || key.name === 'pageup') { detailContent.scroll(-1); }
+        else if (key.name === 'down' || key.name === 'pagedown') { detailContent.scroll(1); }
         screen.render();
     });
 
@@ -479,9 +366,7 @@ function createDetailScreen(command) {
         createMainScreen();
     });
 
-    screen.key(['q', 'C-c'], () => {
-        process.exit(0);
-    });
+    screen.key(['q', 'C-c'], () => { process.exit(0); });
 
     screen.key(['home'], () => {
         detailContent.scrollTo(0);
@@ -511,8 +396,11 @@ function updateCommandDetails() {
         commandDetails.setContent('No commands found');
         return;
     }
+
     const cmd = filteredCommands[selectedIndex];
+
     const details = [`{bold}${cmd.name}{/bold}`, '', `{cyan}Description:{/cyan}`, `  ${cmd.description}`, '', `{cyan}Category:{/cyan}`, `  ${cmd.category}`, '', `{cyan}Usage:{/cyan}`, `  {green}${cmd.usage}{/green}`, '', `{cyan}Example:{/cyan}`, `  $ {yellow}${cmd.example}{/yellow}`, '', `{cyan}Press ENTER for detailed guide{/cyan}`, `  Includes: options, examples, pro tips`].join('\n');
+
     commandDetails.setContent(details);
     screen.render();
 }
@@ -606,39 +494,26 @@ function setupMainScreenEvents()
 
     // Global keyboard shortcuts
     screen.key(['escape'], () => {
-        if (currentScreen === 'main') {
-            process.exit(0);
-        }
+        if (currentScreen === 'main') { process.exit(0); }
     });
 
-    screen.key(['q', 'C-c'], () => {
-        process.exit(0);
-    });
+    screen.key(['q', 'C-c'], () => { process.exit(0); });
 
     screen.key(['/', 's'], () => {
         searchInput.focus();
         screen.render();
     });
 
-    screen.key(['c'], () => {
-        categoryButton.emit('press');
-    });
+    screen.key(['c'], () => { categoryButton.emit('press'); });
 
     screen.key(['tab'], () => {
-        if (searchInput.focused) {
-            commandsTable.focus();
-        }
-        else if (commandsTable.focused) {
-            searchInput.focus();
-        }
-        else if (categoryList.focused) {
-            commandsTable.focus();
-        }
+        if (searchInput.focused) { commandsTable.focus(); }
+        else if (commandsTable.focused) { searchInput.focus(); }
+        else if (categoryList.focused) { commandsTable.focus(); }
         screen.render();
     });
 
-    screen.key(['enter'], () =>
-    {
+    screen.key(['enter'], () => {
         if (commandsTable.focused && filteredCommands.length > 0) {
             const cmd = filteredCommands[selectedIndex];
             createDetailScreen(cmd);
