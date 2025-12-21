@@ -285,8 +285,8 @@ function createDetailScreen(command) {
         height: 3,
         content: `{bold}${command.name}{/bold} - ${command.description}`,
         tags: true,
-        style: { fg: 'white', bold: true, bg: 'blue' },
-        border: { type: 'line', fg: 'cyan' }
+        style: { fg: 'white', bold: true,},
+        border: { type: 'line', fg: 'blue' }
     });
 
     const usageBox = blessed.box({
