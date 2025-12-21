@@ -1,13 +1,8 @@
 #!/usr/bin/env node
 
 const blessed = require('blessed');
-const colors = {
-    bold: (text) => (`\x1b[1m${text}\x1b[0m`),
-    cyan: (text) => (`\x1b[36m${text}\x1b[0m`),
-    green: (text) => (`\x1b[32m${text}\x1b[0m`),
-    yellow: (text) => (`\x1b[33m${text}\x1b[0m`),
-};
 
+// Store commands with direct blessed tags
 const commands = [
 {
     name: '[Command Name]',
@@ -15,19 +10,21 @@ const commands = [
     description: '[Brief description]',
     usage: '[Command usage syntax]',
     example: '[Example command]',
-    detailed: `${colors.bold('[Command Name] - Full Command Title')}
+    detailed: `{bold}[Command Name] - Full Command Title{/bold}
 
-    ${colors.green('DESCRIPTION:')}
+{green-fg}DESCRIPTION:{/green-fg}
         [Detailed description paragraph]
 
-    ${colors.green('COMMON OPTIONS:')}
+{green-fg}COMMON OPTIONS:{/green-fg}
         • [Option 1 description]
 
-    ${colors.green('EXAMPLES:')}
+{green-fg}EXAMPLES:{/green-fg}
         1. [Example 1 description]:
-        ${colors.green(`$ [Example 1 command]`)}
 
-    ${colors.green('PRO TIPS:')}
+    2. List with human readable sizes:
+    {green-fg}$ ls -lh{/green-fg}
+
+{green-fg}PRO TIPS:{/green-fg}
         • [Tip 1 description]`
 },
 {
@@ -38,17 +35,19 @@ const commands = [
     example: '[Example command]',
     detailed: `{bold}[Command Name] - Full Command Title{/bold}
 
-    ${colors.green('DESCRIPTION:')}
+{green-fg}DESCRIPTION:{/green-fg}
         [Detailed description paragraph]
 
-    ${colors.green('COMMON OPTIONS:')}
+{green-fg}COMMON OPTIONS:{/green-fg}
         • [Option 1 description]
 
-    ${colors.green('EXAMPLES:')}
+{green-fg}EXAMPLES:{/green-fg}
         1. [Example 1 description]:
-        ${colors.green(`$ [Example 1 command]`)}
 
-    ${colors.green('PRO TIPS:')}
+    2. List with human readable sizes:
+    {green-fg}$ ls -lh{/green-fg}
+
+{green-fg}PRO TIPS:{/green-fg}
         • [Tip 1 description]`
 },
 {
@@ -59,17 +58,19 @@ const commands = [
     example: '[Example command]',
     detailed: `{bold}[Command Name] - Full Command Title{/bold}
 
-    ${colors.green('DESCRIPTION:')}
+{green-fg}DESCRIPTION:{/green-fg}
         [Detailed description paragraph]
 
-    ${colors.green('COMMON OPTIONS:')}
+{green-fg}COMMON OPTIONS:{/green-fg}
         • [Option 1 description]
 
-    ${colors.green('EXAMPLES:')}
+{green-fg}EXAMPLES:{/green-fg}
         1. [Example 1 description]:
-        ${colors.green(`$ [Example 1 command]`)}
 
-    ${colors.green('PRO TIPS:')}
+    2. List with human readable sizes:
+    {green-fg}$ ls -lh{/green-fg}
+
+{green-fg}PRO TIPS:{/green-fg}
         • [Tip 1 description]`
 },
 {
@@ -80,38 +81,19 @@ const commands = [
     example: '[Example command]',
     detailed: `{bold}[Command Name] - Full Command Title{/bold}
 
-    ${colors.green('DESCRIPTION:')}
+{green-fg}DESCRIPTION:{/green-fg}
         [Detailed description paragraph]
 
-    ${colors.green('COMMON OPTIONS:')}
+{green-fg}COMMON OPTIONS:{/green-fg}
         • [Option 1 description]
 
-    ${colors.green('EXAMPLES:')}
+{green-fg}EXAMPLES:{/green-fg}
         1. [Example 1 description]:
-        ${colors.green(`$ [Example 1 command]`)}
 
-    ${colors.green('PRO TIPS:')}
-        • [Tip 1 description]`
-},
-{
-    name: '[Command Name]',
-    category: '[Category]',
-    description: '[Brief description]',
-    usage: '[Command usage syntax]',
-    example: '[Example command]',
-    detailed: `{bold}[Command Name] - Full Command Title{/bold}
+    2. List with human readable sizes:
+    {green-fg}$ ls -lh{/green-fg}
 
-    ${colors.green('DESCRIPTION:')}
-        [Detailed description paragraph]
-
-    ${colors.green('COMMON OPTIONS:')}
-        • [Option 1 description]
-
-    ${colors.green('EXAMPLES:')}
-        1. [Example 1 description]:
-        ${colors.green(`$ [Example 1 command]`)}
-
-    ${colors.green('PRO TIPS:')}
+{green-fg}PRO TIPS:{/green-fg}
         • [Tip 1 description]`
 }];
 
@@ -129,17 +111,39 @@ let helpInfo;
 let currentCategory = 'all';
 let filteredCommands = [...commands];
 let selectedIndex = 0;
-let currentScreen = 'main';
+let currentScreen = 'main'; // Track current screen
 
-function createMainScreen()
-{
-    screen = blessed.screen({ smartCSR: true, title: 'Terminal Help', fullUnicode: true, dockBorders: true });
+function createMainScreen() {
+    currentScreen = 'main';
+    
+    // Create screen if it doesn't exist
+    if (!screen) {
+        screen = blessed.screen({ 
+            smartCSR: true, 
+            title: 'Terminal Help', 
+            fullUnicode: true, 
+            dockBorders: true,
+            cursor: {
+                artificial: true,
+                shape: 'line',
+                blink: true
+            }
+        });
+    }
 
-    // Clear previous screen if exists
-    if (mainLayout) { mainLayout.destroy(); }
+    // Clear any existing layout
+    if (mainLayout) {
+        screen.remove(mainLayout);
+        mainLayout.destroy();
+    }
 
     // Main layout container
-    mainLayout = blessed.box({ parent: screen, width: '100%', height: '100%', padding: 1 });
+    mainLayout = blessed.box({ 
+        parent: screen, 
+        width: '100%', 
+        height: '100%', 
+        padding: 1 
+    });
 
     const searchWidth = '100%-15';
     const buttonWidth = 14;
@@ -158,7 +162,7 @@ function createMainScreen()
         }
     });
 
-    // Search input (inside search box)
+    // Search input
     searchInput = blessed.textbox({
         parent: searchBox,
         top: 0,
@@ -166,17 +170,16 @@ function createMainScreen()
         width: '100%-2',
         height: 1,
         inputOnFocus: true,
-        style: { // Normal state
+        style: {
             fg: 'white',
-            bg: '#ff5555',
-            focus: { fg: 'white', bg: '#ff5555' }
+            bg: 'red',
+            focus: { fg: 'white', bg: 'red' }
         }
     });
 
-    // Initial placeholder text
-    searchInput.setContent('Type to search commands...');
+    searchInput.setValue('Type to search commands...');
 
-    // Category selection button
+    // Category button
     categoryButton = blessed.button({
         parent: mainLayout,
         top: 0,
@@ -184,17 +187,17 @@ function createMainScreen()
         width: buttonWidth,
         height: 3,
         content: 'Category: all',
-        padding:{ left: 1, right: 1 },
-        style:{
+        padding: { left: 1, right: 1 },
+        style: {
             fg: 'white',
             bg: 'blue',
-            focus:{ bg: 'cyan', fg: 'black' },
-            hover:{ bg: 'cyan', fg: 'black' }
+            focus: { bg: 'cyan', fg: 'black' },
+            hover: { bg: 'cyan', fg: 'black' }
         },
-        border:{ type: 'line', fg: 'blue' }
+        border: { type: 'line', fg: 'blue' }
     });
 
-    // Category selection list (hidden by default)
+    // Category list
     categoryList = blessed.list({
         parent: mainLayout,
         top: 3,
@@ -206,9 +209,9 @@ function createMainScreen()
         tags: true,
         keys: true,
         mouse: true,
-        style:{
-            selected:{ bg: 'cyan', fg: 'black' },
-            item:{ fg: 'white' }
+        style: {
+            selected: { bg: 'cyan', fg: 'black' },
+            item: { fg: 'white' }
         },
         border: { type: 'line', fg: 'blue' }
     });
@@ -230,7 +233,7 @@ function createMainScreen()
         border: { type: 'line', fg: 'green' }
     });
 
-    // Command details panel
+    // Command details
     commandDetails = blessed.box({
         parent: mainLayout,
         top: 4,
@@ -249,33 +252,39 @@ function createMainScreen()
         border: { type: 'line', fg: 'magenta' }
     });
 
-    // Help information
+    // Help info
     helpInfo = blessed.box({
         parent: mainLayout,
         bottom: 0,
         left: 0,
         width: '100%',
         height: 3,
-        content: '{bold}Navigation:{/bold} ↑↓: Select command | TAB: Switch focus | ENTER: View details | /: Search | ESC: Back/Exit | c: Change category',
+        content: '{bold}Navigation:{/bold} ↑↓: Select command | TAB: Switch focus | ENTER: View details | /: Search | ESC: Exit | c: Change category',
         tags: true,
         style: { fg: 'gray', bg: 'black' },
         border: { type: 'line', fg: 'gray' }
     });
 
-    // Update commands list based on search and category
+    // Update the display
     updateCommandsList();
     commandsTable.focus();
     setupMainScreenEvents();
     screen.render();
 }
 
-// Create command screen
 function createDetailScreen(command) {
     currentScreen = 'detail';
+    
     // Clear main screen
+    screen.remove(mainLayout);
     mainLayout.destroy();
 
-    const detailLayout = blessed.box({ parent: screen, width: '100%', height: '100%', padding: 1 });
+    const detailLayout = blessed.box({ 
+        parent: screen, 
+        width: '100%', 
+        height: '100%', 
+        padding: 1 
+    });
 
     const header = blessed.box({
         parent: detailLayout,
@@ -285,7 +294,7 @@ function createDetailScreen(command) {
         height: 3,
         content: `{bold}${command.name}{/bold} - ${command.description}`,
         tags: true,
-        style: { fg: 'white', bold: true,},
+        style: { fg: 'white' },
         border: { type: 'line', fg: 'blue' }
     });
 
@@ -295,7 +304,7 @@ function createDetailScreen(command) {
         left: 0,
         width: '100%',
         height: 3,
-        content: `{bold}Usage:{/bold} ${colors.green(command.usage)}`,
+        content: `{bold}Usage:{/bold} {green-fg}${command.usage}{/green-fg}`,
         tags: true,
         style: { fg: 'yellow' },
         border: { type: 'line', fg: 'green' }
@@ -307,7 +316,7 @@ function createDetailScreen(command) {
         left: 0,
         width: '100%',
         height: 3,
-        content: `{bold}Example:{/bold} ${colors.yellow (`$ ${command.example}`)}`,
+        content: `{bold}Example:{/bold} $ {yellow-fg}${command.example}{/yellow-fg}`,
         tags: true,
         style: { fg: 'white' },
         border: { type: 'line', fg: 'yellow' }
@@ -323,6 +332,7 @@ function createDetailScreen(command) {
         tags: true,
         scrollable: true,
         alwaysScroll: true,
+        mouse: true,
         scrollbar: {
             ch: '█',
             track: { bg: 'gray' },
@@ -345,52 +355,62 @@ function createDetailScreen(command) {
         border: { type: 'line', fg: 'gray' }
     });
 
-    detailContent.on('wheeldown', () => {
-            detailContent.scroll(1);
-            screen.render();
-    });
+    // Clear all existing key handlers
+    screen.removeAllListeners('keypress');
 
-    detailContent.on('wheelup', () => {
-        detailContent.scroll(-1);
+    // Setup scroll handlers
+    const scrollAndRender = (amount) => {
+        detailContent.scroll(amount);
+        screen.render();
+    };
+
+    detailContent.on('wheeldown', () => scrollAndRender(1));
+    detailContent.on('wheelup', () => scrollAndRender(-1));
+
+    // Setup keyboard handlers
+    screen.key(['up', 'pageup'], () => scrollAndRender(-1));
+    screen.key(['down', 'pagedown'], () => scrollAndRender(1));
+    screen.key(['home', 'g'], () => {
+        detailContent.scrollTo(0);
         screen.render();
     });
-
-    screen.key(['up', 'down', 'pageup', 'pagedown'], (ch, key) => {
-        if (key.name === 'up' || key.name === 'pageup') { detailContent.scroll(-1); }
-        else if (key.name === 'down' || key.name === 'pagedown') { detailContent.scroll(1); }
+    screen.key(['end', 'G'], () => {
+        detailContent.scrollTo(Infinity);
         screen.render();
     });
-
-    screen.key(['escape', 'b'], () => {
+    
+    // Handle escape - check current screen
+    screen.key(['escape'], () => {
+        if (currentScreen === 'detail') {
+            // Remove the detail layout
+            screen.remove(detailLayout);
+            detailLayout.destroy();
+            
+            // Use setTimeout to ensure cleanup happens before creating new screen
+            setTimeout(() => {
+                createMainScreen();
+            }, 50);
+        }
+    });
+    
+    // 'b' for back
+    screen.key(['b'], () => {
+        // Remove the detail layout
+        screen.remove(detailLayout);
         detailLayout.destroy();
-        createMainScreen();
+        
+        // Use setTimeout to ensure cleanup happens before creating new screen
+        setTimeout(() => {
+            createMainScreen();
+        }, 50);
     });
+    
+    screen.key(['q', 'C-c'], () => process.exit(0));
 
-    screen.key(['q', 'C-c'], () => { process.exit(0); });
-
-    screen.key(['home'], () => {
-        detailContent.scrollTo(0);
-        screen.render();
-    });
-
-    screen.key(['end'], () => {
-        detailContent.scrollTo(Infinity);
-        screen.render();
-    });
-
-    screen.key(['g'], () => {
-        detailContent.scrollTo(0);
-        screen.render();
-    });
-
-    screen.key(['G'], () => {
-        detailContent.scrollTo(Infinity);
-        screen.render();
-    });
-
+    // Initial render
     screen.render();
 }
-// Update command details when selection changes
+
 function updateCommandDetails() {
     if (filteredCommands.length === 0) {
         commandDetails.setContent('No commands found');
@@ -398,50 +418,64 @@ function updateCommandDetails() {
     }
 
     const cmd = filteredCommands[selectedIndex];
-
-    const details = [`{bold}${cmd.name}{/bold}`, '', `{cyan}Description:{/cyan}`, `  ${cmd.description}`, '', `{cyan}Category:{/cyan}`, `  ${cmd.category}`, '', `{cyan}Usage:{/cyan}`, `  {green}${cmd.usage}{/green}`, '', `{cyan}Example:{/cyan}`, `  $ {yellow}${cmd.example}{/yellow}`, '', `{cyan}Press ENTER for detailed guide{/cyan}`, `  Includes: options, examples, pro tips`].join('\n');
+    const details = [
+        `{bold}${cmd.name}{/bold}`,
+        '',
+        '{cyan-fg}Description:{/cyan-fg}',
+        `  ${cmd.description}`,
+        '',
+        '{cyan-fg}Category:{/cyan-fg}',
+        `  ${cmd.category}`,
+        '',
+        '{cyan-fg}Usage:{/cyan-fg}',
+        `  {green-fg}${cmd.usage}{/green-fg}`,
+        '',
+        '{cyan-fg}Example:{/cyan-fg}',
+        `  $ {yellow-fg}${cmd.example}{/yellow-fg}`,
+        '',
+        '{cyan-fg}Press ENTER for detailed guide{/cyan-fg}',
+        `  Includes: options, examples, pro tips`
+    ].join('\n');
 
     commandDetails.setContent(details);
     screen.render();
 }
 
-// Update commands list based on search and category
-function updateCommandsList()
-{
-    // Filter by category
+function updateCommandsList() {
     let filtered = commands;
-
+    
     if (currentCategory !== 'all') {
-        filtered = commands.filter(cmd => cmd.category ===currentCategory);
+        filtered = commands.filter(cmd => cmd.category === currentCategory);
     }
-
-    // Filter by search term
+    
     const searchTerm = searchInput.getValue().toLowerCase().trim();
-
     if (searchTerm && searchTerm !== 'type to search commands...') {
-        filtered = filtered.filter(cmd => cmd.name.toLowerCase().includes(searchTerm) || cmd.description.toLowerCase().includes(searchTerm) || cmd.usage.toLowerCase().includes(searchTerm));
+        filtered = filtered.filter(cmd => 
+            cmd.name.toLowerCase().includes(searchTerm) || 
+            cmd.description.toLowerCase().includes(searchTerm) || 
+            cmd.usage.toLowerCase().includes(searchTerm)
+        );
     }
-
+    
     filteredCommands = filtered;
     selectedIndex = Math.min(selectedIndex, filteredCommands.length - 1);
-
-    // Update list items
+    
     commandsTable.setItems(
         filteredCommands.map(cmd => `{bold}${cmd.name}{/bold} - ${cmd.description}`)
     );
-
-    // Update selection
+    
     if (filteredCommands.length > 0) {
         commandsTable.select(selectedIndex);
     }
-
+    
     updateCommandDetails();
 }
 
-// Setup event handlers for main screen
-function setupMainScreenEvents()
-{
-    // Search input events
+function setupMainScreenEvents() {
+    // Remove existing listeners to avoid duplicates
+    screen.removeAllListeners('keypress');
+    
+    // Search events
     searchInput.on('submit', () => {
         updateCommandsList();
         commandsTable.focus();
@@ -455,7 +489,7 @@ function setupMainScreenEvents()
         screen.render();
     });
 
-    // Category button events
+    // Category events
     categoryButton.on('press', () => {
         categoryList.show();
         categoryList.focus();
@@ -492,27 +526,33 @@ function setupMainScreenEvents()
         }
     });
 
-    // Global keyboard shortcuts
+    // Global keyboard shortcuts - check currentScreen for ESC
     screen.key(['escape'], () => {
-        if (currentScreen === 'main') { process.exit(0); }
+        if (currentScreen === 'main') {
+            process.exit(0);
+        }
     });
-
-    screen.key(['q', 'C-c'], () => { process.exit(0); });
-
+    
+    screen.key(['q', 'C-c'], () => process.exit(0));
+    
     screen.key(['/', 's'], () => {
         searchInput.focus();
         screen.render();
     });
-
-    screen.key(['c'], () => { categoryButton.emit('press'); });
-
+    
+    screen.key(['c'], () => categoryButton.emit('press'));
+    
     screen.key(['tab'], () => {
-        if (searchInput.focused) { commandsTable.focus(); }
-        else if (commandsTable.focused) { searchInput.focus(); }
-        else if (categoryList.focused) { commandsTable.focus(); }
+        if (searchInput.focused) {
+            commandsTable.focus();
+        } else if (commandsTable.focused) {
+            searchInput.focus();
+        } else if (categoryList.focused) {
+            commandsTable.focus();
+        }
         screen.render();
     });
-
+    
     screen.key(['enter'], () => {
         if (commandsTable.focused && filteredCommands.length > 0) {
             const cmd = filteredCommands[selectedIndex];
@@ -520,6 +560,7 @@ function setupMainScreenEvents()
         }
     });
 
+    // Mouse events
     commandsTable.on('click', () => {
         commandsTable.focus();
         screen.render();
@@ -542,4 +583,5 @@ function setupMainScreenEvents()
     });
 }
 
+// Start the application
 createMainScreen();
