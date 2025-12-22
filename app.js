@@ -252,7 +252,8 @@ function createMainScreen() {
                 fg: 'black' 
             }
         },
-        border: { type: 'line', fg: 'blue' }
+        border: { type: 'line', fg: 'blue' },
+        mouse: true
     });
 
     // Commands table
@@ -532,6 +533,12 @@ function setupMainScreenEvents() {
         categoryList.focus();
         screen.render();
     });
+
+    categoryButton.on('click', () => {
+    categoryList.show();
+    categoryList.focus();
+    screen.render();
+});
     
 categoryList.key(['enter'], () => {
     categoryList.emit('select');
