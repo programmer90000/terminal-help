@@ -562,6 +562,14 @@ categoryList.on('select', () => {
     }
 });
     
+    // Single-click selection for category list
+    categoryList.on('element click', function() {
+        // Trigger select immediately after click
+        setTimeout(() => {
+            this.emit('select');
+        }, 0);
+    });
+    
     // Mouse events
     commandsTable.on('click', () => {
         commandsTable.focus();
