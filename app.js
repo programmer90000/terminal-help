@@ -171,6 +171,7 @@ function createMainScreen() {
     if (!screen) {
         screen = blessed.screen({ 
             smartCSR: true, 
+            terminal: 'ansi',
             title: 'Terminal Help', 
             fullUnicode: true,
             dockBorders: true,
