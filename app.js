@@ -263,29 +263,6 @@ function createMainScreen() {
         border: { type: 'line', fg: 'blue' }
     });
 
-    // Category list (hidden by default)
-    categoryList = blessed.list({
-        parent: mainLayout,
-        top: 3,
-        left: '70%',
-        width: '30%',
-        height: categories.length + 2,
-        hidden: true,
-        items: categories,
-        tags: true,
-        keys: true,
-        mouse: true,
-        style: {
-            selected: { 
-                bg: 'cyan', 
-                fg: 'black',
-                bold: true 
-            },
-            item: { fg: 'white' }
-        },
-        border: { type: 'line', fg: 'blue' }
-    });
-
     // Commands table
     commandsTable = blessed.listtable({
         parent: mainLayout,
@@ -336,6 +313,29 @@ function createMainScreen() {
         },
         border: { type: 'line', fg: 'magenta' },
         padding: { left: 1, right: 1, top: 0, bottom: 0 }
+    });
+
+        // Category list (hidden by default)
+    categoryList = blessed.list({
+        parent: mainLayout,
+        top: 3,
+        left: '70%',
+        width: '30%',
+        height: categories.length + 2,
+        hidden: true,
+        items: categories,
+        tags: true,
+        keys: true,
+        mouse: true,
+        style: {
+            selected: { 
+                bg: 'cyan', 
+                fg: 'black',
+                bold: true 
+            },
+            item: { fg: 'white' }
+        },
+        border: { type: 'line', fg: 'blue' }
     });
 
     // Help info
