@@ -203,6 +203,9 @@ function createMainScreen() {
         left: 0,
         width: '70%',
         height: 3,
+        style: {
+            bg: "green"
+        },
         border: { type: 'line', fg: 'cyan' }
     });
 
@@ -535,14 +538,14 @@ function setupMainScreenEvents() {
     });
 
     categoryButton.on('click', () => {
-    categoryList.show();
-    categoryList.focus();
-    screen.render();
-});
+        categoryList.show();
+        categoryList.focus();
+        screen.render();
+    });
     
-categoryList.key(['enter'], () => {
-    categoryList.emit('select');
-});
+    categoryList.key(['enter'], () => {
+        categoryList.emit('select');
+    });
     
     categoryList.key(['escape'], () => {
         categoryList.hide();
@@ -550,17 +553,17 @@ categoryList.key(['enter'], () => {
         screen.render();
     });
     
-categoryList.on('select', () => {
-    const selected = categoryList.selected;
-    if (selected >= 0 && selected < categories.length) {
-        currentCategory = categories[selected];
-        categoryButton.setContent(`{center}Category: ${currentCategory}{/center}`);
-        categoryList.hide();
-        updateCommandsList();
-        commandsTable.focus();
-        screen.render();
-    }
-});
+    categoryList.on('select', () => {
+        const selected = categoryList.selected;
+        if (selected >= 0 && selected < categories.length) {
+            currentCategory = categories[selected];
+            categoryButton.setContent(`{center}Category: ${currentCategory}{/center}`);
+            categoryList.hide();
+            updateCommandsList();
+            commandsTable.focus();
+            screen.render();
+        }
+    });
     
     // Single-click selection for category list
     categoryList.on('element click', function() {
