@@ -533,17 +533,9 @@ function setupMainScreenEvents() {
         screen.render();
     });
     
-    categoryList.key(['enter'], () => {
-        const selected = categoryList.selected;
-        if (selected >= 0 && selected < categories.length) {
-            currentCategory = categories[selected];
-            categoryButton.setContent(`{center}Category: ${currentCategory}{/center}`);
-            categoryList.hide();
-            updateCommandsList();
-            commandsTable.focus();
-            screen.render();
-        }
-    });
+categoryList.key(['enter'], () => {
+    categoryList.emit('select');
+});
     
     categoryList.key(['escape'], () => {
         categoryList.hide();
@@ -551,9 +543,17 @@ function setupMainScreenEvents() {
         screen.render();
     });
     
-    categoryList.on('select', () => {
-        // Handle selection via enter key instead
-    });
+categoryList.on('select', () => {
+    const selected = categoryList.selected;
+    if (selected >= 0 && selected < categories.length) {
+        currentCategory = categories[selected];
+        categoryButton.setContent(`{center}Category: ${currentCategory}{/center}`);
+        categoryList.hide();
+        updateCommandsList();
+        commandsTable.focus();
+        screen.render();
+    }
+});
     
     // Mouse events
     commandsTable.on('click', () => {
