@@ -227,6 +227,14 @@ function createMainScreen() {
 
     // Set placeholder text
     searchInput.setValue('Type to search commands...');
+    searchInput.inputOnFocus = true;
+    searchInput.readInput = false;
+    searchInput.on('focus', () => {
+        searchInput.readInput = true;
+    });
+    searchInput.on('blur', () => {
+        searchInput.readInput = false;
+    });
     
     // Category button
     categoryButton = blessed.button({
@@ -517,7 +525,7 @@ function setupMainScreenEvents() {
     
     // Real-time search (optional)
     let searchTimeout;
-    searchInput.on('keypress', () => {
+    searchInput.on('change', () => {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
             updateCommandsList();
