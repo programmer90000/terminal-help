@@ -21,7 +21,7 @@ Create a production-ready terminal application in C that displays Linux terminal
 - **Display Features**: Syntax highlighting for examples, multi-line example display, multiple colors
 - **External Libraries**: ncursesw for UI, jansson for JSON parsing (no other external libraries)
 - **Project Structure**: 1 C file (app.c) and 1 JSON file (commands.json)
-- **Experience Level**: No prior C experience required
+- **Experience Level**: I have no prior C experience
 - **Use Case**: Production use
 - **Performance**: Minimal memory usage, fast execution
 - **Extensibility**: Users add commands ONLY via JSON file, no C file modification needed
