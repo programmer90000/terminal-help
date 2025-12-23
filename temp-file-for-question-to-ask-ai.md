@@ -25,7 +25,8 @@ Create a production-ready terminal application in C that displays Linux terminal
 - **Use Case**: Production use
 - **Performance**: Minimal memory usage, fast execution
 - **Extensibility**: Users add commands ONLY via JSON file, no C file modification needed
-- **Bookmarks**: I should be able to bookmark specific commands which will appear at the top of the list. These bookmarks should be saved to the JSON file
+- **Bookmarks**: I should be able to bookmark specific commands which will appear at the top of the list. These bookmarks should be saved to the JSON file. Bookmarked commands should appear at top of list with [*] prefix. Unbookmarked commands appear with [ ] prefix. Press 'b' on selected command to toggle bookmark. Bookmarks saved to JSON file when exiting
+Visual distinction: bookmarked commands in magenta
 
 ## Constraints
 - Maximum of 2 files: app.c and commands.json
@@ -42,6 +43,8 @@ Create a production-ready terminal application in C that displays Linux terminal
 - Search should search across command names,  descriptions, flags and examples. It should use fuzzy search and should be case insensitive. There should be a search bar at the top of the screen
 - There should be no pagination. Only 1 list
 - Colour should be added using ANSI Escape Sequences
+- If JSON missing/corrupted: show error and exit gracefully
+- If the terminal too small: allow overflow with scrollbars
 
 ## To do this, I want to:
 - Start with the JSON file structure and example data
@@ -154,4 +157,65 @@ Create a production-ready terminal application in C that displays Linux terminal
 }
 ```
 
+## UI Layout
+
+### Main Screen
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ Search: [_________________________________________________________] │
+├──────────────────────────────────────┬──────────────────────────────┤
+│ Commands                             │ Selected Command Preview     │
+│                                      │                              │
+│  [*] ls                              │ ┌──────────────────────────┐ │
+│  [*] grep                            │ │ Name: ls                 │ │
+│  [ ] find                            │ │ Desc: List directory     │ │
+│  [ ] cp                              │ │ contents                 │ │
+│  [ ] mv                              │ │ Flags: -l, -a, -h, -R    │ │
+│  ...                                 │ │                          │ │
+│                                      │ │ Example: ls -la          │ │
+│                                      │ └──────────────────────────┘ │
+│                                      │                              │
+└──────────────────────────────────────┴──────────────────────────────┘
+│ Ctrl+N:Names  Ctrl+D:Desc  Ctrl+F:Flags  Ctrl+E:Examples  Ctrl+A:All│
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Detailled Screen
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│ Command: ls                                 (press 'b' to bookmark) │
+├─────────────────────────────────────────────────────────────────────┤
+│ Description: List directory contents                                 │
+│                                                                     │
+│ Category: file_management                                           │
+│                                                                     │
+│ ┌─────────────────────────────────────────────────────────────────┐ │
+│ │ Flags:                                                          │ │
+│ │   -l: Use a long listing format                                 │ │
+│ │   -a: Do not ignore entries starting with .                     │ │
+│ │   -h: With -l, print human readable sizes                       │ │
+│ │   -R: List subdirectories recursively                           │ │
+│ └─────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│ ┌─────────────────────────────────────────────────────────────────┐ │
+│ │ Examples:                                                       │ │
+│ │   Basic: ls                                                     │ │
+│ │                                                                 │ │
+│ │   With flags:                                                   │ │
+│ │     ls -l                                                       │ │
+│ │     ls -la                                                      │ │
+│ │     ls -lh /home/user                                           │ │
+│ │                                                                 │ │
+│ │   Flag-specific examples:                                       │ │
+│ │     -l: ls -l /var/log                                          │ │
+│ │     -a: ls -a                                                   │ │
+│ │     -h: ls -lh                                                  │ │
+│ │     -R: ls -R /etc                                              │ │
+│ └─────────────────────────────────────────────────────────────────┘ │
+│                                                                     │
+│ (press Backspace to return)                                         │
+└─────────────────────────────────────────────────────────────────────┘
+```
 Do NOT answer this prompt. ONLY tell me what other information I could provide to help you answer it
