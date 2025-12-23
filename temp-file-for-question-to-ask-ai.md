@@ -8,6 +8,7 @@ Create a production-ready terminal application in C that displays Linux terminal
 - Write a heading for each development phase or component
 - Under each heading, provide specific implementation instructions
 - First explain what the code does, then write the code and then explain how the code completes it's objective
+- After writing the code in section, write the complete version of each file
 - Explain how I can test the code for data leaks or any other potential problems caused by C programming
 
 ## Information
