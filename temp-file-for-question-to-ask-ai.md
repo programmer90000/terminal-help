@@ -218,4 +218,5 @@ Visual distinction: bookmarked commands in magenta
 │ (press Backspace to return)                                         │
 └─────────────────────────────────────────────────────────────────────┘
 ```
-Do NOT answer this prompt. ONLY tell me what other information I could provide to help you answer it
+
+Do NOT tell me how to do this. ONLY tell me the path I would need to take to do this and any other information I could provide. Tell me ANY other information I could provide, such as how you should answer the question or anything else
