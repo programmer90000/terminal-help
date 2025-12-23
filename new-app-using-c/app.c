@@ -549,12 +549,6 @@ void draw_main_screen() {
     mvprintw(max_y - 3, start_x, "Ctrl+E:Examples");
     attroff(A_BOLD);
     
-    // Space:Clear modes
-    start_x += 15 + spacing;
-    attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
-    mvprintw(max_y - 3, start_x, "Space:Clear");
-    attroff(A_BOLD);
-    
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
     // Draw command list
@@ -849,13 +843,6 @@ int main() {
                         case 127: // Backspace/Delete
                             // Clear search text
                             search_text[0] = '\0';
-                            selected_index = 0;
-                            scroll_offset = 0;
-                            break;
-                            
-                        case ' ':
-                            // Clear all search modes (Space key)
-                            search_mode = 0;
                             selected_index = 0;
                             scroll_offset = 0;
                             break;
