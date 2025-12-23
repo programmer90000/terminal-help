@@ -841,10 +841,13 @@ int main() {
                             
                         case KEY_BACKSPACE:
                         case 127: // Backspace/Delete
-                            // Clear search text
-                            search_text[0] = '\0';
-                            selected_index = 0;
-                            scroll_offset = 0;
+                            // Remove last character from search text
+                            int len = strlen(search_text);
+                            if (len > 0) {
+                                search_text[len - 1] = '\0';
+                                selected_index = 0;
+                                scroll_offset = 0;
+                            }
                             break;
                             
                         case 'b':
