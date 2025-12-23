@@ -16,11 +16,11 @@ Create a production-ready terminal application in C that displays Linux terminal
 - **Visual Design**: Boxes with borders separating sections (command list, preview, search)
 - **Data Source**: JSON file containing categorized commands with names, descriptions, flags, and examples. Bookmarks should be written to the JSON file. Flags should be added to the JSON file as a nested object.
 - **Navigation**: Main screen with category filtering and search → Detail screen with full command info, flags and examples
-- ** Navigation Button**: Arrow keys to move up and down. Enter to select an option. Backspace to go back to the main screen. Single click with mouse to focus on command in list. Single click after option is focused to select. Arrow keys and mouse scroll button to scroll. Only the command buttons and back button should be clickable. Only the command list and information in each command page should be scrollable if necessary.
+- **Navigation Button**: Arrow keys to move up and down. Enter to select an option. Backspace to go back to the main screen. Single click with mouse to focus on command in list. Single click after option is focused to select. Arrow keys and mouse scroll button to scroll. Only the command buttons and back button should be clickable. Only the command list and information in each command page should be scrollable if necessary.
 - **Command Details**: Display name, description, ALL flags, examples for plain command and EACH individual flag
 - **Display Features**: Syntax highlighting for examples, multi-line example display, multiple colors
 - **External Libraries**: ncursesw for UI, jansson for JSON parsing (no other external libraries)
-- **Project Structure**: 1 C file (app.c) and 1 JSON file (commands.json)
+- **Project Structure**: 1 C file (app.c), 1 JSON file (commands.json), 1 Makefile
 - **Experience Level**: I have no prior C experience
 - **Use Case**: Production use
 - **Performance**: Minimal memory usage, fast execution
