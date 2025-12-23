@@ -187,7 +187,7 @@ Visual distinction: bookmarked commands in magenta
 ┌─────────────────────────────────────────────────────────────────────┐
 │ Command: ls                                 (press 'b' to bookmark) │
 ├─────────────────────────────────────────────────────────────────────┤
-│ Description: List directory contents                                 │
+│ Description: List directory contents                                │
 │                                                                     │
 │ Category: file_management                                           │
 │                                                                     │
