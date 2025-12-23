@@ -23,8 +23,27 @@
 #define COLOR_PAIR_HIGHLIGHT 2
 #define COLOR_PAIR_ERROR 3
 #define COLOR_PAIR_SUCCESS 4
-#define COLOR_PAIR_MAGENTA 5
+#define COLOR_PAIR_MAGENTA 50
 #define COLOR_PAIR_CYAN 6
+
+// 256-color palette indices (standardized across terminals)
+#define COLOR_256_WHITE     15    // Bright white
+#define COLOR_256_BLACK     10    // Black (though we'll use -1 for transparent)
+#define COLOR_256_RED        9    // Bright red
+#define COLOR_256_GREEN     10    // Bright green
+#define COLOR_256_YELLOW    11    // Bright yellow
+#define COLOR_256_BLUE      12    // Bright blue
+#define COLOR_256_MAGENTA   13    // Bright magenta
+#define COLOR_256_CYAN      14    // Bright cyan
+
+// Alternative 6x6x6 cube colors (more precise RGB-like)
+#define COLOR_CUBE_BLACK    16    // RGB(0,0,0)
+#define COLOR_CUBE_WHITE   231    // RGB(5,5,5) ≈ white
+#define COLOR_CUBE_RED     196    // RGB(5,0,0) ≈ red
+#define COLOR_CUBE_GREEN    46    // RGB(0,5,0) ≈ green
+#define COLOR_CUBE_YELLOW  226    // RGB(5,5,0) ≈ yellow
+#define COLOR_CUBE_MAGENTA 201    // RGB(5,0,5) ≈ magenta
+#define COLOR_CUBE_CYAN     51    // RGB(0,5,5) ≈ cyan
 
 // Application states
 typedef enum {
@@ -298,13 +317,30 @@ void init_ncurses() {
     if (has_colors()) {
         start_color();
         
-        // Define color pairs (foreground, background)
-        init_pair(COLOR_PAIR_DEFAULT, COLOR_WHITE, COLOR_BLACK);
-        init_pair(COLOR_PAIR_HIGHLIGHT, COLOR_YELLOW, COLOR_BLACK);
-        init_pair(COLOR_PAIR_ERROR, COLOR_RED, COLOR_BLACK);
-        init_pair(COLOR_PAIR_SUCCESS, COLOR_GREEN, COLOR_BLACK);
-        init_pair(COLOR_PAIR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-        init_pair(COLOR_PAIR_CYAN, COLOR_CYAN, COLOR_BLACK);
+        // Use terminal's default background color
+        use_default_colors();
+        
+        // Check if we have extended color support
+        if (COLORS >= 256) {
+            // Use bright colors from 256-color palette
+            // -1 = use terminal's default background (transparent)
+            int bg_color = -1;  // Transparent background
+            
+            init_pair(COLOR_PAIR_DEFAULT, COLOR_256_WHITE, bg_color);
+            init_pair(COLOR_PAIR_HIGHLIGHT, COLOR_256_YELLOW, bg_color);
+            init_pair(COLOR_PAIR_ERROR, COLOR_256_RED, bg_color);
+            init_pair(COLOR_PAIR_SUCCESS, COLOR_256_GREEN, bg_color);
+            init_pair(COLOR_PAIR_MAGENTA, COLOR_256_MAGENTA, bg_color);
+            init_pair(COLOR_PAIR_CYAN, COLOR_256_CYAN, bg_color);
+        } else {
+            // Fallback to basic 16 colors
+            init_pair(COLOR_PAIR_DEFAULT, COLOR_WHITE, -1);
+            init_pair(COLOR_PAIR_HIGHLIGHT, COLOR_YELLOW, -1);
+            init_pair(COLOR_PAIR_ERROR, COLOR_RED, -1);
+            init_pair(COLOR_PAIR_SUCCESS, COLOR_GREEN, -1);
+            init_pair(COLOR_PAIR_MAGENTA, COLOR_MAGENTA, -1);
+            init_pair(COLOR_PAIR_CYAN, COLOR_CYAN, -1);
+        }
         
         // Set default color
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
@@ -654,6 +690,9 @@ int main() {
                                 commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
                                 save_commands();
                             }
+                            break;
+                            
+                            draw_main_screen();
                             break;
                             
                         default:
