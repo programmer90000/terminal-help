@@ -8,6 +8,7 @@
 #include <ctype.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <signal.h>
 
 #define MAX_COMMANDS 1000
 #define MAX_NAME_LEN 100
@@ -17,13 +18,13 @@
 #define MAX_EXAMPLES 50
 #define MAX_SEARCH_LEN 100
 
-// Color definitions
-#define COLOR_DEFAULT 1
-#define COLOR_HIGHLIGHT 2
-#define COLOR_ERROR 3
-#define COLOR_SUCCESS 4
-#define COLOR_MAGENTA 5
-#define COLOR_CYAN 6
+// Color pair definitions (must be > 0)
+#define COLOR_PAIR_DEFAULT 1
+#define COLOR_PAIR_HIGHLIGHT 2
+#define COLOR_PAIR_ERROR 3
+#define COLOR_PAIR_SUCCESS 4
+#define COLOR_PAIR_MAGENTA 5
+#define COLOR_PAIR_CYAN 6
 
 // Application states
 typedef enum {
@@ -68,12 +69,23 @@ int search_mode = 0;
 // Function prototypes
 void init_ncurses();
 void cleanup_ncurses();
+void handle_signal(int sig);
 void load_commands();
 void save_commands();
 void draw_main_screen();
 void draw_detail_screen();
 void handle_input();
 void show_error(const char *msg);
+
+// Signal handler and cleanup function
+void handle_signal(int sig) {
+    cleanup_ncurses();
+    exit(0);
+}
+
+void cleanup_ncurses() {
+    endwin();  // CRITICAL: Restores terminal to original state
+}
 
 // Load commands from JSON file
 void load_commands() {
@@ -286,13 +298,16 @@ void init_ncurses() {
     if (has_colors()) {
         start_color();
         
-        // Define color pairs
-        init_pair(COLOR_DEFAULT, COLOR_WHITE, COLOR_BLACK);
-        init_pair(COLOR_HIGHLIGHT, COLOR_YELLOW, COLOR_BLACK);
-        init_pair(COLOR_ERROR, COLOR_RED, COLOR_BLACK);
-        init_pair(COLOR_SUCCESS, COLOR_GREEN, COLOR_BLACK);
-        init_pair(COLOR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
-        init_pair(COLOR_CYAN, COLOR_CYAN, COLOR_BLACK);
+        // Define color pairs (foreground, background)
+        init_pair(COLOR_PAIR_DEFAULT, COLOR_WHITE, COLOR_BLACK);
+        init_pair(COLOR_PAIR_HIGHLIGHT, COLOR_YELLOW, COLOR_BLACK);
+        init_pair(COLOR_PAIR_ERROR, COLOR_RED, COLOR_BLACK);
+        init_pair(COLOR_PAIR_SUCCESS, COLOR_GREEN, COLOR_BLACK);
+        init_pair(COLOR_PAIR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+        init_pair(COLOR_PAIR_CYAN, COLOR_CYAN, COLOR_BLACK);
+        
+        // Set default color
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     }
     
     // Enable mouse
@@ -303,34 +318,33 @@ void init_ncurses() {
     refresh();
 }
 
-void cleanup_ncurses() {
-    // End ncurses
-    endwin();
-}
-
 void draw_main_screen() {
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
     
     // Clear screen
-    erase();  // Use erase() instead of clear() to avoid issues
+    erase();
     
-    // Draw border
+    // Draw border with default color
+    attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     border(0, 0, 0, 0, 0, 0, 0, 0);
     
     // Draw search bar
-    attron(COLOR_PAIR(COLOR_HIGHLIGHT));
+    attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     mvprintw(1, 2, "Search: [");
-    attroff(COLOR_PAIR(COLOR_HIGHLIGHT));
+    attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     
-    // Show search text
+    // Show search text with default color
+    attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     mvprintw(1, 11, "%-*s", max_x - 12, search_text);
+    attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
-    attron(COLOR_PAIR(COLOR_HIGHLIGHT));
+    attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     mvprintw(1, max_x - 3, "]");
-    attroff(COLOR_PAIR(COLOR_HIGHLIGHT));
+    attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     
     // Draw separator line
+    attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     mvhline(2, 0, ACS_HLINE, max_x);
     
     // Draw column titles
@@ -346,6 +360,7 @@ void draw_main_screen() {
     mvprintw(max_y - 3, 2, 
             "Ctrl+N:Names  Ctrl+D:Desc  Ctrl+F:Flags  Ctrl+E:Examples  Ctrl+A:All");
     attroff(A_BOLD);
+    attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
     // Draw command list (simplified - left side)
     int visible_items = max_y - 9;
@@ -384,13 +399,15 @@ void draw_main_screen() {
             attron(A_REVERSE);
         }
         
-        // Draw bookmark indicator with color
+        // Draw bookmark indicator with magenta color
         if (commands[i].bookmarked) {
-            attron(COLOR_PAIR(COLOR_MAGENTA));
+            attron(COLOR_PAIR(COLOR_PAIR_MAGENTA));
             mvprintw(list_y, 2, "[*] %s", commands[i].name);
-            attroff(COLOR_PAIR(COLOR_MAGENTA));
+            attroff(COLOR_PAIR(COLOR_PAIR_MAGENTA));
         } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
             mvprintw(list_y, 2, "[ ] %s", commands[i].name);
+            attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
         }
         
         if (i == selected_index) {
@@ -408,7 +425,8 @@ void draw_main_screen() {
         int preview_start_x = max_x/2 + 1;
         int preview_width = max_x/2 - 1;
         
-        // Draw box border
+        // Draw box border with default color
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
         mvaddch(4, preview_start_x, ACS_ULCORNER);
         mvaddch(4, max_x - 1, ACS_URCORNER);
         mvaddch(max_y - 5, preview_start_x, ACS_LLCORNER);
@@ -439,11 +457,12 @@ void draw_main_screen() {
             }
         }
         
-        // Draw basic example with syntax highlighting
+        // Draw basic example with cyan color
         mvprintw(9, preview_start_x + 2, "Example:");
-        attron(COLOR_PAIR(COLOR_CYAN));
+        attron(COLOR_PAIR(COLOR_PAIR_CYAN));
         mvprintw(10, preview_start_x + 4, "%s", cmd->basic_example);
-        attroff(COLOR_PAIR(COLOR_CYAN));
+        attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
+        attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     }
     
     refresh();
@@ -466,7 +485,8 @@ void draw_detail_screen() {
     // Clear screen
     erase();
     
-    // Draw border
+    // Draw border with default color
+    attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     border(0, 0, 0, 0, 0, 0, 0, 0);
     
     // Draw header
@@ -474,16 +494,17 @@ void draw_detail_screen() {
     mvprintw(1, 2, "Command: %s", cmd->name);
     attroff(A_BOLD);
     
-    attron(COLOR_PAIR(COLOR_HIGHLIGHT));
+    attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     mvprintw(1, max_x - 30, "(press 'b' to bookmark)");
-    attroff(COLOR_PAIR(COLOR_HIGHLIGHT));
+    attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     
     // Draw separator
     mvhline(2, 1, ACS_HLINE, max_x - 2);
     
     int y_pos = 3;
     
-    // Draw description
+    // Draw description with default color
+    attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     mvprintw(y_pos++, 2, "Description: %s", cmd->description);
     y_pos++; // Blank line
     
@@ -508,14 +529,14 @@ void draw_detail_screen() {
     
     // Basic example
     mvprintw(y_pos++, 4, "Basic:");
-    attron(COLOR_PAIR(COLOR_CYAN));
+    attron(COLOR_PAIR(COLOR_PAIR_CYAN));
     mvprintw(y_pos++, 6, "%s", cmd->basic_example);
-    attroff(COLOR_PAIR(COLOR_CYAN));
+    attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
     
     if (strlen(cmd->basic_output) > 0) {
-        attron(COLOR_PAIR(COLOR_DEFAULT));
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
         mvprintw(y_pos++, 6, "Output: %s", cmd->basic_output);
-        attroff(COLOR_PAIR(COLOR_DEFAULT));
+        attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     }
     
     y_pos++; // Blank line
@@ -526,20 +547,22 @@ void draw_detail_screen() {
         y_pos++;
         
         for (int i = 0; i < cmd->flag_example_count && y_pos < max_y - 5; i++) {
-            attron(COLOR_PAIR(COLOR_CYAN));
+            attron(COLOR_PAIR(COLOR_PAIR_CYAN));
             mvprintw(y_pos++, 6, "%s", cmd->flag_examples[i]);
-            attroff(COLOR_PAIR(COLOR_CYAN));
+            attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
             
             if (strlen(cmd->flag_example_purposes[i]) > 0) {
+                attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
                 mvprintw(y_pos++, 8, "Purpose: %s", 
                         cmd->flag_example_purposes[i]);
+                attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
             }
             
             if (strlen(cmd->flag_example_outputs[i]) > 0) {
-                attron(COLOR_PAIR(COLOR_DEFAULT));
+                attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
                 mvprintw(y_pos++, 8, "Output: %s", 
                         cmd->flag_example_outputs[i]);
-                attroff(COLOR_PAIR(COLOR_DEFAULT));
+                attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
             }
             
             y_pos++; // Blank line between examples
@@ -548,9 +571,10 @@ void draw_detail_screen() {
     
     // Draw footer
     mvhline(max_y - 2, 1, ACS_HLINE, max_x - 2);
-    attron(COLOR_PAIR(COLOR_HIGHLIGHT));
+    attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     mvprintw(max_y - 1, 2, "(press Backspace to return)");
-    attroff(COLOR_PAIR(COLOR_HIGHLIGHT));
+    attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
+    attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
     refresh();
 }
@@ -561,6 +585,10 @@ void show_error(const char *msg) {
 }
 
 int main() {
+    // Set up signal handlers for clean exit
+    signal(SIGINT, handle_signal);
+    atexit(cleanup_ncurses);
+    
     // Load commands from JSON
     load_commands();
     
