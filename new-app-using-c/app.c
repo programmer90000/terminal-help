@@ -23,10 +23,10 @@
 #define COLOR_PAIR_HIGHLIGHT 2
 #define COLOR_PAIR_ERROR 3
 #define COLOR_PAIR_SUCCESS 4
-#define COLOR_PAIR_MAGENTA 50
+#define COLOR_PAIR_MAGENTA 5
 #define COLOR_PAIR_CYAN 6
+#define COLOR_PAIR_GREEN 7
 
-// 256-color palette indices (standardized across terminals)
 // 256-color palette indices (standardized across terminals)
 #define COLOR_256_WHITE     15    // Bright white
 #define COLOR_256_BLACK     0     // Pure black (index 0)
@@ -44,6 +44,12 @@ typedef enum {
     STATE_DETAIL,
     STATE_EXIT
 } AppState;
+
+// Search mode flags (bitmask for multiple selection)
+#define SEARCH_NAMES    (1 << 0)
+#define SEARCH_DESCS    (1 << 1)
+#define SEARCH_FLAGS    (1 << 2)
+#define SEARCH_EXAMPLES (1 << 3)
 
 // Command structure
 typedef struct {
@@ -76,7 +82,7 @@ int scroll_offset = 0;
 int detail_scroll = 0;
 AppState current_state = STATE_MAIN;
 char search_text[MAX_SEARCH_LEN] = "";
-int search_mode = 0;
+int search_mode = 0;  // Bitmask for search modes (0 = no mode selected)
 
 // Function prototypes
 void init_ncurses();
@@ -88,6 +94,7 @@ void draw_main_screen();
 void draw_detail_screen();
 void handle_input();
 void show_error(const char *msg);
+int matches_search(Command *cmd, const char *search_lower);
 
 // Signal handler and cleanup function
 void handle_signal(int sig) {
@@ -97,6 +104,94 @@ void handle_signal(int sig) {
 
 void cleanup_ncurses() {
     endwin();  // CRITICAL: Restores terminal to original state
+}
+
+// Check if a command matches the current search criteria
+int matches_search(Command *cmd, const char *search_lower) {
+    if (search_mode == 0) {
+        // If no search mode selected, search all fields
+        return 1;
+    }
+    
+    int found = 0;
+    
+    // Check names
+    if (search_mode & SEARCH_NAMES) {
+        char name_lower[MAX_NAME_LEN];
+        strcpy(name_lower, cmd->name);
+        for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
+        if (strstr(name_lower, search_lower) != NULL) {
+            found = 1;
+        }
+    }
+    
+    // Check descriptions
+    if (!found && (search_mode & SEARCH_DESCS)) {
+        char desc_lower[MAX_DESC_LEN];
+        strcpy(desc_lower, cmd->description);
+        for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
+        if (strstr(desc_lower, search_lower) != NULL) {
+            found = 1;
+        }
+    }
+    
+    // Check flags
+    if (!found && (search_mode & SEARCH_FLAGS)) {
+        for (int f = 0; f < cmd->flag_count && !found; f++) {
+            char flag_name_lower[20];
+            char flag_desc_lower[100];
+            
+            strcpy(flag_name_lower, cmd->flag_names[f]);
+            for (int j = 0; flag_name_lower[j]; j++) flag_name_lower[j] = tolower(flag_name_lower[j]);
+            
+            strcpy(flag_desc_lower, cmd->flag_descs[f]);
+            for (int j = 0; flag_desc_lower[j]; j++) flag_desc_lower[j] = tolower(flag_desc_lower[j]);
+            
+            if (strstr(flag_name_lower, search_lower) != NULL ||
+                strstr(flag_desc_lower, search_lower) != NULL) {
+                found = 1;
+                break;
+            }
+        }
+    }
+    
+    // Check examples
+    if (!found && (search_mode & SEARCH_EXAMPLES)) {
+        // Check basic example
+        char basic_example_lower[200];
+        strcpy(basic_example_lower, cmd->basic_example);
+        for (int j = 0; basic_example_lower[j]; j++) basic_example_lower[j] = tolower(basic_example_lower[j]);
+        if (strstr(basic_example_lower, search_lower) != NULL) {
+            found = 1;
+        }
+        
+        // Check flag examples
+        if (!found) {
+            for (int e = 0; e < cmd->flag_example_count && !found; e++) {
+                char example_lower[100];
+                char purpose_lower[100];
+                char output_lower[200];
+                
+                strcpy(example_lower, cmd->flag_examples[e]);
+                for (int j = 0; example_lower[j]; j++) example_lower[j] = tolower(example_lower[j]);
+                
+                strcpy(purpose_lower, cmd->flag_example_purposes[e]);
+                for (int j = 0; purpose_lower[j]; j++) purpose_lower[j] = tolower(purpose_lower[j]);
+                
+                strcpy(output_lower, cmd->flag_example_outputs[e]);
+                for (int j = 0; output_lower[j]; j++) output_lower[j] = tolower(output_lower[j]);
+                
+                if (strstr(example_lower, search_lower) != NULL ||
+                    strstr(purpose_lower, search_lower) != NULL ||
+                    strstr(output_lower, search_lower) != NULL) {
+                    found = 1;
+                    break;
+                }
+            }
+        }
+    }
+    
+    return found;
 }
 
 // Load commands from JSON file
@@ -314,16 +409,17 @@ void init_ncurses() {
         // use_default_colors();  // COMMENT THIS LINE OUT
         
         // Check if we have extended color support
-if (COLORS >= 256) {
-    // Some terminals map index 0 to something else
-    // Index 16 is usually the first user-definable color (pure black in default palette)
-    init_pair(COLOR_PAIR_DEFAULT, 15, 16);  // White on black
-    init_pair(COLOR_PAIR_HIGHLIGHT, 11, 16); // Yellow on black
-    init_pair(COLOR_PAIR_ERROR, 9, 16);     // Red on black
-    init_pair(COLOR_PAIR_SUCCESS, 10, 16);  // Green on black
-    init_pair(COLOR_PAIR_MAGENTA, 13, 16);  // Magenta on black
-    init_pair(COLOR_PAIR_CYAN, 14, 16);     // Cyan on black
-} else {
+        if (COLORS >= 256) {
+            // Some terminals map index 0 to something else
+            // Index 16 is usually the first user-definable color (pure black in default palette)
+            init_pair(COLOR_PAIR_DEFAULT, 15, 16);  // White on black
+            init_pair(COLOR_PAIR_HIGHLIGHT, 11, 16); // Yellow on black
+            init_pair(COLOR_PAIR_ERROR, 9, 16);     // Red on black
+            init_pair(COLOR_PAIR_SUCCESS, 10, 16);  // Green on black
+            init_pair(COLOR_PAIR_MAGENTA, 13, 16);  // Magenta on black
+            init_pair(COLOR_PAIR_CYAN, 14, 16);     // Cyan on black
+            init_pair(COLOR_PAIR_GREEN, 10, 16);    // Green on black (for highlighting)
+        } else {
             // Fallback to basic 16 colors
             // White on black
             init_pair(COLOR_PAIR_DEFAULT, COLOR_WHITE, COLOR_BLACK);
@@ -332,6 +428,7 @@ if (COLORS >= 256) {
             init_pair(COLOR_PAIR_SUCCESS, COLOR_GREEN, COLOR_BLACK);
             init_pair(COLOR_PAIR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
             init_pair(COLOR_PAIR_CYAN, COLOR_CYAN, COLOR_BLACK);
+            init_pair(COLOR_PAIR_GREEN, COLOR_GREEN, COLOR_BLACK);
         }
         
         // Set the entire screen background
@@ -348,6 +445,7 @@ if (COLORS >= 256) {
     clear();
     refresh();
 }
+
 void draw_main_screen() {
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
@@ -359,14 +457,35 @@ void draw_main_screen() {
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     border(0, 0, 0, 0, 0, 0, 0, 0);
     
-    // Draw search bar
+    // Draw search bar with mode indicator
     attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
-    mvprintw(1, 2, "Search: [");
+    
+    // Build mode string
+    char mode_str[50] = "";
+    if (search_mode == 0) {
+        strcpy(mode_str, "ALL");
+    } else {
+        if (search_mode & SEARCH_NAMES) strcat(mode_str, "N");
+        if (search_mode & SEARCH_DESCS) {
+            if (mode_str[0]) strcat(mode_str, "+");
+            strcat(mode_str, "D");
+        }
+        if (search_mode & SEARCH_FLAGS) {
+            if (mode_str[0]) strcat(mode_str, "+");
+            strcat(mode_str, "F");
+        }
+        if (search_mode & SEARCH_EXAMPLES) {
+            if (mode_str[0]) strcat(mode_str, "+");
+            strcat(mode_str, "E");
+        }
+    }
+    
+    mvprintw(1, 2, "Search [%s]: [", mode_str);
     attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     
     // Show search text with default color
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-    mvprintw(1, 11, "%-*s", max_x - 12, search_text);
+    mvprintw(1, 14 + strlen(mode_str), "%-*s", max_x - 15 - (int)strlen(mode_str), search_text);
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
     attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
@@ -384,40 +503,97 @@ void draw_main_screen() {
     // Draw vertical separator
     mvvline(3, max_x/2, ACS_VLINE, max_y - 7);
     
-    // Draw bottom info bar
+    // Draw bottom info bar with highlighted active modes
     mvhline(max_y - 4, 0, ACS_HLINE, max_x);
-    attron(A_BOLD);
-    mvprintw(max_y - 3, 2, 
-            "Ctrl+N:Names  Ctrl+D:Desc  Ctrl+F:Flags  Ctrl+E:Examples  Ctrl+A:All");
+    
+    // Calculate positions for each shortcut
+    int start_x = 2;
+    int spacing = 3;
+    
+    // Ctrl+N:Names
+    if (search_mode & SEARCH_NAMES) {
+        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+    } else {
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+    }
+    mvprintw(max_y - 3, start_x, "Ctrl+N:Names");
     attroff(A_BOLD);
+    
+    // Ctrl+D:Desc
+    start_x += 13 + spacing;
+    if (search_mode & SEARCH_DESCS) {
+        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+    } else {
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+    }
+    mvprintw(max_y - 3, start_x, "Ctrl+D:Desc");
+    attroff(A_BOLD);
+    
+    // Ctrl+F:Flags
+    start_x += 11 + spacing;
+    if (search_mode & SEARCH_FLAGS) {
+        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+    } else {
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+    }
+    mvprintw(max_y - 3, start_x, "Ctrl+F:Flags");
+    attroff(A_BOLD);
+    
+    // Ctrl+E:Examples
+    start_x += 12 + spacing;
+    if (search_mode & SEARCH_EXAMPLES) {
+        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+    } else {
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+    }
+    mvprintw(max_y - 3, start_x, "Ctrl+E:Examples");
+    attroff(A_BOLD);
+    
+    // Space:Clear modes
+    start_x += 15 + spacing;
+    attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+    mvprintw(max_y - 3, start_x, "Space:Clear");
+    attroff(A_BOLD);
+    
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
-    // Draw command list (simplified - left side)
+    // Draw command list
     int visible_items = max_y - 9;
     int start_idx = scroll_offset;
-    int end_idx = start_idx + visible_items;
     
-    // Simple display without filtering first
+    // Filter and display commands
     int display_count = 0;
+    char search_lower[MAX_SEARCH_LEN] = "";
+    
+    // Convert search text to lowercase if it exists
+    if (search_text[0] != '\0') {
+        strcpy(search_lower, search_text);
+        for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
+    }
+    
     for (int i = 0; i < command_count && display_count < visible_items; i++) {
-        // Simple search filter
+        // Apply search filter if search text exists
         if (search_text[0] != '\0') {
-            char name_lower[MAX_NAME_LEN];
-            strcpy(name_lower, commands[i].name);
-            for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
-            
-            char search_lower[MAX_SEARCH_LEN];
-            strcpy(search_lower, search_text);
-            for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
-            
-            if (strstr(name_lower, search_lower) == NULL) {
-                // Also check description
+            // If no search mode is selected, search all fields
+            if (search_mode == 0) {
+                // Check all fields
+                char name_lower[MAX_NAME_LEN];
+                strcpy(name_lower, commands[i].name);
+                for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
+                
                 char desc_lower[MAX_DESC_LEN];
                 strcpy(desc_lower, commands[i].description);
                 for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
                 
-                if (strstr(desc_lower, search_lower) == NULL) {
-                    continue; // Skip if not found
+                if (strstr(name_lower, search_lower) == NULL &&
+                    strstr(desc_lower, search_lower) == NULL) {
+                    // Also check other fields if needed
+                    continue;
+                }
+            } else {
+                // Use the matches_search function for selected modes
+                if (!matches_search(&commands[i], search_lower)) {
+                    continue;
                 }
             }
         }
@@ -671,8 +847,15 @@ int main() {
                             
                         case KEY_BACKSPACE:
                         case 127: // Backspace/Delete
-                            // Clear search
+                            // Clear search text
                             search_text[0] = '\0';
+                            selected_index = 0;
+                            scroll_offset = 0;
+                            break;
+                            
+                        case ' ':
+                            // Clear all search modes (Space key)
+                            search_mode = 0;
                             selected_index = 0;
                             scroll_offset = 0;
                             break;
@@ -686,7 +869,33 @@ int main() {
                             }
                             break;
                             
-                            draw_main_screen();
+                        // Handle Ctrl+key combinations
+                        case 14:  // Ctrl+N (ASCII 14)
+                            // Toggle search in names
+                            search_mode ^= SEARCH_NAMES;
+                            selected_index = 0;
+                            scroll_offset = 0;
+                            break;
+                            
+                        case 4:   // Ctrl+D (ASCII 4)
+                            // Toggle search in descriptions
+                            search_mode ^= SEARCH_DESCS;
+                            selected_index = 0;
+                            scroll_offset = 0;
+                            break;
+                            
+                        case 6:   // Ctrl+F (ASCII 6)
+                            // Toggle search in flags
+                            search_mode ^= SEARCH_FLAGS;
+                            selected_index = 0;
+                            scroll_offset = 0;
+                            break;
+                            
+                        case 5:   // Ctrl+E (ASCII 5)
+                            // Toggle search in examples
+                            search_mode ^= SEARCH_EXAMPLES;
+                            selected_index = 0;
+                            scroll_offset = 0;
                             break;
                             
                         default:
