@@ -1,0 +1,168 @@
+{
+  "commands": [
+    {
+      "name": "ls",
+      "description": "List directory contents",
+      "category": "file_management",
+      "bookmarked": true,
+      "flags": {
+        "-l": "Use a long listing format",
+        "-a": "Do not ignore entries starting with .",
+        "-h": "With -l, print human readable sizes",
+        "-R": "List subdirectories recursively"
+      },
+      "examples": {
+        "basic": {
+          "command": "ls",
+          "output": "file1.txt file2.txt dir1/"
+        },
+        "with_flags": {
+          "ls -l": {
+            "purpose": "List with detailed information",
+            "output": "-rw-r--r-- 1 user group 1234 Jan 1 10:00 file1.txt"
+          },
+          "ls -la": {
+            "purpose": "List all files including hidden",
+            "output": ". .. .hidden file1.txt file2.txt"
+          },
+          "ls -lh": {
+            "purpose": "Human readable file sizes",
+            "output": "-rw-r--r-- 1 user group 1.2K Jan 1 10:00 file1.txt"
+          },
+          "ls -R": {
+            "purpose": "Recursive listing",
+            "output": ".:\nfile1.txt\ndir1/\n\n./dir1:\nfile3.txt"
+          }
+        }
+      }
+    },
+    {
+      "name": "grep",
+      "description": "Search for patterns in files",
+      "category": "text_processing",
+      "bookmarked": false,
+      "flags": {
+        "-i": "Case insensitive search",
+        "-r": "Recursive search",
+        "-n": "Show line numbers",
+        "-v": "Invert match"
+      },
+      "examples": {
+        "basic": {
+          "command": "grep pattern file.txt",
+          "output": "Line containing pattern"
+        },
+        "with_flags": {
+          "grep -i pattern": {
+            "purpose": "Case insensitive search",
+            "output": "Line containing PATTERN"
+          },
+          "grep -rn pattern .": {
+            "purpose": "Recursive search with line numbers",
+            "output": "./file.txt:5:Line containing pattern"
+          },
+          "grep -v pattern": {
+            "purpose": "Find lines without pattern",
+            "output": "Line without the pattern"
+          }
+        }
+      }
+    },
+    {
+      "name": "find",
+      "description": "Search for files in a directory hierarchy",
+      "category": "file_management",
+      "bookmarked": true,
+      "flags": {
+        "-name": "Search by filename pattern",
+        "-type": "Search by file type (f=file, d=directory)",
+        "-mtime": "Search by modification time",
+        "-exec": "Execute command on found files"
+      },
+      "examples": {
+        "basic": {
+          "command": "find . -name \"*.txt\"",
+          "output": "./file1.txt\n./dir1/file2.txt"
+        },
+        "with_flags": {
+          "find /var/log -name \"*.log\"": {
+            "purpose": "Find log files",
+            "output": "/var/log/syslog\n/var/log/auth.log"
+          },
+          "find . -type d": {
+            "purpose": "Find directories only",
+            "output": ".\n./dir1\n./dir2"
+          },
+          "find . -mtime -7": {
+            "purpose": "Find files modified in last 7 days",
+            "output": "./recent_file.txt"
+          }
+        }
+      }
+    },
+    {
+      "name": "cp",
+      "description": "Copy files and directories",
+      "category": "file_management",
+      "bookmarked": false,
+      "flags": {
+        "-r": "Copy directories recursively",
+        "-i": "Interactive mode (prompt before overwrite)",
+        "-v": "Verbose output",
+        "-p": "Preserve file attributes"
+      },
+      "examples": {
+        "basic": {
+          "command": "cp source.txt dest.txt",
+          "output": "File copied successfully"
+        },
+        "with_flags": {
+          "cp -r dir1/ dir2/": {
+            "purpose": "Copy directory recursively",
+            "output": "Directory copied with all contents"
+          },
+          "cp -i file1 file2": {
+            "purpose": "Interactive copy",
+            "output": "cp: overwrite 'file2'? y"
+          },
+          "cp -v file* backup/": {
+            "purpose": "Verbose copy",
+            "output": "'file1' -> 'backup/file1'\n'file2' -> 'backup/file2'"
+          }
+        }
+      }
+    },
+    {
+      "name": "mv",
+      "description": "Move or rename files and directories",
+      "category": "file_management",
+      "bookmarked": false,
+      "flags": {
+        "-i": "Interactive mode (prompt before overwrite)",
+        "-v": "Verbose output",
+        "-n": "No overwrite",
+        "-u": "Update - move only when source is newer"
+      },
+      "examples": {
+        "basic": {
+          "command": "mv oldname newname",
+          "output": "File renamed successfully"
+        },
+        "with_flags": {
+          "mv -i file1 file2": {
+            "purpose": "Interactive move",
+            "output": "mv: overwrite 'file2'? y"
+          },
+          "mv -v *.txt archive/": {
+            "purpose": "Verbose move",
+            "output": "'file1.txt' -> 'archive/file1.txt'\n'file2.txt' -> 'archive/file2.txt'"
+          },
+          "mv -u newfile oldfile": {
+            "purpose": "Update if newer",
+            "output": "File moved only if newer"
+          }
+        }
+      }
+    }
+  ]
+}
