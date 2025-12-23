@@ -27,9 +27,11 @@
 #define COLOR_PAIR_CYAN 6
 
 // 256-color palette indices (standardized across terminals)
+// 256-color palette indices (standardized across terminals)
 #define COLOR_256_WHITE     15    // Bright white
-#define COLOR_256_BLACK     10    // Black (though we'll use -1 for transparent)
-#define COLOR_256_RED        9    // Bright red
+#define COLOR_256_BLACK     0     // Pure black (index 0)
+#define COLOR_256_BLACK2    16    // Alternate pure black (also works)
+#define COLOR_256_RED       9     // Bright red
 #define COLOR_256_GREEN     10    // Bright green
 #define COLOR_256_YELLOW    11    // Bright yellow
 #define COLOR_256_BLUE      12    // Bright blue
@@ -308,30 +310,32 @@ void init_ncurses() {
     if (has_colors()) {
         start_color();
         
-        // Use terminal's default background color
-        use_default_colors();
+        // DO NOT use default colors if you want black background
+        // use_default_colors();  // COMMENT THIS LINE OUT
         
         // Check if we have extended color support
-        if (COLORS >= 256) {
-            // Use bright colors from 256-color palette
-            // -1 = use terminal's default background (transparent)
-            int bg_color = -1;  // Transparent background
-            
-            init_pair(COLOR_PAIR_DEFAULT, COLOR_256_WHITE, bg_color);
-            init_pair(COLOR_PAIR_HIGHLIGHT, COLOR_256_YELLOW, bg_color);
-            init_pair(COLOR_PAIR_ERROR, COLOR_256_RED, bg_color);
-            init_pair(COLOR_PAIR_SUCCESS, COLOR_256_GREEN, bg_color);
-            init_pair(COLOR_PAIR_MAGENTA, COLOR_256_MAGENTA, bg_color);
-            init_pair(COLOR_PAIR_CYAN, COLOR_256_CYAN, bg_color);
-        } else {
+if (COLORS >= 256) {
+    // Some terminals map index 0 to something else
+    // Index 16 is usually the first user-definable color (pure black in default palette)
+    init_pair(COLOR_PAIR_DEFAULT, 15, 16);  // White on black
+    init_pair(COLOR_PAIR_HIGHLIGHT, 11, 16); // Yellow on black
+    init_pair(COLOR_PAIR_ERROR, 9, 16);     // Red on black
+    init_pair(COLOR_PAIR_SUCCESS, 10, 16);  // Green on black
+    init_pair(COLOR_PAIR_MAGENTA, 13, 16);  // Magenta on black
+    init_pair(COLOR_PAIR_CYAN, 14, 16);     // Cyan on black
+} else {
             // Fallback to basic 16 colors
-            init_pair(COLOR_PAIR_DEFAULT, COLOR_WHITE, -1);
-            init_pair(COLOR_PAIR_HIGHLIGHT, COLOR_YELLOW, -1);
-            init_pair(COLOR_PAIR_ERROR, COLOR_RED, -1);
-            init_pair(COLOR_PAIR_SUCCESS, COLOR_GREEN, -1);
-            init_pair(COLOR_PAIR_MAGENTA, COLOR_MAGENTA, -1);
-            init_pair(COLOR_PAIR_CYAN, COLOR_CYAN, -1);
+            // White on black
+            init_pair(COLOR_PAIR_DEFAULT, COLOR_WHITE, COLOR_BLACK);
+            init_pair(COLOR_PAIR_HIGHLIGHT, COLOR_YELLOW, COLOR_BLACK);
+            init_pair(COLOR_PAIR_ERROR, COLOR_RED, COLOR_BLACK);
+            init_pair(COLOR_PAIR_SUCCESS, COLOR_GREEN, COLOR_BLACK);
+            init_pair(COLOR_PAIR_MAGENTA, COLOR_MAGENTA, COLOR_BLACK);
+            init_pair(COLOR_PAIR_CYAN, COLOR_CYAN, COLOR_BLACK);
         }
+        
+        // Set the entire screen background
+        bkgd(COLOR_PAIR(COLOR_PAIR_DEFAULT));
         
         // Set default color
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
@@ -344,7 +348,6 @@ void init_ncurses() {
     clear();
     refresh();
 }
-
 void draw_main_screen() {
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
