@@ -176,7 +176,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -191,7 +192,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -206,7 +208,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -221,7 +224,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -236,7 +240,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -251,7 +256,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -266,7 +272,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -281,7 +288,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -296,7 +304,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -311,7 +320,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -326,7 +336,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -341,7 +352,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -356,7 +368,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -371,7 +384,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -386,7 +400,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -401,7 +416,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -416,7 +432,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -431,7 +448,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -446,7 +464,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -461,7 +480,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -476,7 +496,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         },
         {
@@ -491,7 +512,8 @@
                 "basic": {
                     "command": "temp",
                     "output": "Temp"
-                }
+                },
+                "with_flags": {}
             }
         }
     ]
