@@ -25,8 +25,8 @@ Create a production-ready terminal application in C that displays Linux terminal
 - **Use Case**: Production use
 - **Performance**: Minimal memory usage, fast execution
 - **Extensibility**: Users add commands ONLY via JSON file, no C file modification needed
-- **Bookmarks**: I should be able to bookmark specific commands which will appear at the top of the list. These bookmarks should be saved to the JSON file. Bookmarked commands should appear at top of list with [*] prefix. Unbookmarked commands appear with [ ] prefix. Press 'b' on selected command to toggle bookmark. Bookmarks saved to JSON file when exiting
-Visual distinction: bookmarked commands in magenta
+- **Bookmarks**: I should be able to bookmark specific commands which will appear at the top of the list. These bookmarks should be saved to the JSON file. Bookmarked commands should appear at top of list with [*] prefix. Unbookmarked commands appear with [ ] prefix. Press 'b' on selected command to toggle bookmark. Bookmarks saved to JSON file immediately.
+- Visual distinction: bookmarked commands in magenta
 
 ## Constraints
 - Maximum of 2 files: app.c and commands.json
@@ -41,10 +41,13 @@ Visual distinction: bookmarked commands in magenta
 - Must display all flags and individual examples for each flag
 - There should be no minimum terminal screen size. The app should adapt to fill the terminal size. If the terminal is TOO small, the information should overflow.
 - Search should search across command names,  descriptions, flags and examples. It should use fuzzy search and should be case insensitive. There should be a search bar at the top of the screen
+- Search should update the results as the user types
+- The window displaying all commands should be focused on start
 - There should be no pagination. Only 1 list
 - Colour should be added using ANSI Escape Sequences
 - If JSON missing/corrupted: show error and exit gracefully
 - If the terminal too small: allow overflow with scrollbars
+- The application should not cache any data and should reparse on every change
 
 ## To do this, I want to:
 - Start with the JSON file structure and example data
