@@ -36,15 +36,6 @@
 #define COLOR_256_MAGENTA   13    // Bright magenta
 #define COLOR_256_CYAN      14    // Bright cyan
 
-// Alternative 6x6x6 cube colors (more precise RGB-like)
-#define COLOR_CUBE_BLACK    16    // RGB(0,0,0)
-#define COLOR_CUBE_WHITE   231    // RGB(5,5,5) ≈ white
-#define COLOR_CUBE_RED     196    // RGB(5,0,0) ≈ red
-#define COLOR_CUBE_GREEN    46    // RGB(0,5,0) ≈ green
-#define COLOR_CUBE_YELLOW  226    // RGB(5,5,0) ≈ yellow
-#define COLOR_CUBE_MAGENTA 201    // RGB(5,0,5) ≈ magenta
-#define COLOR_CUBE_CYAN     51    // RGB(0,5,5) ≈ cyan
-
 // Application states
 typedef enum {
     STATE_MAIN,
