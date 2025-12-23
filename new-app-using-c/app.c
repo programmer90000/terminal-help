@@ -701,72 +701,153 @@ void draw_detail_screen() {
     // Draw separator
     mvhline(2, 1, ACS_HLINE, max_x - 2);
     
-    int y_pos = 3;
+    // Calculate content height to limit scrolling
+    int estimated_content_height = 5 + // base lines
+                                  cmd->flag_count * 2 +
+                                  cmd->flag_example_count * 4 +
+                                  10; // extra padding
+    int max_scroll = estimated_content_height - (max_y - 5);
+    if (max_scroll < 0) max_scroll = 0;
+    
+    // Clamp detail_scroll to valid range
+    if (detail_scroll > max_scroll) {
+        detail_scroll = max_scroll;
+    }
+    if (detail_scroll < 0) {
+        detail_scroll = 0;
+    }
+    
+    int y_pos = 3 - detail_scroll;  // Start position adjusted by scroll
     
     // Draw description with default color
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-    mvprintw(y_pos++, 2, "Description: %s", cmd->description);
-    y_pos++; // Blank line
+    if (y_pos >= 3) {
+        mvprintw(y_pos, 2, "Description: %s", cmd->description);
+    }
+    y_pos++; // Move to next line
     
-    // Draw category
-    mvprintw(y_pos++, 2, "Category: %s", cmd->category);
-    y_pos++; // Blank line
-    
-    // Draw flags section
-    mvprintw(y_pos++, 2, "Flags:");
-    y_pos++;
-    
-    for (int i = 0; i < cmd->flag_count && y_pos < max_y - 5; i++) {
-        mvprintw(y_pos++, 4, "%s: %s", 
-                cmd->flag_names[i], cmd->flag_descs[i]);
+    if (y_pos >= 3) {
+        // Only increment y_pos if we're in visible area
+        y_pos++; // Blank line
+    } else {
+        y_pos++; // Still increment for tracking
     }
     
-    y_pos++; // Blank line
+    // Draw category
+    if (y_pos >= 3) {
+        mvprintw(y_pos, 2, "Category: %s", cmd->category);
+    }
+    y_pos++; // Move to next line
+    
+    if (y_pos >= 3) {
+        y_pos++; // Blank line
+    } else {
+        y_pos++;
+    }
+    
+    // Draw flags section
+    if (y_pos >= 3) {
+        mvprintw(y_pos, 2, "Flags:");
+    }
+    y_pos++;
+    
+    for (int i = 0; i < cmd->flag_count; i++) {
+        if (y_pos >= 3 && y_pos < max_y - 1) {
+            mvprintw(y_pos, 4, "%s: %s", 
+                    cmd->flag_names[i], cmd->flag_descs[i]);
+        }
+        y_pos++;
+    }
+    
+    if (y_pos >= 3) {
+        y_pos++; // Blank line
+    } else {
+        y_pos++;
+    }
     
     // Draw examples section
-    mvprintw(y_pos++, 2, "Examples:");
+    if (y_pos >= 3) {
+        mvprintw(y_pos, 2, "Examples:");
+    }
     y_pos++;
     
     // Basic example
-    mvprintw(y_pos++, 4, "Basic:");
-    attron(COLOR_PAIR(COLOR_PAIR_CYAN));
-    mvprintw(y_pos++, 6, "%s", cmd->basic_example);
-    attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
+    if (y_pos >= 3) {
+        mvprintw(y_pos, 4, "Basic:");
+    }
+    y_pos++;
     
-    if (strlen(cmd->basic_output) > 0) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
+        attron(COLOR_PAIR(COLOR_PAIR_CYAN));
+        mvprintw(y_pos, 6, "%s", cmd->basic_example);
+        attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
+    }
+    y_pos++;
+    
+    if (strlen(cmd->basic_output) > 0 && y_pos >= 3 && y_pos < max_y - 1) {
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-        mvprintw(y_pos++, 6, "Output: %s", cmd->basic_output);
+        mvprintw(y_pos, 6, "Output: %s", cmd->basic_output);
         attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
+        y_pos++;
     }
     
-    y_pos++; // Blank line
+    if (y_pos >= 3) {
+        y_pos++; // Blank line
+    } else {
+        y_pos++;
+    }
     
     // Flag-specific examples
     if (cmd->flag_example_count > 0) {
-        mvprintw(y_pos++, 4, "With flags:");
+        if (y_pos >= 3) {
+            mvprintw(y_pos, 4, "With flags:");
+        }
         y_pos++;
         
-        for (int i = 0; i < cmd->flag_example_count && y_pos < max_y - 5; i++) {
-            attron(COLOR_PAIR(COLOR_PAIR_CYAN));
-            mvprintw(y_pos++, 6, "%s", cmd->flag_examples[i]);
-            attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
+        for (int i = 0; i < cmd->flag_example_count; i++) {
+            if (y_pos >= 3 && y_pos < max_y - 1) {
+                attron(COLOR_PAIR(COLOR_PAIR_CYAN));
+                mvprintw(y_pos, 6, "%s", cmd->flag_examples[i]);
+                attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
+            }
+            y_pos++;
             
-            if (strlen(cmd->flag_example_purposes[i]) > 0) {
+            if (strlen(cmd->flag_example_purposes[i]) > 0 && y_pos >= 3 && y_pos < max_y - 1) {
                 attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-                mvprintw(y_pos++, 8, "Purpose: %s", 
+                mvprintw(y_pos, 8, "Purpose: %s", 
                         cmd->flag_example_purposes[i]);
                 attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
+                y_pos++;
             }
             
-            if (strlen(cmd->flag_example_outputs[i]) > 0) {
+            if (strlen(cmd->flag_example_outputs[i]) > 0 && y_pos >= 3 && y_pos < max_y - 1) {
                 attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-                mvprintw(y_pos++, 8, "Output: %s", 
+                mvprintw(y_pos, 8, "Output: %s", 
                         cmd->flag_example_outputs[i]);
                 attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
+                y_pos++;
             }
             
-            y_pos++; // Blank line between examples
+            if (y_pos >= 3) {
+                y_pos++; // Blank line between examples
+            } else {
+                y_pos++;
+            }
         }
+    }
+    
+    // Draw scroll indicators if needed
+    if (detail_scroll > 0) {
+        attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+        mvprintw(max_y - 1, max_x - 20, "↑ Scroll: %d", detail_scroll);
+        attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+    }
+    
+    // Check if content exceeds screen height and show down indicator
+    if (estimated_content_height > max_y - 3 && detail_scroll < max_scroll) {
+        attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+        mvprintw(max_y - 1, max_x - 35, "↓ More content");
+        attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
     }
     
     // Draw footer
@@ -906,6 +987,7 @@ int main() {
                     case KEY_BACKSPACE:
                     case 127: // Backspace
                         current_state = STATE_MAIN;
+                        detail_scroll = 0;
                         draw_main_screen();
                         break;
                         
@@ -926,7 +1008,20 @@ int main() {
                         break;
                         
                     case KEY_DOWN:
-                        detail_scroll++;
+                        // Calculate reasonable maximum scroll
+                        Command *cmd = &commands[selected_index];
+                        int estimated_content_height = 5 + // base lines
+                                                      cmd->flag_count * 2 +
+                                                      cmd->flag_example_count * 4+3; // extra padding
+                        
+                        int max_y, max_x;
+                        getmaxyx(stdscr, max_y, max_x);
+                        int max_scroll = estimated_content_height - (max_y - 5);
+                        if (max_scroll < 0) max_scroll = 0;
+                        
+                        if (detail_scroll < max_scroll) {
+                            detail_scroll++;
+                        }
                         break;
                 }
                 
