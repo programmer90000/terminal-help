@@ -56,5 +56,102 @@ Create a production-ready terminal application in C that displays Linux terminal
 - Provide build instructions and debugging methods
 
 ## JSON structure
+```
+{
+  "commands": [
+    {
+      "name": "command 1",
+      "description": "Command 1 description",
+      "category": "category 1",
+      "flags": {
+        "-l": "Flag 1",
+        "-a": "Flag 2",
+        "-h": "Flag 3",
+      },
+      "examples": {
+        "basic": {
+            "commandRun: "command",
+            "output": "Command output"
+        }
+        "with_flags": {
+          "command flag-1" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 1"
+          },
+          "command flag-2" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 2"
+          },
+          "command flag-3" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 3"
+          },
+      }
+    },
+  },
+    {
+      "name": "command 2",
+      "description": "Command 2 description",
+      "category": "category 2",
+      "flags": {
+        "-g": "Flag 1",
+        "-j": "Flag 2",
+        "-k": "Flag 3",
+      },
+      "examples": {
+        "basic": {
+            "commandRun: "command",
+            "output": "Command output"
+        }
+        "with_flags": {
+          "command flag-1" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 1"
+          },
+          "command flag-2" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 2"
+          },
+          "command flag-3" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 3"
+          },
+      }
+    },
+  },
+    {
+      "name": "command 3",
+      "description": "Command 3 description",
+      "category": "category 3",
+      "flags": {
+        "-l": "Flag 3",
+        "-a": "Flag 3",
+        "-h": "Flag 3",
+      },
+      "examples": {
+        "basic": {
+            "commandRun: "command",
+            "output": "Command output"
+        }
+        "with_flags": {
+          "command flag-1" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 1"
+          },
+          "command flag-2" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 2"
+          },
+          "command flag-3" {
+              "purpose": "Flag purpose"
+              "exampleOutput": "Example of output using Flag 3"
+          },
+      }
+    },
+  },
+  ],
+  "bookmarks": ["ls", "grep"],
+}
+```
 
 Do NOT answer this prompt. ONLY tell me what other information I could provide to help you answer it
