@@ -99,7 +99,6 @@ int filtered_count = 0;
 // Function prototypes
 void init_ncurses();
 void cleanup_ncurses();
-void handle_signal(int sig);
 void load_commands();
 void save_commands();
 void update_filtered_indices();  // New function
@@ -113,12 +112,6 @@ int find_first_filtered_command();  // New function
 int find_prev_filtered_command(int current_index);  // New function
 int find_next_filtered_command(int current_index);  // New function
 int find_last_filtered_command();  // New function
-
-// Signal handler and cleanup function
-void handle_signal(int sig) {
-    cleanup_ncurses();
-    exit(0);
-}
 
 void cleanup_ncurses() {
     endwin();  // CRITICAL: Restores terminal to original state
@@ -614,10 +607,23 @@ void show_status_message(const char *msg, int color_pair) {
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
     
-    // Save area under message
-    char saved[max_x - 30];
-    for (int i = 0; i < max_x - 30; i++) {
-        saved[i] = mvinch(max_y - 1, 2 + i) & A_CHARTEXT;
+    // FIX: Check if screen is too small
+    if (max_x <= 30) {
+        // Screen too small, just show minimal message
+        attron(COLOR_PAIR(color_pair) | A_BOLD);
+        mvprintw(max_y - 1, 2, "Msg");
+        attroff(COLOR_PAIR(color_pair) | A_BOLD);
+        refresh();
+        napms(1500);
+        return;
+    }
+    
+    // Save area under message - FIXED: Use dynamic allocation for safety
+    char *saved = malloc(max_x - 30);
+    if (saved) {
+        for (int i = 0; i < max_x - 30; i++) {
+            saved[i] = mvinch(max_y - 1, 2 + i) & A_CHARTEXT;
+        }
     }
     
     // Show message
@@ -630,8 +636,11 @@ void show_status_message(const char *msg, int color_pair) {
     
     // Restore area
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-    for (int i = 0; i < max_x - 30; i++) {
-        mvaddch(max_y - 1, 2 + i, saved[i]);
+    if (saved) {
+        for (int i = 0; i < max_x - 30; i++) {
+            mvaddch(max_y - 1, 2 + i, saved[i]);
+        }
+        free(saved);
     }
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
@@ -860,6 +869,17 @@ void draw_main_screen() {
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
     
+    // Check minimum screen size
+    if (max_y < 10 || max_x < 40) {
+        clear();
+        attron(A_BOLD | COLOR_PAIR(COLOR_PAIR_ERROR));
+        mvprintw(max_y/2, (max_x-30)/2, "Screen too small!");
+        mvprintw(max_y/2+1, (max_x-40)/2, "Minimum: 40x10, Current: %dx%d", max_x, max_y);
+        attroff(A_BOLD | COLOR_PAIR(COLOR_PAIR_ERROR));
+        refresh();
+        return;
+    }
+    
     // Clear screen
     erase();
     
@@ -952,90 +972,158 @@ void draw_main_screen() {
     
     // Draw column titles
     mvprintw(3, 2, "Commands");
-    mvprintw(3, max_x/2 + 2, "Selected Command Preview");
-    
-    // Draw vertical separator
-    mvvline(3, max_x/2, ACS_VLINE, max_y - 7);
+    if (max_x >= 80) {
+        mvprintw(3, max_x/2 + 2, "Selected Command Preview");
+        
+        // Draw vertical separator
+        mvvline(3, max_x/2, ACS_VLINE, max_y - 7);
+    }
     
     // Draw bottom info bar with highlighted active modes
     mvhline(max_y - 4, 0, ACS_HLINE, max_x);
     
-    // Calculate positions for each shortcut
+    // Calculate positions for each shortcut based on screen width
     int start_x = 2;
     int spacing = 2;
+    
+    if (max_x >= 100) {
+        // Full shortcuts for wide screens
+        // Category filter (highlight if active)
+        if (category_filter != -1) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "Ctrl+OCategory");
+        attroff(A_BOLD);
+        start_x += 15 + spacing;
 
-    // Category filter (highlight if active)
-    if (category_filter != -1) {
-        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
-    } else {
-        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
-    }
-    mvprintw(max_y - 3, start_x, "Ctrl+OCategory");
-    attroff(A_BOLD);
-    start_x += 15 + spacing;
+        // Bookmark filter (highlight if active)
+        if (show_bookmarks_only) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "Ctrl+S:Stars");
+        attroff(A_BOLD);
+        start_x += 13 + spacing;
 
-    // Bookmark filter (highlight if active)
-    if (show_bookmarks_only) {
-        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
-    } else {
-        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
-    }
-    mvprintw(max_y - 3, start_x, "Ctrl+S:Stars");
-    attroff(A_BOLD);
-    start_x += 13 + spacing;
+        // Clear filters (highlight if any filter active)
+        if (category_filter != -1 || show_bookmarks_only || search_text[0] != '\0' || search_mode != 0) {
+            attron(COLOR_PAIR(COLOR_PAIR_MAGENTA) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "Ctrl+X:Clear");
+        attroff(A_BOLD);
+        start_x += 12 + spacing;
 
-    // Clear filters (highlight if any filter active)
-    if (category_filter != -1 || show_bookmarks_only || search_text[0] != '\0' || search_mode != 0) {
-        attron(COLOR_PAIR(COLOR_PAIR_MAGENTA) | A_BOLD);
-    } else {
-        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
-    }
-    mvprintw(max_y - 3, start_x, "Ctrl+X:Clear");
-    attroff(A_BOLD);
-    start_x += 12 + spacing;
+        // Ctrl+N:Names
+        if (search_mode & SEARCH_NAMES) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "Ctrl+N:Names");
+        attroff(A_BOLD);
+        start_x += 13 + spacing;
 
-    // Ctrl+N:Names
-    if (search_mode & SEARCH_NAMES) {
-        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
-    } else {
-        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
-    }
-    mvprintw(max_y - 3, start_x, "Ctrl+N:Names");
-    attroff(A_BOLD);
-    start_x += 13 + spacing;
+        // Ctrl+D:Desc
+        if (search_mode & SEARCH_DESCS) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "Ctrl+D:Desc");
+        attroff(A_BOLD);
+        start_x += 11 + spacing;
 
-    // Ctrl+D:Desc
-    if (search_mode & SEARCH_DESCS) {
-        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
-    } else {
-        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
-    }
-    mvprintw(max_y - 3, start_x, "Ctrl+D:Desc");
-    attroff(A_BOLD);
-    start_x += 11 + spacing;
+        // Ctrl+F:Flags
+        if (search_mode & SEARCH_FLAGS) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "Ctrl+F:Flags");
+        attroff(A_BOLD);
+        start_x += 12 + spacing;
 
-    // Ctrl+F:Flags
-    if (search_mode & SEARCH_FLAGS) {
-        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
-    } else {
-        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
-    }
-    mvprintw(max_y - 3, start_x, "Ctrl+F:Flags");
-    attroff(A_BOLD);
-    start_x += 12 + spacing;
+        // Ctrl+E:Examples
+        if (search_mode & SEARCH_EXAMPLES) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "Ctrl+E:Examples");
+        attroff(A_BOLD);
+    } else if (max_x >= 80) {
+        // Medium screen - abbreviated shortcuts
+        if (category_filter != -1) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "C+O:Cat");
+        attroff(A_BOLD);
+        start_x += 9 + spacing;
 
-    // Ctrl+E:Examples
-    if (search_mode & SEARCH_EXAMPLES) {
-        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        if (show_bookmarks_only) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "C+S:★");
+        attroff(A_BOLD);
+        start_x += 7 + spacing;
+
+        if (category_filter != -1 || show_bookmarks_only || search_text[0] != '\0' || search_mode != 0) {
+            attron(COLOR_PAIR(COLOR_PAIR_MAGENTA) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "C+X:Clear");
+        attroff(A_BOLD);
+        start_x += 10 + spacing;
+
+        if (search_mode & SEARCH_NAMES) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "C+N:N");
+        attroff(A_BOLD);
+        start_x += 7 + spacing;
+
+        if (search_mode & SEARCH_DESCS) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "C+D:D");
+        attroff(A_BOLD);
+        start_x += 7 + spacing;
+
+        if (search_mode & SEARCH_FLAGS) {
+            attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+        } else {
+            attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        }
+        mvprintw(max_y - 3, start_x, "C+F:F");
+        attroff(A_BOLD);
     } else {
-        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+        // Small screen - minimal shortcuts
+        mvprintw(max_y - 3, start_x, "F1:Exit  C+B:★");
     }
-    mvprintw(max_y - 3, start_x, "Ctrl+E:Examples");
-    attroff(A_BOLD);
     
     // Second line of shortcuts
     start_x = 2;
-    mvprintw(max_y - 2, start_x, "Enter:Details  Ctrl+B:Bookmark  Ctrl+H:Help  F1:Exit");
+    if (max_x >= 80) {
+        mvprintw(max_y - 2, start_x, "Enter:Details  Ctrl+B:Bookmark  Ctrl+H:Help  F1:Exit");
+    } else if (max_x >= 60) {
+        mvprintw(max_y - 2, start_x, "Enter:View  Ctrl+B:★  Ctrl+H:Help  F1:Exit");
+    } else {
+        mvprintw(max_y - 2, start_x, "F1:Exit");
+    }
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
     // Draw command list with scrolling
@@ -1095,13 +1183,12 @@ void draw_main_screen() {
         attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
     }
     
-    // Draw preview of selected command (right side)
-    if (selected_index >= 0 && selected_index < command_count) {
+    // Draw preview of selected command (right side) - only if screen is wide enough
+    if (max_x >= 80 && selected_index >= 0 && selected_index < command_count) {
         Command *cmd = &commands[selected_index];
         
         // Draw a simple box for preview
         int preview_start_x = max_x/2 + 1;
-        int preview_width = max_x/2 - 1;
         
         // Draw box border with default color
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
@@ -1151,6 +1238,16 @@ void draw_detail_screen() {
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
     
+    // Check minimum screen size
+    if (max_y < 10 || max_x < 20) {
+        clear();
+        attron(A_BOLD | COLOR_PAIR(COLOR_PAIR_ERROR));
+        mvprintw(max_y/2, (max_x-20)/2, "Screen too small!");
+        attroff(A_BOLD | COLOR_PAIR(COLOR_PAIR_ERROR));
+        refresh();
+        return;
+    }
+    
     // Check bounds
     if (selected_index < 0 || selected_index >= command_count) {
         // Invalid index, go back to main screen
@@ -1173,9 +1270,11 @@ void draw_detail_screen() {
     mvprintw(1, 2, "Command: %s", cmd->name);
     attroff(A_BOLD);
     
-    attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
-    mvprintw(1, max_x - 30, "(press Ctrl+B to bookmark)");
-    attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
+    if (max_x >= 50) {
+        attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
+        mvprintw(1, max_x - 30, "(press Ctrl+B to bookmark)");
+        attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
+    }
     
     // Draw separator
     mvhline(2, 1, ACS_HLINE, max_x - 2);
@@ -1200,12 +1299,12 @@ void draw_detail_screen() {
     
     // Draw description with default color
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         mvprintw(y_pos, 2, "Description: %s", cmd->description);
     }
     y_pos++; // Move to next line
     
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         // Only increment y_pos if we're in visible area
         y_pos++; // Blank line
     } else {
@@ -1213,19 +1312,19 @@ void draw_detail_screen() {
     }
     
     // Draw category
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         mvprintw(y_pos, 2, "Category: %s", cmd->category);
     }
     y_pos++; // Move to next line
     
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         y_pos++; // Blank line
     } else {
         y_pos++;
     }
     
     // Draw flags section
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         mvprintw(y_pos, 2, "Flags:");
     }
     y_pos++;
@@ -1238,20 +1337,20 @@ void draw_detail_screen() {
         y_pos++;
     }
     
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         y_pos++; // Blank line
     } else {
         y_pos++;
     }
     
     // Draw examples section
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         mvprintw(y_pos, 2, "Examples:");
     }
     y_pos++;
     
     // Basic example
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         mvprintw(y_pos, 4, "Basic:");
     }
     y_pos++;
@@ -1270,7 +1369,7 @@ void draw_detail_screen() {
         y_pos++;
     }
     
-    if (y_pos >= 3) {
+    if (y_pos >= 3 && y_pos < max_y - 1) {
         y_pos++; // Blank line
     } else {
         y_pos++;
@@ -1278,7 +1377,7 @@ void draw_detail_screen() {
     
     // Flag-specific examples
     if (cmd->flag_example_count > 0) {
-        if (y_pos >= 3) {
+        if (y_pos >= 3 && y_pos < max_y - 1) {
             mvprintw(y_pos, 4, "With flags:");
         }
         y_pos++;
@@ -1307,7 +1406,7 @@ void draw_detail_screen() {
                 y_pos++;
             }
             
-            if (y_pos >= 3) {
+            if (y_pos >= 3 && y_pos < max_y - 1) {
                 y_pos++; // Blank line between examples
             } else {
                 y_pos++;
@@ -1345,8 +1444,7 @@ void show_error(const char *msg) {
 }
 
 int main() {
-    // Set up signal handlers for clean exit
-    signal(SIGINT, handle_signal);
+    // Set up clean exit handler
     atexit(cleanup_ncurses);
     
     // Load commands from JSON
@@ -1512,7 +1610,7 @@ int main() {
                             }
                             break;
                             
-                        case 15:  // Ctrl+O (ASCII 3) - Category filter
+                        case 15:  // Ctrl+O (ASCII 15) - Category filter
                             if (category_count > 0) {
                                 show_category_menu();
                                 selected_index = find_first_filtered_command();
@@ -1651,7 +1749,7 @@ int main() {
                         Command *cmd = &commands[selected_index];
                         int estimated_content_height = 5 + // base lines
                                                       cmd->flag_count * 2 +
-                                                      cmd->flag_example_count * 4+3; // extra padding
+                                                      cmd->flag_example_count * 4 + 3; // extra padding
                         
                         int max_y, max_x;
                         getmaxyx(stdscr, max_y, max_x);
@@ -1668,11 +1766,13 @@ int main() {
                     draw_detail_screen();
                 }
                 break;
+                
+            case STATE_EXIT:
+                // Handle exit state
+                break;
         }
     }
     
-    // Cleanup
-    cleanup_ncurses();
-    
+    // Cleanup via atexit will handle this
     return 0;
 }
