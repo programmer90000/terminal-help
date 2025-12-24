@@ -970,7 +970,7 @@ void draw_main_screen() {
     } else {
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
     }
-    mvprintw(max_y - 3, start_x, "Ctrl+C:Category");
+    mvprintw(max_y - 3, start_x, "Ctrl+OCategory");
     attroff(A_BOLD);
     start_x += 15 + spacing;
 
@@ -1512,7 +1512,7 @@ int main() {
                             }
                             break;
                             
-                        case 3:  // Ctrl+C (ASCII 3) - Category filter
+                        case 15:  // Ctrl+O (ASCII 3) - Category filter
                             if (category_count > 0) {
                                 show_category_menu();
                                 selected_index = find_first_filtered_command();
@@ -1561,7 +1561,7 @@ int main() {
                                 mvwprintw(help_win, 6, 6, "Backspace                 - Go back/clear search");
                                 
                                 mvwprintw(help_win, 8, 4, "Filtering:");
-                                mvwprintw(help_win, 9, 6, "Ctrl+C                    - Select category");
+                                mvwprintw(help_win, 9, 6, "Ctrl+O                    - Select category");
                                 mvwprintw(help_win, 10, 6, "Ctrl+S                    - Toggle bookmarks only");
                                 mvwprintw(help_win, 11, 6, "Ctrl+X                    - Clear all filters");
                                 mvwprintw(help_win, 12, 6, "Ctrl+N/D/F/E              - Toggle search modes");
