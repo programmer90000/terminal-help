@@ -165,355 +165,604 @@
             }
         },
         {
-            "name": "Temp 1",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "rm",
+            "description": "Remove files or directories",
+            "category": "file_management",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-r": "Remove directories recursively",
+                "-f": "Force removal without confirmation",
+                "-i": "Interactive mode (prompt before removal)",
+                "-v": "Verbose output"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "rm file.txt",
+                    "output": "File removed"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "rm -r directory/": {
+                        "purpose": "Remove directory and contents",
+                        "output": "Directory removed"
+                    },
+                    "rm -i file.txt": {
+                        "purpose": "Interactive removal",
+                        "output": "rm: remove regular file 'file.txt'? y"
+                    },
+                    "rm -rf temp/": {
+                        "purpose": "Force remove directory",
+                        "output": "Directory removed without prompts"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 2",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "cat",
+            "description": "Concatenate and display file contents",
+            "category": "text_processing",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-n": "Number all output lines",
+                "-b": "Number non-empty output lines",
+                "-s": "Suppress repeated empty lines",
+                "-E": "Show $ at end of each line"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "cat file.txt",
+                    "output": "First line\nSecond line\nThird line"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "cat -n file.txt": {
+                        "purpose": "Show file with line numbers",
+                        "output": "1 First line\n2 Second line\n3 Third line"
+                    },
+                    "cat file1.txt file2.txt": {
+                        "purpose": "Concatenate multiple files",
+                        "output": "Contents of file1\nContents of file2"
+                    },
+                    "cat -E file.txt": {
+                        "purpose": "Show line endings",
+                        "output": "First line$\nSecond line$\nThird line$"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 3",
-            "description": "Temp",
-            "category": "Temp",
-            "bookmarked": false,
+            "name": "chmod",
+            "description": "Change file permissions",
+            "category": "permissions",
+            "bookmarked": true,
             "flags": {
-                "-temp": "temp"
+                "-R": "Change permissions recursively",
+                "-v": "Verbose output",
+                "-c": "Like -v but report only when changed"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "chmod 755 script.sh",
+                    "output": "Permissions changed to rwxr-xr-x"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "chmod +x script.sh": {
+                        "purpose": "Add execute permission",
+                        "output": "File is now executable"
+                    },
+                    "chmod -R 755 directory/": {
+                        "purpose": "Recursive permission change",
+                        "output": "All files in directory set to 755"
+                    },
+                    "chmod u=rw,g=r,o=r file.txt": {
+                        "purpose": "Symbolic permission setting",
+                        "output": "Owner: rw, Group: r, Others: r"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 4",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "ps",
+            "description": "Report process status",
+            "category": "process_management",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-e": "Show all processes",
+                "-f": "Full format listing",
+                "-u": "Show processes for specific user",
+                "-aux": "Show all processes in BSD format"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "ps",
+                    "output": "PID TTY TIME CMD\n1234 pts/0 00:00:00 bash"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "ps -ef": {
+                        "purpose": "Show all processes in full format",
+                        "output": "UID PID PPID C STIME TTY TIME CMD\nroot 1 0 0 Jan01 ? 00:00:01 /sbin/init"
+                    },
+                    "ps aux": {
+                        "purpose": "Show all processes with details",
+                        "output": "USER PID %CPU %MEM VSZ RSS TTY STAT START TIME COMMAND"
+                    },
+                    "ps -u username": {
+                        "purpose": "Show processes for specific user",
+                        "output": "PID TTY TIME CMD\n5678 pts/1 00:00:00 vim"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 5",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "kill",
+            "description": "Send signal to processes",
+            "category": "process_management",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-9": "SIGKILL signal (force kill)",
+                "-15": "SIGTERM signal (graceful termination)",
+                "-l": "List all available signals"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "kill 1234",
+                    "output": "Process 1234 terminated"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "kill -9 1234": {
+                        "purpose": "Force kill process",
+                        "output": "Process 1234 forcefully terminated"
+                    },
+                    "kill -15 1234": {
+                        "purpose": "Graceful termination",
+                        "output": "Process 1234 asked to terminate gracefully"
+                    },
+                    "kill -l": {
+                        "purpose": "List all signals",
+                        "output": "1) SIGHUP 2) SIGINT 3) SIGQUIT 4) SIGILL ..."
+                    }
+                }
             }
         },
         {
-            "name": "Temp 6",
-            "description": "Temp",
-            "category": "Temp",
-            "bookmarked": false,
+            "name": "tar",
+            "description": "Archive utility",
+            "category": "compression",
+            "bookmarked": true,
             "flags": {
-                "-temp": "temp"
+                "-c": "Create archive",
+                "-x": "Extract archive",
+                "-z": "Use gzip compression",
+                "-v": "Verbose output",
+                "-f": "Use archive file"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "tar -czf archive.tar.gz directory/",
+                    "output": "Archive created successfully"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "tar -xzf archive.tar.gz": {
+                        "purpose": "Extract gzipped archive",
+                        "output": "Files extracted"
+                    },
+                    "tar -tvf archive.tar": {
+                        "purpose": "List archive contents",
+                        "output": "drwxr-xr-x user/group 0 2023-01-01 dir/\n-rw-r--r-- user/group 1024 2023-01-01 dir/file.txt"
+                    },
+                    "tar -czvf backup.tar.gz /path/to/dir": {
+                        "purpose": "Create verbose compressed archive",
+                        "output": "Adding: /path/to/dir/file1\nAdding: /path/to/dir/file2"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 7",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "ssh",
+            "description": "Secure shell client",
+            "category": "networking",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-i": "Identity file (private key)",
+                "-p": "Port to connect to",
+                "-v": "Verbose mode",
+                "-X": "Enable X11 forwarding"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "ssh user@hostname",
+                    "output": "Connected to hostname"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "ssh -p 2222 user@hostname": {
+                        "purpose": "Connect to specific port",
+                        "output": "Connected to hostname:2222"
+                    },
+                    "ssh -i ~/.ssh/key.pem user@hostname": {
+                        "purpose": "Use specific private key",
+                        "output": "Connected using key authentication"
+                    },
+                    "ssh -X user@hostname": {
+                        "purpose": "Connect with X11 forwarding",
+                        "output": "Connected with GUI forwarding enabled"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 8",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "df",
+            "description": "Report file system disk space usage",
+            "category": "system_info",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-h": "Human readable sizes",
+                "-T": "Show file system type",
+                "-i": "Show inode information"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "df",
+                    "output": "Filesystem 1K-blocks Used Available Use% Mounted on\n/dev/sda1 1000000 500000 500000 50% /"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "df -h": {
+                        "purpose": "Human readable output",
+                        "output": "Filesystem Size Used Avail Use% Mounted on\n/dev/sda1 1.0G 500M 500M 50% /"
+                    },
+                    "df -T": {
+                        "purpose": "Show file system types",
+                        "output": "Filesystem Type 1K-blocks Used Available Use% Mounted on\n/dev/sda1 ext4 1000000 500000 500000 50% /"
+                    },
+                    "df -i": {
+                        "purpose": "Show inode usage",
+                        "output": "Filesystem Inodes IUsed IFree IUse% Mounted on\n/dev/sda1 1000000 50000 950000 5% /"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 9",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "du",
+            "description": "Estimate file space usage",
+            "category": "system_info",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-h": "Human readable sizes",
+                "-s": "Display only a total for each argument",
+                "-c": "Produce a grand total",
+                "--max-depth": "Limit depth of recursion"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "du directory/",
+                    "output": "4 directory/subdir\n8 directory/"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "du -sh /var/log": {
+                        "purpose": "Show total size of directory",
+                        "output": "150M /var/log"
+                    },
+                    "du -h --max-depth=1": {
+                        "purpose": "Show sizes one level deep",
+                        "output": "4.0K ./dir1\n8.0K ./dir2\n12K ."
+                    },
+                    "du -ch *.log": {
+                        "purpose": "Show total of multiple files",
+                        "output": "1.0M app.log\n2.0M error.log\n3.0M total"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 10",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "head",
+            "description": "Output first part of files",
+            "category": "text_processing",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-n": "Number of lines to show",
+                "-c": "Number of bytes to show",
+                "-q": "Quiet mode (no headers)"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "head file.txt",
+                    "output": "Line 1\nLine 2\nLine 3\nLine 4\nLine 5\nLine 6\nLine 7\nLine 8\nLine 9\nLine 10"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "head -n 5 file.txt": {
+                        "purpose": "Show first 5 lines",
+                        "output": "Line 1\nLine 2\nLine 3\nLine 4\nLine 5"
+                    },
+                    "head -c 100 file.txt": {
+                        "purpose": "Show first 100 bytes",
+                        "output": "First 100 characters of the file"
+                    },
+                    "head -q file1.txt file2.txt": {
+                        "purpose": "Show multiple files without headers",
+                        "output": "Contents of file1\nContents of file2"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 11",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "tail",
+            "description": "Output last part of files",
+            "category": "text_processing",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-n": "Number of lines to show",
+                "-f": "Follow file as it grows",
+                "-c": "Number of bytes to show"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "tail file.txt",
+                    "output": "Last 10 lines of the file"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "tail -n 20 file.txt": {
+                        "purpose": "Show last 20 lines",
+                        "output": "Last 20 lines of the file"
+                    },
+                    "tail -f /var/log/syslog": {
+                        "purpose": "Follow log file in real time",
+                        "output": "Continuously shows new log entries"
+                    },
+                    "tail -c 500 file.txt": {
+                        "purpose": "Show last 500 bytes",
+                        "output": "Last 500 characters of the file"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 12",
-            "description": "Temp",
-            "category": "Temp",
-            "bookmarked": false,
+            "name": "sed",
+            "description": "Stream editor for filtering and transforming text",
+            "category": "text_processing",
+            "bookmarked": true,
             "flags": {
-                "-temp": "temp"
+                "-i": "Edit files in place",
+                "-n": "Suppress automatic printing",
+                "-e": "Add script to commands"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "sed 's/old/new/' file.txt",
+                    "output": "File contents with first 'old' replaced by 'new' on each line"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "sed -i 's/foo/bar/g' file.txt": {
+                        "purpose": "Replace all occurrences in file",
+                        "output": "File modified in place"
+                    },
+                    "sed -n '1,5p' file.txt": {
+                        "purpose": "Print lines 1-5 only",
+                        "output": "Line 1\nLine 2\nLine 3\nLine 4\nLine 5"
+                    },
+                    "sed '/pattern/d' file.txt": {
+                        "purpose": "Delete lines containing pattern",
+                        "output": "File contents without matching lines"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 13",
-            "description": "Temp",
-            "category": "Temp",
-            "bookmarked": false,
+            "name": "awk",
+            "description": "Pattern scanning and processing language",
+            "category": "text_processing",
+            "bookmarked": true,
             "flags": {
-                "-temp": "temp"
+                "-F": "Set field separator",
+                "-v": "Assign variable",
+                "-f": "Read program from file"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "awk '{print $1}' file.txt",
+                    "output": "First column of each line"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "awk -F':' '{print $1}' /etc/passwd": {
+                        "purpose": "Extract usernames",
+                        "output": "root\nbin\ndaemon\n..."
+                    },
+                    "awk '$3 > 1000 {print $1, $3}' file.txt": {
+                        "purpose": "Filter based on column value",
+                        "output": "Lines where third column > 1000"
+                    },
+                    "awk 'END {print NR}' file.txt": {
+                        "purpose": "Count total lines",
+                        "output": "42"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 14",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "wget",
+            "description": "Non-interactive network downloader",
+            "category": "networking",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-O": "Output to specified file",
+                "-c": "Continue partial download",
+                "-q": "Quiet mode",
+                "-P": "Save to directory prefix"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "wget https://example.com/file.zip",
+                    "output": "Downloading file.zip... 100% complete"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "wget -O output.zip https://example.com/file.zip": {
+                        "purpose": "Download with custom filename",
+                        "output": "Saved as output.zip"
+                    },
+                    "wget -c https://example.com/largefile.iso": {
+                        "purpose": "Continue interrupted download",
+                        "output": "Continuing download from byte X"
+                    },
+                    "wget -P downloads/ https://example.com/file": {
+                        "purpose": "Save to specific directory",
+                        "output": "Saved to downloads/file"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 15",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "curl",
+            "description": "Transfer data from or to a server",
+            "category": "networking",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-o": "Write output to file",
+                "-O": "Write output to file with remote name",
+                "-s": "Silent mode",
+                "-H": "Pass custom header"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "curl https://api.example.com/data",
+                    "output": "{\"status\": \"ok\", \"data\": {}}"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "curl -o output.json https://api.example.com/data": {
+                        "purpose": "Save output to file",
+                        "output": "Data saved to output.json"
+                    },
+                    "curl -s https://api.example.com/status": {
+                        "purpose": "Silent request",
+                        "output": "Minimal output"
+                    },
+                    "curl -H \"Authorization: Bearer token\" https://api.example.com": {
+                        "purpose": "Request with custom header",
+                        "output": "Authenticated response"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 16",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "ping",
+            "description": "Send ICMP ECHO_REQUEST to network hosts",
+            "category": "networking",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-c": "Stop after count packets",
+                "-i": "Wait interval seconds between packets",
+                "-s": "Specify packet size",
+                "-t": "Set TTL (Time To Live)"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "ping google.com",
+                    "output": "PING google.com (142.250.185.78): 56 data bytes\n64 bytes from 142.250.185.78: icmp_seq=0 ttl=117 time=10.5 ms"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "ping -c 4 google.com": {
+                        "purpose": "Send 4 ping packets",
+                        "output": "4 packets transmitted, 4 received, 0% packet loss"
+                    },
+                    "ping -i 2 google.com": {
+                        "purpose": "Ping with 2 second interval",
+                        "output": "Pings every 2 seconds"
+                    },
+                    "ping -s 1000 google.com": {
+                        "purpose": "Send 1000 byte packets",
+                        "output": "1000 byte packets sent and received"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 17",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "history",
+            "description": "Display command history",
+            "category": "shell",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-c": "Clear history list",
+                "-d": "Delete history entry at offset",
+                "-a": "Append new history lines"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "history",
+                    "output": "1 ls\n2 cd /var/log\n3 grep error syslog\n4 history"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "history 10": {
+                        "purpose": "Show last 10 commands",
+                        "output": "Last 10 commands from history"
+                    },
+                    "history -c": {
+                        "purpose": "Clear command history",
+                        "output": "History cleared"
+                    },
+                    "!123": {
+                        "purpose": "Execute command from history by number",
+                        "output": "Executes command number 123"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 18",
-            "description": "Temp",
-            "category": "Temp",
-            "bookmarked": false,
+            "name": "crontab",
+            "description": "Maintain crontab files for individual users",
+            "category": "scheduling",
+            "bookmarked": true,
             "flags": {
-                "-temp": "temp"
+                "-e": "Edit crontab file",
+                "-l": "List crontab file",
+                "-r": "Remove crontab file",
+                "-u": "Specify user"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "crontab -l",
+                    "output": "0 2 * * * /path/to/backup.sh\n*/5 * * * * /path/to/check.sh"
                 },
-                "with_flags": {}
+                "with_flags": {
+                    "crontab -e": {
+                        "purpose": "Edit cron jobs",
+                        "output": "Opens editor with cron jobs"
+                    },
+                    "crontab -r": {
+                        "purpose": "Remove all cron jobs",
+                        "output": "Crontab removed"
+                    },
+                    "crontab -u username -l": {
+                        "purpose": "List cron jobs for another user",
+                        "output": "Other user's cron jobs"
+                    }
+                }
             }
         },
         {
-            "name": "Temp 19",
-            "description": "Temp",
-            "category": "Temp",
+            "name": "sudo",
+            "description": "Execute command as another user (typically root)",
+            "category": "permissions",
             "bookmarked": false,
             "flags": {
-                "-temp": "temp"
+                "-u": "Run command as specified user",
+                "-i": "Run login shell as target user",
+                "-s": "Run shell as target user",
+                "-l": "List allowed commands"
             },
             "examples": {
                 "basic": {
-                    "command": "temp",
-                    "output": "Temp"
+                    "command": "sudo apt update",
+                    "output": "Updating package lists as root"
                 },
-                "with_flags": {}
-            }
-        },
-        {
-            "name": "Temp 20",
-            "description": "Temp",
-            "category": "Temp",
-            "bookmarked": false,
-            "flags": {
-                "-temp": "temp"
-            },
-            "examples": {
-                "basic": {
-                    "command": "temp",
-                    "output": "Temp"
-                },
-                "with_flags": {}
-            }
-        },
-        {
-            "name": "Temp 21",
-            "description": "Temp",
-            "category": "Temp",
-            "bookmarked": false,
-            "flags": {
-                "-temp": "temp"
-            },
-            "examples": {
-                "basic": {
-                    "command": "temp",
-                    "output": "Temp"
-                },
-                "with_flags": {}
-            }
-        },
-        {
-            "name": "Temp 22",
-            "description": "Temp",
-            "category": "Temp",
-            "bookmarked": false,
-            "flags": {
-                "-temp": "temp"
-            },
-            "examples": {
-                "basic": {
-                    "command": "temp",
-                    "output": "Temp"
-                },
-                "with_flags": {}
+                "with_flags": {
+                    "sudo -u nobody whoami": {
+                        "purpose": "Run command as specific user",
+                        "output": "nobody"
+                    },
+                    "sudo -i": {
+                        "purpose": "Start root login shell",
+                        "output": "Root shell started"
+                    },
+                    "sudo -l": {
+                        "purpose": "List sudo privileges",
+                        "output": "User may run the following commands on host:\n(ALL) ALL"
+                    }
+                }
             }
         }
     ]
