@@ -9,6 +9,7 @@
 #include <unistd.h>
 #include <sys/stat.h>
 #include <signal.h>
+#include <time.h>
 
 #define MAX_COMMANDS 1000
 #define MAX_NAME_LEN 100
@@ -96,22 +97,38 @@ int show_bookmarks_only = 0;  // New: bookmark-only filter
 int filtered_indices[MAX_COMMANDS];
 int filtered_count = 0;
 
+// Status message system (single message, overwrites previous)
+typedef struct {
+    char text[100];
+    int color_pair;
+    time_t display_time;
+    int duration_ms;
+    int active;
+} StatusMessage;
+
+StatusMessage current_message = {0};
+
 // Function prototypes
 void init_ncurses();
 void cleanup_ncurses();
 void load_commands();
 void save_commands();
-void update_filtered_indices();  // New function
+void update_filtered_indices();
 void draw_main_screen();
 void draw_detail_screen();
 void show_category_menu();
 void show_status_message(const char *msg, int color_pair);
+void show_status_message_async(const char *msg, int color_pair, int duration_ms);
+void clear_status_message();
+void check_and_display_status_message();
+void draw_current_status_message();
+void handle_screen_resize();
 void show_error(const char *msg);
 int matches_search(Command *cmd, const char *search_lower);
-int find_first_filtered_command();  // New function
-int find_prev_filtered_command(int current_index);  // New function
-int find_next_filtered_command(int current_index);  // New function
-int find_last_filtered_command();  // New function
+int find_first_filtered_command();
+int find_prev_filtered_command(int current_index);
+int find_next_filtered_command(int current_index);
+int find_last_filtered_command();
 
 void cleanup_ncurses() {
     endwin();  // CRITICAL: Restores terminal to original state
@@ -603,46 +620,94 @@ void init_ncurses() {
     refresh();
 }
 
+// Show a status message asynchronously (replaces any previous message)
+void show_status_message_async(const char *msg, int color_pair, int duration_ms) {
+    strncpy(current_message.text, msg, sizeof(current_message.text) - 1);
+    current_message.text[sizeof(current_message.text) - 1] = '\0';
+    current_message.color_pair = color_pair;
+    current_message.display_time = time(NULL);
+    current_message.duration_ms = duration_ms;
+    current_message.active = 1;
+    
+    // Immediately draw it
+    draw_current_status_message();
+}
+
+// For backward compatibility
 void show_status_message(const char *msg, int color_pair) {
+    show_status_message_async(msg, color_pair, 1500);
+}
+
+// Clear the current status message
+void clear_status_message() {
+    current_message.active = 0;
+    
+    // Clear the status line
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
     
-    // FIX: Check if screen is too small
-    if (max_x <= 30) {
-        // Screen too small, just show minimal message
-        attron(COLOR_PAIR(color_pair) | A_BOLD);
-        mvprintw(max_y - 1, 2, "Msg");
-        attroff(COLOR_PAIR(color_pair) | A_BOLD);
-        refresh();
-        napms(1500);
-        return;
-    }
-    
-    // Save area under message - FIXED: Use dynamic allocation for safety
-    char *saved = malloc(max_x - 30);
-    if (saved) {
-        for (int i = 0; i < max_x - 30; i++) {
-            saved[i] = mvinch(max_y - 1, 2 + i) & A_CHARTEXT;
-        }
-    }
-    
-    // Show message
-    attron(COLOR_PAIR(color_pair) | A_BOLD);
-    mvprintw(max_y - 1, 2, "%-*s", max_x - 4, msg);
-    attroff(COLOR_PAIR(color_pair) | A_BOLD);
-    
-    refresh();
-    napms(1500);  // Show for 1.5 seconds
-    
-    // Restore area
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-    if (saved) {
-        for (int i = 0; i < max_x - 30; i++) {
-            mvaddch(max_y - 1, 2 + i, saved[i]);
-        }
-        free(saved);
+    for (int i = 2; i < max_x - 2; i++) {
+        mvaddch(max_y - 1, i, ' ');
     }
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
+    refresh();
+}
+
+// Check if current message has expired
+void check_and_display_status_message() {
+    if (!current_message.active) return;
+    
+    time_t now = time(NULL);
+    double elapsed_seconds = difftime(now, current_message.display_time);
+    int elapsed_ms = (int)(elapsed_seconds * 1000);
+    
+    if (elapsed_ms >= current_message.duration_ms) {
+        // Message expired, clear it
+        clear_status_message();
+    } else {
+        // Message still active, redraw it
+        draw_current_status_message();
+    }
+}
+
+// Draw the current status message
+void draw_current_status_message() {
+    if (!current_message.active) return;
+    
+    int max_y, max_x;
+    getmaxyx(stdscr, max_y, max_x);
+    
+    // Clear the status line first
+    attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
+    for (int i = 2; i < max_x - 2; i++) {
+        mvaddch(max_y - 1, i, ' ');
+    }
+    attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
+    
+    // Draw the message
+    attron(COLOR_PAIR(current_message.color_pair) | A_BOLD);
+    mvprintw(max_y - 1, 2, "%-*s", max_x - 4, current_message.text);
+    attroff(COLOR_PAIR(current_message.color_pair) | A_BOLD);
+    
+    refresh();
+}
+
+void handle_screen_resize() {
+    // Clear the screen
+    clear();
+    
+    // Redraw based on current state
+    if (current_state == STATE_MAIN) {
+        draw_main_screen();
+    } else if (current_state == STATE_DETAIL) {
+        draw_detail_screen();
+    }
+    
+    // Redraw status message if active
+    if (current_message.active) {
+        draw_current_status_message();
+    }
     
     refresh();
 }
@@ -880,8 +945,12 @@ void draw_main_screen() {
         return;
     }
     
-    // Clear screen
-    erase();
+    // Clear screen (except status line)
+    for (int y = 0; y < max_y - 1; y++) {
+        for (int x = 0; x < max_x; x++) {
+            mvaddch(y, x, ' ');
+        }
+    }
     
     // Draw border with default color
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
@@ -980,7 +1049,11 @@ void draw_main_screen() {
     }
     
     // Draw bottom info bar with highlighted active modes
-    mvhline(max_y - 4, 0, ACS_HLINE, max_x);
+    // Leave last line (max_y - 1) for status messages
+    int info_line1 = max_y - 3;
+    int info_line2 = max_y - 2;
+    
+    mvhline(info_line1 - 1, 0, ACS_HLINE, max_x);
     
     // Calculate positions for each shortcut based on screen width
     int start_x = 2;
@@ -994,7 +1067,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "Ctrl+OCategory");
+        mvprintw(info_line1, start_x, "Ctrl+OCategory");
         attroff(A_BOLD);
         start_x += 15 + spacing;
 
@@ -1004,7 +1077,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "Ctrl+S:Stars");
+        mvprintw(info_line1, start_x, "Ctrl+S:Stars");
         attroff(A_BOLD);
         start_x += 13 + spacing;
 
@@ -1014,7 +1087,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "Ctrl+X:Clear");
+        mvprintw(info_line1, start_x, "Ctrl+X:Clear");
         attroff(A_BOLD);
         start_x += 12 + spacing;
 
@@ -1024,7 +1097,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "Ctrl+N:Names");
+        mvprintw(info_line1, start_x, "Ctrl+N:Names");
         attroff(A_BOLD);
         start_x += 13 + spacing;
 
@@ -1034,7 +1107,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "Ctrl+D:Desc");
+        mvprintw(info_line1, start_x, "Ctrl+D:Desc");
         attroff(A_BOLD);
         start_x += 11 + spacing;
 
@@ -1044,7 +1117,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "Ctrl+F:Flags");
+        mvprintw(info_line1, start_x, "Ctrl+F:Flags");
         attroff(A_BOLD);
         start_x += 12 + spacing;
 
@@ -1054,7 +1127,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "Ctrl+E:Examples");
+        mvprintw(info_line1, start_x, "Ctrl+E:Examples");
         attroff(A_BOLD);
     } else if (max_x >= 80) {
         // Medium screen - abbreviated shortcuts
@@ -1063,7 +1136,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "C+O:Cat");
+        mvprintw(info_line1, start_x, "C+O:Cat");
         attroff(A_BOLD);
         start_x += 9 + spacing;
 
@@ -1072,7 +1145,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "C+S:★");
+        mvprintw(info_line1, start_x, "C+S:★");
         attroff(A_BOLD);
         start_x += 7 + spacing;
 
@@ -1081,7 +1154,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "C+X:Clear");
+        mvprintw(info_line1, start_x, "C+X:Clear");
         attroff(A_BOLD);
         start_x += 10 + spacing;
 
@@ -1090,7 +1163,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "C+N:N");
+        mvprintw(info_line1, start_x, "C+N:N");
         attroff(A_BOLD);
         start_x += 7 + spacing;
 
@@ -1099,7 +1172,7 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "C+D:D");
+        mvprintw(info_line1, start_x, "C+D:D");
         attroff(A_BOLD);
         start_x += 7 + spacing;
 
@@ -1108,21 +1181,21 @@ void draw_main_screen() {
         } else {
             attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
         }
-        mvprintw(max_y - 3, start_x, "C+F:F");
+        mvprintw(info_line1, start_x, "C+F:F");
         attroff(A_BOLD);
     } else {
         // Small screen - minimal shortcuts
-        mvprintw(max_y - 3, start_x, "F1:Exit  C+B:★");
+        mvprintw(info_line1, start_x, "F1:Exit  C+B:★");
     }
     
     // Second line of shortcuts
     start_x = 2;
     if (max_x >= 80) {
-        mvprintw(max_y - 2, start_x, "Enter:Details  Ctrl+B:Bookmark  Ctrl+H:Help  F1:Exit");
+        mvprintw(info_line2, start_x, "Enter:Details  Ctrl+B:Bookmark  Ctrl+H:Help  F1:Exit");
     } else if (max_x >= 60) {
-        mvprintw(max_y - 2, start_x, "Enter:View  Ctrl+B:★  Ctrl+H:Help  F1:Exit");
+        mvprintw(info_line2, start_x, "Enter:View  Ctrl+B:★  Ctrl+H:Help  F1:Exit");
     } else {
-        mvprintw(max_y - 2, start_x, "F1:Exit");
+        mvprintw(info_line2, start_x, "F1:Exit");
     }
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
@@ -1194,15 +1267,15 @@ void draw_main_screen() {
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
         mvaddch(4, preview_start_x, ACS_ULCORNER);
         mvaddch(4, max_x - 1, ACS_URCORNER);
-        mvaddch(max_y - 5, preview_start_x, ACS_LLCORNER);
-        mvaddch(max_y - 5, max_x - 1, ACS_LRCORNER);
+        mvaddch(info_line1 - 2, preview_start_x, ACS_LLCORNER);
+        mvaddch(info_line1 - 2, max_x - 1, ACS_LRCORNER);
         
         for (int x = preview_start_x + 1; x < max_x - 1; x++) {
             mvaddch(4, x, ACS_HLINE);
-            mvaddch(max_y - 5, x, ACS_HLINE);
+            mvaddch(info_line1 - 2, x, ACS_HLINE);
         }
         
-        for (int y = 5; y < max_y - 5; y++) {
+        for (int y = 5; y < info_line1 - 2; y++) {
             mvaddch(y, preview_start_x, ACS_VLINE);
             mvaddch(y, max_x - 1, ACS_VLINE);
         }
@@ -1258,8 +1331,12 @@ void draw_detail_screen() {
     
     Command *cmd = &commands[selected_index];
     
-    // Clear screen
-    erase();
+    // Clear screen (except status line)
+    for (int y = 0; y < max_y - 1; y++) {
+        for (int x = 0; x < max_x; x++) {
+            mvaddch(y, x, ' ');
+        }
+    }
     
     // Draw border with default color
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
@@ -1299,12 +1376,12 @@ void draw_detail_screen() {
     
     // Draw description with default color
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {  // Leave room for footer
         mvprintw(y_pos, 2, "Description: %s", cmd->description);
     }
     y_pos++; // Move to next line
     
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         // Only increment y_pos if we're in visible area
         y_pos++; // Blank line
     } else {
@@ -1312,64 +1389,64 @@ void draw_detail_screen() {
     }
     
     // Draw category
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         mvprintw(y_pos, 2, "Category: %s", cmd->category);
     }
     y_pos++; // Move to next line
     
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         y_pos++; // Blank line
     } else {
         y_pos++;
     }
     
     // Draw flags section
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         mvprintw(y_pos, 2, "Flags:");
     }
     y_pos++;
     
     for (int i = 0; i < cmd->flag_count; i++) {
-        if (y_pos >= 3 && y_pos < max_y - 1) {
+        if (y_pos >= 3 && y_pos < max_y - 3) {
             mvprintw(y_pos, 4, "%s: %s", 
                     cmd->flag_names[i], cmd->flag_descs[i]);
         }
         y_pos++;
     }
     
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         y_pos++; // Blank line
     } else {
         y_pos++;
     }
     
     // Draw examples section
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         mvprintw(y_pos, 2, "Examples:");
     }
     y_pos++;
     
     // Basic example
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         mvprintw(y_pos, 4, "Basic:");
     }
     y_pos++;
     
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         attron(COLOR_PAIR(COLOR_PAIR_CYAN));
         mvprintw(y_pos, 6, "%s", cmd->basic_example);
         attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
     }
     y_pos++;
     
-    if (strlen(cmd->basic_output) > 0 && y_pos >= 3 && y_pos < max_y - 1) {
+    if (strlen(cmd->basic_output) > 0 && y_pos >= 3 && y_pos < max_y - 3) {
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
         mvprintw(y_pos, 6, "Output: %s", cmd->basic_output);
         attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
         y_pos++;
     }
     
-    if (y_pos >= 3 && y_pos < max_y - 1) {
+    if (y_pos >= 3 && y_pos < max_y - 3) {
         y_pos++; // Blank line
     } else {
         y_pos++;
@@ -1377,20 +1454,20 @@ void draw_detail_screen() {
     
     // Flag-specific examples
     if (cmd->flag_example_count > 0) {
-        if (y_pos >= 3 && y_pos < max_y - 1) {
+        if (y_pos >= 3 && y_pos < max_y - 3) {
             mvprintw(y_pos, 4, "With flags:");
         }
         y_pos++;
         
         for (int i = 0; i < cmd->flag_example_count; i++) {
-            if (y_pos >= 3 && y_pos < max_y - 1) {
+            if (y_pos >= 3 && y_pos < max_y - 3) {
                 attron(COLOR_PAIR(COLOR_PAIR_CYAN));
                 mvprintw(y_pos, 6, "%s", cmd->flag_examples[i]);
                 attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
             }
             y_pos++;
             
-            if (strlen(cmd->flag_example_purposes[i]) > 0 && y_pos >= 3 && y_pos < max_y - 1) {
+            if (strlen(cmd->flag_example_purposes[i]) > 0 && y_pos >= 3 && y_pos < max_y - 3) {
                 attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
                 mvprintw(y_pos, 8, "Purpose: %s", 
                         cmd->flag_example_purposes[i]);
@@ -1398,7 +1475,7 @@ void draw_detail_screen() {
                 y_pos++;
             }
             
-            if (strlen(cmd->flag_example_outputs[i]) > 0 && y_pos >= 3 && y_pos < max_y - 1) {
+            if (strlen(cmd->flag_example_outputs[i]) > 0 && y_pos >= 3 && y_pos < max_y - 3) {
                 attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
                 mvprintw(y_pos, 8, "Output: %s", 
                         cmd->flag_example_outputs[i]);
@@ -1406,7 +1483,7 @@ void draw_detail_screen() {
                 y_pos++;
             }
             
-            if (y_pos >= 3 && y_pos < max_y - 1) {
+            if (y_pos >= 3 && y_pos < max_y - 3) {
                 y_pos++; // Blank line between examples
             } else {
                 y_pos++;
@@ -1417,21 +1494,22 @@ void draw_detail_screen() {
     // Draw scroll indicators if needed
     if (detail_scroll > 0) {
         attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
-        mvprintw(max_y - 1, max_x - 20, "↑ Scroll: %d", detail_scroll);
+        mvprintw(max_y - 3, max_x - 20, "↑ Scroll: %d", detail_scroll);
         attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
     }
     
     // Check if content exceeds screen height and show down indicator
     if (estimated_content_height > max_y - 3 && detail_scroll < max_scroll) {
         attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
-        mvprintw(max_y - 1, max_x - 35, "↓ More content");
+        mvprintw(max_y - 3, max_x - 35, "↓ More content");
         attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
     }
     
-    // Draw footer
-    mvhline(max_y - 2, 1, ACS_HLINE, max_x - 2);
+    // Draw footer (above status line)
+    int footer_line = max_y - 2;
+    mvhline(footer_line, 1, ACS_HLINE, max_x - 2);
     attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
-    mvprintw(max_y - 1, 2, "(press Backspace to return)");
+    mvprintw(footer_line + 1, 2, "(press Backspace to return)");
     attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
@@ -1458,12 +1536,31 @@ int main() {
     // Initialize ncurses
     init_ncurses();
     
+    // Set non-blocking input
+    timeout(50);  // 50ms timeout for responsive updates
+    
     // Draw initial screen
     draw_main_screen();
     
     // Main input loop
     int ch;
-    while ((ch = getch()) != KEY_F(1)) { // F1 to exit
+    while (1) {
+        // Check and update status messages
+        check_and_display_status_message();
+        
+        ch = getch();
+        if (ch == KEY_F(1)) break;  // F1 to exit
+        
+        if (ch == ERR) {
+            // No input, continue to update messages
+            continue;
+        }
+        
+        if (ch == KEY_RESIZE) {
+            handle_screen_resize();
+            continue;
+        }
+        
         switch (current_state) {
             case STATE_MAIN:
                 {
@@ -1607,12 +1704,14 @@ int main() {
                                 commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
                                 save_commands();
                                 update_filtered_indices();  // Update filtered list
-                                show_status_message("Bookmark toggled", COLOR_PAIR_SUCCESS);
+                                show_status_message_async("Bookmark toggled", COLOR_PAIR_SUCCESS, 600);
                             }
                             break;
                             
                         case 15:  // Ctrl+O (ASCII 15) - Category filter
                             if (category_count > 0) {
+                                // Clear any existing message before showing menu
+                                clear_status_message();
                                 show_category_menu();
                                 selected_index = find_first_filtered_command();
                                 scroll_offset = 0;
@@ -1626,9 +1725,9 @@ int main() {
                             selected_index = find_first_filtered_command();
                             scroll_offset = 0;
                             if (show_bookmarks_only) {
-                                show_status_message("Showing bookmarked commands only", COLOR_PAIR_SUCCESS);
+                                show_status_message_async("Showing bookmarked commands only", COLOR_PAIR_SUCCESS, 800);
                             } else {
-                                show_status_message("Showing all commands", COLOR_PAIR_DEFAULT);
+                                show_status_message_async("Showing all commands", COLOR_PAIR_DEFAULT, 800);
                             }
                             break;
                             
@@ -1639,11 +1738,13 @@ int main() {
                             show_bookmarks_only = 0;
                             selected_index = find_first_filtered_command();
                             scroll_offset = 0;
-                            show_status_message("All filters cleared", COLOR_PAIR_SUCCESS);
+                            show_status_message_async("All filters cleared", COLOR_PAIR_SUCCESS, 800);
                             break;
                             
                         case 8:   // Ctrl+H (ASCII 8) - Help
                             {
+                                // Clear message before showing help
+                                clear_status_message();
                                 // Show help overlay
                                 WINDOW *help_win = newwin(max_y - 4, max_x - 8, 2, 4);
                                 wbkgd(help_win, COLOR_PAIR(COLOR_PAIR_DEFAULT));
@@ -1673,7 +1774,9 @@ int main() {
                                 mvwprintw(help_win, max_y - 8, (max_x - 16) / 2 - 4, "Press any key to continue...");
                                 
                                 wrefresh(help_win);
+                                timeout(-1);  // Blocking wait for help
                                 getch();
+                                timeout(50);  // Back to non-blocking
                                 delwin(help_win);
                             }
                             break;
@@ -1724,15 +1827,15 @@ int main() {
                 {
                     int max_y, max_x;
                     getmaxyx(stdscr, max_y, max_x);
-                    // Use (void) to explicitly mark max_x as unused
-                    (void)max_x;
+                    (void)max_x;  // Suppress unused warning
                     
                     switch (ch) {
                         case KEY_BACKSPACE:
                         case 127: // Backspace
                             current_state = STATE_MAIN;
                             detail_scroll = 0;
-                            draw_main_screen();
+                            // Clear any message when switching screens
+                            clear_status_message();
                             break;
                             
                         case 2:  // Ctrl+B (ASCII 2)
@@ -1740,8 +1843,8 @@ int main() {
                             if (selected_index < command_count) {
                                 commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
                                 save_commands();
-                                update_filtered_indices();  // Update filtered list
-                                draw_detail_screen();
+                                update_filtered_indices();
+                                show_status_message_async("Bookmark toggled", COLOR_PAIR_SUCCESS, 600);
                             }
                             break;
                             
@@ -1779,6 +1882,6 @@ int main() {
         }
     }
     
-    // Cleanup via atexit will handle this
+    cleanup_ncurses();
     return 0;
 }
