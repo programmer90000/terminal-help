@@ -1467,6 +1467,7 @@ int main() {
         switch (current_state) {
             case STATE_MAIN:
                 {
+                    // Get screen dimensions once at the beginning
                     int max_y, max_x;
                     getmaxyx(stdscr, max_y, max_x);
                     int visible_items = max_y - 9;
@@ -1720,50 +1721,55 @@ int main() {
                 break;
                 
             case STATE_DETAIL:
-                switch (ch) {
-                    case KEY_BACKSPACE:
-                    case 127: // Backspace
-                        current_state = STATE_MAIN;
-                        detail_scroll = 0;
-                        draw_main_screen();
-                        break;
-                        
-                    case 2:  // Ctrl+B (ASCII 2)
-                        // Toggle bookmark
-                        if (selected_index < command_count) {
-                            commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
-                            save_commands();
-                            update_filtered_indices();  // Update filtered list
-                            draw_detail_screen();
-                        }
-                        break;
-                        
-                    case KEY_UP:
-                        if (detail_scroll > 0) {
-                            detail_scroll--;
-                        }
-                        break;
-                        
-                    case KEY_DOWN:
-                        // Calculate reasonable maximum scroll
-                        Command *cmd = &commands[selected_index];
-                        int estimated_content_height = 5 + // base lines
-                                                      cmd->flag_count * 2 +
-                                                      cmd->flag_example_count * 4 + 3; // extra padding
-                        
-                        int max_y, max_x;
-                        getmaxyx(stdscr, max_y, max_x);
-                        int max_scroll = estimated_content_height - (max_y - 5);
-                        if (max_scroll < 0) max_scroll = 0;
-                        
-                        if (detail_scroll < max_scroll) {
-                            detail_scroll++;
-                        }
-                        break;
-                }
-                
-                if (current_state == STATE_DETAIL) {
-                    draw_detail_screen();
+                {
+                    int max_y, max_x;
+                    getmaxyx(stdscr, max_y, max_x);
+                    // Use (void) to explicitly mark max_x as unused
+                    (void)max_x;
+                    
+                    switch (ch) {
+                        case KEY_BACKSPACE:
+                        case 127: // Backspace
+                            current_state = STATE_MAIN;
+                            detail_scroll = 0;
+                            draw_main_screen();
+                            break;
+                            
+                        case 2:  // Ctrl+B (ASCII 2)
+                            // Toggle bookmark
+                            if (selected_index < command_count) {
+                                commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
+                                save_commands();
+                                update_filtered_indices();  // Update filtered list
+                                draw_detail_screen();
+                            }
+                            break;
+                            
+                        case KEY_UP:
+                            if (detail_scroll > 0) {
+                                detail_scroll--;
+                            }
+                            break;
+                            
+                        case KEY_DOWN:
+                            // Calculate reasonable maximum scroll
+                            Command *cmd = &commands[selected_index];
+                            int estimated_content_height = 5 + // base lines
+                                                          cmd->flag_count * 2 +
+                                                          cmd->flag_example_count * 4 + 3; // extra padding
+                            
+                            int max_scroll = estimated_content_height - (max_y - 5);
+                            if (max_scroll < 0) max_scroll = 0;
+                            
+                            if (detail_scroll < max_scroll) {
+                                detail_scroll++;
+                            }
+                            break;
+                    }
+                    
+                    if (current_state == STATE_DETAIL) {
+                        draw_detail_screen();
+                    }
                 }
                 break;
                 
