@@ -92,19 +92,27 @@ int category_count = 0;
 int category_filter = -1;  // -1 means no filter, otherwise index in categories array
 int show_bookmarks_only = 0;  // New: bookmark-only filter
 
+// Helper: Filtered command indices
+int filtered_indices[MAX_COMMANDS];
+int filtered_count = 0;
+
 // Function prototypes
 void init_ncurses();
 void cleanup_ncurses();
 void handle_signal(int sig);
 void load_commands();
 void save_commands();
+void update_filtered_indices();  // New function
 void draw_main_screen();
 void draw_detail_screen();
 void show_category_menu();
 void show_status_message(const char *msg, int color_pair);
-void handle_input();
 void show_error(const char *msg);
 int matches_search(Command *cmd, const char *search_lower);
+int find_first_filtered_command();  // New function
+int find_prev_filtered_command(int current_index);  // New function
+int find_next_filtered_command(int current_index);  // New function
+int find_last_filtered_command();  // New function
 
 // Signal handler and cleanup function
 void handle_signal(int sig) {
@@ -114,6 +122,131 @@ void handle_signal(int sig) {
 
 void cleanup_ncurses() {
     endwin();  // CRITICAL: Restores terminal to original state
+}
+
+// Update the filtered_indices array based on current filters
+void update_filtered_indices() {
+    filtered_count = 0;
+    char search_lower[MAX_SEARCH_LEN] = "";
+    
+    // Convert search text to lowercase if it exists
+    if (search_text[0] != '\0') {
+        strcpy(search_lower, search_text);
+        for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
+    }
+    
+    for (int i = 0; i < command_count; i++) {
+        // Apply bookmark filter first
+        if (show_bookmarks_only && !commands[i].bookmarked) {
+            continue;
+        }
+        
+        // Apply category filter
+        if (category_filter != -1 && 
+            strcmp(commands[i].category, categories[category_filter]) != 0) {
+            continue;
+        }
+        
+        // Apply search filter if search text exists
+        if (search_text[0] != '\0') {
+            // If no search mode is selected, search all fields
+            if (search_mode == 0) {
+                // Check all fields
+                char name_lower[MAX_NAME_LEN];
+                strcpy(name_lower, commands[i].name);
+                for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
+                
+                char desc_lower[MAX_DESC_LEN];
+                strcpy(desc_lower, commands[i].description);
+                for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
+                
+                if (strstr(name_lower, search_lower) == NULL &&
+                    strstr(desc_lower, search_lower) == NULL) {
+                    continue;  // Skip non-matching commands
+                }
+            } else {
+                // Use the matches_search function for selected modes
+                if (!matches_search(&commands[i], search_lower)) {
+                    continue;  // Skip non-matching commands
+                }
+            }
+        }
+        filtered_indices[filtered_count++] = i;
+    }
+}
+
+// Find the first command that passes current filters
+int find_first_filtered_command() {
+    update_filtered_indices();
+    if (filtered_count > 0) {
+        return filtered_indices[0];
+    }
+    return 0;  // Fallback
+}
+
+// Find the previous filtered command relative to current_index
+int find_prev_filtered_command(int current_index) {
+    update_filtered_indices();
+    
+    if (filtered_count == 0) return current_index;
+    
+    // Find current position in filtered array
+    int current_filtered_pos = -1;
+    for (int i = 0; i < filtered_count; i++) {
+        if (filtered_indices[i] == current_index) {
+            current_filtered_pos = i;
+            break;
+        }
+    }
+    
+    // If not found, return first filtered
+    if (current_filtered_pos == -1) {
+        return filtered_indices[0];
+    }
+    
+    // If at first position, wrap to last
+    if (current_filtered_pos == 0) {
+        return filtered_indices[0];  // Stay at first
+    }
+    
+    return filtered_indices[current_filtered_pos - 1];
+}
+
+// Find the next filtered command relative to current_index
+int find_next_filtered_command(int current_index) {
+    update_filtered_indices();
+    
+    if (filtered_count == 0) return current_index;
+    
+    // Find current position in filtered array
+    int current_filtered_pos = -1;
+    for (int i = 0; i < filtered_count; i++) {
+        if (filtered_indices[i] == current_index) {
+            current_filtered_pos = i;
+            break;
+        }
+    }
+    
+    // If not found, return first filtered
+    if (current_filtered_pos == -1) {
+        return filtered_indices[0];
+    }
+    
+    // If at last position, stay there
+    if (current_filtered_pos == filtered_count - 1) {
+        return filtered_indices[filtered_count - 1];
+    }
+    
+    return filtered_indices[current_filtered_pos + 1];
+}
+
+// Find the last command that passes current filters
+int find_last_filtered_command() {
+    update_filtered_indices();
+    if (filtered_count > 0) {
+        return filtered_indices[filtered_count - 1];
+    }
+    return 0;  // Fallback
 }
 
 // Check if a command matches the current search criteria
@@ -348,6 +481,9 @@ void load_commands() {
     }
     
     json_decref(root);
+    
+    // Initialize filtered indices after loading
+    update_filtered_indices();
 }
 
 // Save commands back to JSON file
@@ -899,56 +1035,9 @@ void draw_main_screen() {
     
     // Draw command list with scrolling
     int visible_items = max_y - 9;  // Available rows for commands
-    char search_lower[MAX_SEARCH_LEN] = "";
     
-    // Convert search text to lowercase if it exists
-    if (search_text[0] != '\0') {
-        strcpy(search_lower, search_text);
-        for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
-    }
-    
-    // Count how many commands match the search filter
-    int filtered_count = 0;
-    int filtered_indices[command_count];
-    
-    for (int i = 0; i < command_count; i++) {
-        // Apply bookmark filter first
-        if (show_bookmarks_only && !commands[i].bookmarked) {
-            continue;
-        }
-        
-        // Apply category filter
-        if (category_filter != -1 && 
-            strcmp(commands[i].category, categories[category_filter]) != 0) {
-            continue;
-        }
-        
-        // Apply search filter if search text exists
-        if (search_text[0] != '\0') {
-            // If no search mode is selected, search all fields
-            if (search_mode == 0) {
-                // Check all fields
-                char name_lower[MAX_NAME_LEN];
-                strcpy(name_lower, commands[i].name);
-                for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
-                
-                char desc_lower[MAX_DESC_LEN];
-                strcpy(desc_lower, commands[i].description);
-                for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
-                
-                if (strstr(name_lower, search_lower) == NULL &&
-                    strstr(desc_lower, search_lower) == NULL) {
-                    continue;  // Skip non-matching commands
-                }
-            } else {
-                // Use the matches_search function for selected modes
-                if (!matches_search(&commands[i], search_lower)) {
-                    continue;  // Skip non-matching commands
-                }
-            }
-        }
-        filtered_indices[filtered_count++] = i;
-    }
+    // Update filtered indices
+    update_filtered_indices();
     
     // Clamp scroll_offset to valid range
     if (scroll_offset > filtered_count - visible_items) {
@@ -958,7 +1047,7 @@ void draw_main_screen() {
         scroll_offset = 0;
     }
     
-    // Display visible commands
+    // Display visible commands from filtered list
     for (int display_count = 0; display_count < visible_items && 
          (scroll_offset + display_count) < filtered_count; display_count++) {
         
@@ -1281,230 +1370,110 @@ int main() {
                     
                     switch (ch) {
                         case KEY_UP:
-    if (selected_index > 0) {
-        // Find the previous visible command in filtered list
-        int new_selected = -1;
-        for (int i = selected_index - 1; i >= 0; i--) {
-            // Check if this command is visible (matches all filters)
-            if (show_bookmarks_only && !commands[i].bookmarked) {
-                continue;
-            }
-            
-            if (category_filter != -1 && 
-                strcmp(commands[i].category, categories[category_filter]) != 0) {
-                continue;
-            }
-            
-            if (search_text[0] != '\0') {
-                char search_lower[MAX_SEARCH_LEN];
-                strcpy(search_lower, search_text);
-                for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
-                
-                if (search_mode == 0) {
-                    char name_lower[MAX_NAME_LEN];
-                    strcpy(name_lower, commands[i].name);
-                    for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
-                    
-                    char desc_lower[MAX_DESC_LEN];
-                    strcpy(desc_lower, commands[i].description);
-                    for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
-                    
-                    if (strstr(name_lower, search_lower) == NULL &&
-                        strstr(desc_lower, search_lower) == NULL) {
-                        continue;
-                    }
-                } else if (!matches_search(&commands[i], search_lower)) {
-                    continue;
-                }
-            }
-            new_selected = i;
-            break;
-        }
-        
-        if (new_selected != -1) {
-            selected_index = new_selected;
-            // Adjust scroll if needed
-            if (selected_index < scroll_offset) {
-                scroll_offset = selected_index;
-            }
-        }
-    }
-    break;
-    
-case KEY_DOWN:
-    if (selected_index < command_count - 1) {
-        // Find the next visible command in filtered list
-        int new_selected = -1;
-        for (int i = selected_index + 1; i < command_count; i++) {
-            // Check if this command is visible (matches all filters)
-            if (show_bookmarks_only && !commands[i].bookmarked) {
-                continue;
-            }
-            
-            if (category_filter != -1 && 
-                strcmp(commands[i].category, categories[category_filter]) != 0) {
-                continue;
-            }
-            
-            if (search_text[0] != '\0') {
-                char search_lower[MAX_SEARCH_LEN];
-                strcpy(search_lower, search_text);
-                for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
-                
-                if (search_mode == 0) {
-                    char name_lower[MAX_NAME_LEN];
-                    strcpy(name_lower, commands[i].name);
-                    for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
-                    
-                    char desc_lower[MAX_DESC_LEN];
-                    strcpy(desc_lower, commands[i].description);
-                    for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
-                    
-                    if (strstr(name_lower, search_lower) == NULL &&
-                        strstr(desc_lower, search_lower) == NULL) {
-                        continue;
-                    }
-                } else if (!matches_search(&commands[i], search_lower)) {
-                    continue;
-                }
-            }
-            new_selected = i;
-            break;
-        }
-        
-        if (new_selected != -1) {
-            selected_index = new_selected;
-            // Adjust scroll if needed
-            if (selected_index >= scroll_offset + visible_items) {
-                scroll_offset = selected_index - visible_items + 1;
-            }
-        }
-    }
-    break;
-    
+                            if (filtered_count > 0) {
+                                int new_selected = find_prev_filtered_command(selected_index);
+                                if (new_selected != selected_index) {
+                                    selected_index = new_selected;
+                                    
+                                    // Update scroll position
+                                    int filtered_pos = -1;
+                                    for (int i = 0; i < filtered_count; i++) {
+                                        if (filtered_indices[i] == selected_index) {
+                                            filtered_pos = i;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (filtered_pos != -1 && filtered_pos < scroll_offset) {
+                                        scroll_offset = filtered_pos;
+                                    }
+                                }
+                            }
+                            break;
+                            
+                        case KEY_DOWN:
+                            if (filtered_count > 0) {
+                                int new_selected = find_next_filtered_command(selected_index);
+                                if (new_selected != selected_index) {
+                                    selected_index = new_selected;
+                                    
+                                    // Update scroll position
+                                    int filtered_pos = -1;
+                                    for (int i = 0; i < filtered_count; i++) {
+                                        if (filtered_indices[i] == selected_index) {
+                                            filtered_pos = i;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (filtered_pos != -1 && filtered_pos >= scroll_offset + visible_items) {
+                                        scroll_offset = filtered_pos - visible_items + 1;
+                                    }
+                                }
+                            }
+                            break;
+                            
                         case KEY_HOME:
-                            selected_index = 0;
-                            scroll_offset = 0;
+                            if (filtered_count > 0) {
+                                selected_index = find_first_filtered_command();
+                                scroll_offset = 0;
+                            }
                             break;
                             
                         case KEY_END:
-                            selected_index = command_count - 1;
-                            // Find last visible command
-                            for (int i = command_count - 1; i >= 0; i--) {
-                                if (show_bookmarks_only && !commands[i].bookmarked) continue;
-                                if (category_filter != -1 && 
-                                    strcmp(commands[i].category, categories[category_filter]) != 0) continue;
-                                if (search_text[0] != '\0') {
-                                    char search_lower[MAX_SEARCH_LEN];
-                                    strcpy(search_lower, search_text);
-                                    for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
-                                    
-                                    if (search_mode == 0) {
-                                        char name_lower[MAX_NAME_LEN];
-                                        strcpy(name_lower, commands[i].name);
-                                        for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
-                                        
-                                        char desc_lower[MAX_DESC_LEN];
-                                        strcpy(desc_lower, commands[i].description);
-                                        for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
-                                        
-                                        if (strstr(name_lower, search_lower) == NULL &&
-                                            strstr(desc_lower, search_lower) == NULL) {
-                                            continue;
-                                        }
-                                    } else if (!matches_search(&commands[i], search_lower)) {
-                                        continue;
-                                    }
-                                }
-                                selected_index = i;
-                                break;
-                            }
-                            scroll_offset = selected_index - visible_items + 1;
-                            if (scroll_offset < 0) scroll_offset = 0;
-                            break;
-                            
-                        case KEY_PPAGE:  // Page Up
-                            if (selected_index > 0) {
-                                int pages_to_move = visible_items;
-                                int new_index = selected_index - pages_to_move;
-                                if (new_index < 0) new_index = 0;
-                                
-                                // Find first visible command at or before new_index
-                                for (int i = new_index; i >= 0; i--) {
-                                    if (show_bookmarks_only && !commands[i].bookmarked) continue;
-                                    if (category_filter != -1 && 
-                                        strcmp(commands[i].category, categories[category_filter]) != 0) continue;
-                                    if (search_text[0] != '\0') {
-                                        char search_lower[MAX_SEARCH_LEN];
-                                        strcpy(search_lower, search_text);
-                                        for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
-                                        
-                                        if (search_mode == 0) {
-                                            char name_lower[MAX_NAME_LEN];
-                                            strcpy(name_lower, commands[i].name);
-                                            for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
-                                            
-                                            char desc_lower[MAX_DESC_LEN];
-                                            strcpy(desc_lower, commands[i].description);
-                                            for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
-                                            
-                                            if (strstr(name_lower, search_lower) == NULL &&
-                                                strstr(desc_lower, search_lower) == NULL) {
-                                                continue;
-                                            }
-                                        } else if (!matches_search(&commands[i], search_lower)) {
-                                            continue;
-                                        }
-                                    }
-                                    selected_index = i;
-                                    break;
-                                }
-                                
-                                scroll_offset -= pages_to_move;
+                            if (filtered_count > 0) {
+                                selected_index = find_last_filtered_command();
+                                scroll_offset = filtered_count - visible_items;
                                 if (scroll_offset < 0) scroll_offset = 0;
                             }
                             break;
                             
-                        case KEY_NPAGE:  // Page Down
-                            if (selected_index < command_count - 1) {
-                                int pages_to_move = visible_items;
-                                int new_index = selected_index + pages_to_move;
-                                if (new_index >= command_count) new_index = command_count - 1;
-                                
-                                // Find first visible command at or after new_index
-                                for (int i = new_index; i < command_count; i++) {
-                                    if (show_bookmarks_only && !commands[i].bookmarked) continue;
-                                    if (category_filter != -1 && 
-                                        strcmp(commands[i].category, categories[category_filter]) != 0) continue;
-                                    if (search_text[0] != '\0') {
-                                        char search_lower[MAX_SEARCH_LEN];
-                                        strcpy(search_lower, search_text);
-                                        for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
-                                        
-                                        if (search_mode == 0) {
-                                            char name_lower[MAX_NAME_LEN];
-                                            strcpy(name_lower, commands[i].name);
-                                            for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
-                                            
-                                            char desc_lower[MAX_DESC_LEN];
-                                            strcpy(desc_lower, commands[i].description);
-                                            for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
-                                            
-                                            if (strstr(name_lower, search_lower) == NULL &&
-                                                strstr(desc_lower, search_lower) == NULL) {
-                                                continue;
-                                            }
-                                        } else if (!matches_search(&commands[i], search_lower)) {
-                                            continue;
-                                        }
+                        case KEY_PPAGE:  // Page Up
+                            if (filtered_count > 0) {
+                                // Find current position in filtered array
+                                int current_filtered_pos = -1;
+                                for (int i = 0; i < filtered_count; i++) {
+                                    if (filtered_indices[i] == selected_index) {
+                                        current_filtered_pos = i;
+                                        break;
                                     }
-                                    selected_index = i;
-                                    break;
                                 }
                                 
-                                scroll_offset += pages_to_move;
-                                if (scroll_offset + visible_items > command_count) {
-                                    scroll_offset = command_count - visible_items;
+                                if (current_filtered_pos == -1) {
+                                    selected_index = filtered_indices[0];
+                                    scroll_offset = 0;
+                                } else {
+                                    int new_filtered_pos = current_filtered_pos - visible_items;
+                                    if (new_filtered_pos < 0) new_filtered_pos = 0;
+                                    
+                                    selected_index = filtered_indices[new_filtered_pos];
+                                    scroll_offset = new_filtered_pos;
+                                }
+                            }
+                            break;
+                            
+                        case KEY_NPAGE:  // Page Down
+                            if (filtered_count > 0) {
+                                // Find current position in filtered array
+                                int current_filtered_pos = -1;
+                                for (int i = 0; i < filtered_count; i++) {
+                                    if (filtered_indices[i] == selected_index) {
+                                        current_filtered_pos = i;
+                                        break;
+                                    }
+                                }
+                                
+                                if (current_filtered_pos == -1) {
+                                    selected_index = filtered_indices[0];
+                                    scroll_offset = 0;
+                                } else {
+                                    int new_filtered_pos = current_filtered_pos + visible_items;
+                                    if (new_filtered_pos >= filtered_count) {
+                                        new_filtered_pos = filtered_count - 1;
+                                    }
+                                    
+                                    selected_index = filtered_indices[new_filtered_pos];
+                                    scroll_offset = new_filtered_pos - visible_items + 1;
                                     if (scroll_offset < 0) scroll_offset = 0;
                                 }
                             }
@@ -1523,7 +1492,7 @@ case KEY_DOWN:
                             int len = strlen(search_text);
                             if (len > 0) {
                                 search_text[len - 1] = '\0';
-                                selected_index = 0;
+                                selected_index = find_first_filtered_command();
                                 scroll_offset = 0;
                             }
                             break;
@@ -1534,6 +1503,7 @@ case KEY_DOWN:
                             if (selected_index < command_count) {
                                 commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
                                 save_commands();
+                                update_filtered_indices();  // Update filtered list
                                 show_status_message("Bookmark toggled", COLOR_PAIR_SUCCESS);
                             }
                             break;
@@ -1542,7 +1512,7 @@ case KEY_DOWN:
                         case 'F':
                             if (category_count > 0) {
                                 show_category_menu();
-                                selected_index = 0;
+                                selected_index = find_first_filtered_command();
                                 scroll_offset = 0;
                                 draw_main_screen();
                                 continue;
@@ -1552,7 +1522,7 @@ case KEY_DOWN:
                         case 's':
                         case 'S':
                             show_bookmarks_only = !show_bookmarks_only;
-                            selected_index = 0;
+                            selected_index = find_first_filtered_command();
                             scroll_offset = 0;
                             if (show_bookmarks_only) {
                                 show_status_message("Showing bookmarked commands only", COLOR_PAIR_SUCCESS);
@@ -1567,7 +1537,7 @@ case KEY_DOWN:
                             search_mode = 0;
                             category_filter = -1;
                             show_bookmarks_only = 0;
-                            selected_index = 0;
+                            selected_index = find_first_filtered_command();
                             scroll_offset = 0;
                             show_status_message("All filters cleared", COLOR_PAIR_SUCCESS);
                             break;
@@ -1612,28 +1582,28 @@ case KEY_DOWN:
                         case 14:  // Ctrl+N (ASCII 14)
                             // Toggle search in names
                             search_mode ^= SEARCH_NAMES;
-                            selected_index = 0;
+                            selected_index = find_first_filtered_command();
                             scroll_offset = 0;
                             break;
                             
                         case 4:   // Ctrl+D (ASCII 4)
                             // Toggle search in descriptions
                             search_mode ^= SEARCH_DESCS;
-                            selected_index = 0;
+                            selected_index = find_first_filtered_command();
                             scroll_offset = 0;
                             break;
                             
                         case 6:   // Ctrl+F (ASCII 6)
                             // Toggle search in flags
                             search_mode ^= SEARCH_FLAGS;
-                            selected_index = 0;
+                            selected_index = find_first_filtered_command();
                             scroll_offset = 0;
                             break;
                             
                         case 5:   // Ctrl+E (ASCII 5)
                             // Toggle search in examples
                             search_mode ^= SEARCH_EXAMPLES;
-                            selected_index = 0;
+                            selected_index = find_first_filtered_command();
                             scroll_offset = 0;
                             break;
                             
@@ -1641,7 +1611,7 @@ case KEY_DOWN:
                             // Handle text input for search
                             if (isprint(ch) && strlen(search_text) < MAX_SEARCH_LEN - 1) {
                                 strncat(search_text, (char*)&ch, 1);
-                                selected_index = 0;
+                                selected_index = find_first_filtered_command();
                                 scroll_offset = 0;
                             }
                             break;
@@ -1665,6 +1635,7 @@ case KEY_DOWN:
                         if (selected_index < command_count) {
                             commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
                             save_commands();
+                            update_filtered_indices();  // Update filtered list
                             draw_detail_screen();
                         }
                         break;
