@@ -17,6 +17,8 @@
 #define MAX_FLAGS 50
 #define MAX_EXAMPLES 50
 #define MAX_SEARCH_LEN 100
+#define MAX_CATEGORIES 50
+#define MAX_CAT_NAME_LEN 50
 
 // Color pair definitions (must be > 0)
 #define COLOR_PAIR_DEFAULT 1
@@ -84,6 +86,12 @@ AppState current_state = STATE_MAIN;
 char search_text[MAX_SEARCH_LEN] = "";
 int search_mode = 0;  // Bitmask for search modes (0 = no mode selected)
 
+// Category filtering variables
+char categories[MAX_CATEGORIES][MAX_CAT_NAME_LEN];
+int category_count = 0;
+int category_filter = -1;  // -1 means no filter, otherwise index in categories array
+int show_bookmarks_only = 0;  // New: bookmark-only filter
+
 // Function prototypes
 void init_ncurses();
 void cleanup_ncurses();
@@ -92,6 +100,8 @@ void load_commands();
 void save_commands();
 void draw_main_screen();
 void draw_detail_screen();
+void show_category_menu();
+void show_status_message(const char *msg, int color_pair);
 void handle_input();
 void show_error(const char *msg);
 int matches_search(Command *cmd, const char *search_lower);
@@ -238,6 +248,9 @@ void load_commands() {
     }
     
     command_count = 0;
+    category_count = 0;
+    category_filter = -1;  // Reset filter
+    
     size_t index;
     json_t *value;
     
@@ -255,7 +268,22 @@ void load_commands() {
         
         if (name) strncpy(cmd->name, json_string_value(name), MAX_NAME_LEN-1);
         if (desc) strncpy(cmd->description, json_string_value(desc), MAX_DESC_LEN-1);
-        if (category) strncpy(cmd->category, json_string_value(category), MAX_CATEGORY_LEN-1);
+        if (category) {
+            strncpy(cmd->category, json_string_value(category), MAX_CATEGORY_LEN-1);
+            
+            // Add to unique categories list
+            int found = 0;
+            for (int i = 0; i < category_count; i++) {
+                if (strcmp(categories[i], cmd->category) == 0) {
+                    found = 1;
+                    break;
+                }
+            }
+            if (!found && category_count < MAX_CATEGORIES) {
+                strncpy(categories[category_count], cmd->category, MAX_CAT_NAME_LEN-1);
+                category_count++;
+            }
+        }
         if (bookmarked) cmd->bookmarked = json_is_true(bookmarked);
         
         // Parse flags
@@ -446,6 +474,247 @@ void init_ncurses() {
     refresh();
 }
 
+void show_status_message(const char *msg, int color_pair) {
+    int max_y, max_x;
+    getmaxyx(stdscr, max_y, max_x);
+    
+    // Save area under message
+    char saved[max_x - 30];
+    for (int i = 0; i < max_x - 30; i++) {
+        saved[i] = mvinch(max_y - 1, 2 + i) & A_CHARTEXT;
+    }
+    
+    // Show message
+    attron(COLOR_PAIR(color_pair) | A_BOLD);
+    mvprintw(max_y - 1, 2, "%-*s", max_x - 4, msg);
+    attroff(COLOR_PAIR(color_pair) | A_BOLD);
+    
+    refresh();
+    napms(1500);  // Show for 1.5 seconds
+    
+    // Restore area
+    attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
+    for (int i = 0; i < max_x - 30; i++) {
+        mvaddch(max_y - 1, 2 + i, saved[i]);
+    }
+    attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
+    
+    refresh();
+}
+
+void show_category_menu() {
+    int max_y, max_x;
+    getmaxyx(stdscr, max_y, max_x);
+    
+    // Create a centered window for category selection
+    int win_height = category_count + 8;
+    if (win_height > max_y - 4) win_height = max_y - 4;
+    int win_width = 50;
+    int start_y = (max_y - win_height) / 2;
+    int start_x = (max_x - win_width) / 2;
+    
+    WINDOW *cat_win = newwin(win_height, win_width, start_y, start_x);
+    wbkgd(cat_win, COLOR_PAIR(COLOR_PAIR_DEFAULT));
+    box(cat_win, 0, 0);
+    
+    // Title
+    wattron(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+    mvwprintw(cat_win, 1, (win_width - 20) / 2, "Select Category");
+    wattroff(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+    
+    // Draw categories
+    wattron(cat_win, COLOR_PAIR(COLOR_PAIR_DEFAULT));
+    
+    int cat_selection = (category_filter == -1) ? category_count : category_filter;
+    int scroll_offset_cat = 0;
+    int visible_items = win_height - 6;
+    
+    // Handle scrolling if too many categories
+    if (category_count + 1 > visible_items) {
+        if (cat_selection >= scroll_offset_cat + visible_items) {
+            scroll_offset_cat = cat_selection - visible_items + 1;
+        }
+        if (cat_selection < scroll_offset_cat) {
+            scroll_offset_cat = cat_selection;
+        }
+    }
+    
+    // Display visible categories
+    for (int i = 0; i < visible_items; i++) {
+        int cat_idx = scroll_offset_cat + i;
+        
+        if (cat_idx > category_count) break;
+        
+        int line = i + 3;
+        
+        if (cat_idx == category_count) {
+            // "All Categories" option
+            if (cat_idx == cat_selection) {
+                wattron(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+                mvwprintw(cat_win, line, 2, "> All Categories");
+                wattroff(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+            } else {
+                mvwprintw(cat_win, line, 4, "All Categories");
+            }
+        } else if (cat_idx < category_count) {
+            // Count commands in this category
+            int count = 0;
+            for (int j = 0; j < command_count; j++) {
+                if (strcmp(commands[j].category, categories[cat_idx]) == 0) {
+                    count++;
+                }
+            }
+            
+            if (cat_idx == cat_selection) {
+                wattron(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+                mvwprintw(cat_win, line, 2, "> %s (%d)", categories[cat_idx], count);
+                wattroff(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+            } else {
+                mvwprintw(cat_win, line, 4, "%s (%d)", categories[cat_idx], count);
+            }
+        }
+    }
+    
+    // Scroll indicators
+    if (scroll_offset_cat > 0) {
+        mvwprintw(cat_win, 3, win_width - 2, "↑");
+    }
+    if (category_count + 1 > visible_items && 
+        (scroll_offset_cat + visible_items) < category_count + 1) {
+        mvwprintw(cat_win, win_height - 4, win_width - 2, "↓");
+    }
+    
+    // Instructions
+    mvwprintw(cat_win, win_height - 3, 2, "↑/↓: Navigate  Enter: Select");
+    mvwprintw(cat_win, win_height - 2, 2, "Esc: Cancel  a: Select All");
+    
+    wrefresh(cat_win);
+    
+    // Handle input
+    int ch;
+    
+    while ((ch = getch()) != 27) {  // ESC to cancel
+        switch (ch) {
+            case KEY_UP:
+                if (cat_selection > 0) {
+                    cat_selection--;
+                    if (cat_selection < scroll_offset_cat) {
+                        scroll_offset_cat = cat_selection;
+                    }
+                }
+                break;
+                
+            case KEY_DOWN:
+                if (cat_selection < category_count) {
+                    cat_selection++;
+                    if (cat_selection >= scroll_offset_cat + visible_items) {
+                        scroll_offset_cat = cat_selection - visible_items + 1;
+                    }
+                }
+                break;
+                
+            case 'a':
+            case 'A':
+                category_filter = -1;  // All categories
+                werase(cat_win);
+                wrefresh(cat_win);
+                delwin(cat_win);
+                return;
+                
+            case 10:  // Enter
+                if (cat_selection == category_count) {
+                    category_filter = -1;  // All categories
+                } else {
+                    category_filter = cat_selection;
+                }
+                werase(cat_win);
+                wrefresh(cat_win);
+                delwin(cat_win);
+                return;
+                
+            case KEY_PPAGE:  // Page Up
+                cat_selection -= visible_items;
+                if (cat_selection < 0) cat_selection = 0;
+                if (cat_selection < scroll_offset_cat) {
+                    scroll_offset_cat = cat_selection;
+                }
+                break;
+                
+            case KEY_NPAGE:  // Page Down
+                cat_selection += visible_items;
+                if (cat_selection > category_count) cat_selection = category_count;
+                if (cat_selection >= scroll_offset_cat + visible_items) {
+                    scroll_offset_cat = cat_selection - visible_items + 1;
+                }
+                break;
+        }
+        
+        // Redraw with new selection
+        werase(cat_win);
+        box(cat_win, 0, 0);
+        
+        wattron(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+        mvwprintw(cat_win, 1, (win_width - 20) / 2, "Select Category");
+        wattroff(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+        
+        wattron(cat_win, COLOR_PAIR(COLOR_PAIR_DEFAULT));
+        
+        // Display visible categories
+        for (int i = 0; i < visible_items; i++) {
+            int cat_idx = scroll_offset_cat + i;
+            
+            if (cat_idx > category_count) break;
+            
+            int line = i + 3;
+            
+            if (cat_idx == category_count) {
+                // "All Categories" option
+                if (cat_idx == cat_selection) {
+                    wattron(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+                    mvwprintw(cat_win, line, 2, "> All Categories");
+                    wattroff(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+                } else {
+                    mvwprintw(cat_win, line, 4, "All Categories");
+                }
+            } else if (cat_idx < category_count) {
+                // Count commands in this category
+                int count = 0;
+                for (int j = 0; j < command_count; j++) {
+                    if (strcmp(commands[j].category, categories[cat_idx]) == 0) {
+                        count++;
+                    }
+                }
+                
+                if (cat_idx == cat_selection) {
+                    wattron(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+                    mvwprintw(cat_win, line, 2, "> %s (%d)", categories[cat_idx], count);
+                    wattroff(cat_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+                } else {
+                    mvwprintw(cat_win, line, 4, "%s (%d)", categories[cat_idx], count);
+                }
+            }
+        }
+        
+        // Scroll indicators
+        if (scroll_offset_cat > 0) {
+            mvwprintw(cat_win, 3, win_width - 2, "↑");
+        }
+        if (category_count + 1 > visible_items && 
+            (scroll_offset_cat + visible_items) < category_count + 1) {
+            mvwprintw(cat_win, win_height - 4, win_width - 2, "↓");
+        }
+        
+        mvwprintw(cat_win, win_height - 3, 2, "↑/↓: Navigate  Enter: Select");
+        mvwprintw(cat_win, win_height - 2, 2, "Esc: Cancel  a: Select All");
+        
+        wrefresh(cat_win);
+    }
+    
+    werase(cat_win);
+    wrefresh(cat_win);
+    delwin(cat_win);
+}
+
 void draw_main_screen() {
     int max_y, max_x;
     getmaxyx(stdscr, max_y, max_x);
@@ -457,15 +726,59 @@ void draw_main_screen() {
     attron(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     border(0, 0, 0, 0, 0, 0, 0, 0);
     
-    // Draw search bar with mode indicator
+    // Draw title with filter indicators
+    attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+    
+    // Build title with filter info
+    char title[100];
+    strcpy(title, "Cheat Sheet");
+    
+    if (category_filter != -1 || show_bookmarks_only || search_text[0] != '\0') {
+        strcat(title, " [");
+        
+        if (show_bookmarks_only) {
+            strcat(title, "★");
+        }
+        
+        if (category_filter != -1) {
+            if (title[strlen(title)-1] != '[') strcat(title, ", ");
+            strcat(title, categories[category_filter]);
+        }
+        
+        if (search_text[0] != '\0') {
+            if (title[strlen(title)-1] != '[') strcat(title, ", ");
+            strcat(title, "\"");
+            strcat(title, search_text);
+            strcat(title, "\"");
+        }
+        
+        strcat(title, "]");
+    }
+    
+    mvprintw(0, (max_x - strlen(title)) / 2, "%s", title);
+    attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+    
+    // Draw search bar with mode indicator (updated to show more info)
     attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     
     // Build mode string
     char mode_str[50] = "";
-    if (search_mode == 0) {
+    if (search_mode == 0 && !show_bookmarks_only && category_filter == -1) {
         strcpy(mode_str, "ALL");
     } else {
-        if (search_mode & SEARCH_NAMES) strcat(mode_str, "N");
+        if (show_bookmarks_only) strcat(mode_str, "★");
+        if (category_filter != -1) {
+            if (mode_str[0]) strcat(mode_str, "+");
+            // Show first few chars of category
+            char cat_display[20];
+            strncpy(cat_display, categories[category_filter], 10);
+            if (strlen(categories[category_filter]) > 10) strcat(cat_display, "...");
+            strcat(mode_str, cat_display);
+        }
+        if (search_mode & SEARCH_NAMES) {
+            if (mode_str[0]) strcat(mode_str, "+");
+            strcat(mode_str, "N");
+        }
         if (search_mode & SEARCH_DESCS) {
             if (mode_str[0]) strcat(mode_str, "+");
             strcat(mode_str, "D");
@@ -480,7 +793,7 @@ void draw_main_screen() {
         }
     }
     
-    mvprintw(1, 2, "Search [%s]: [", mode_str);
+    mvprintw(1, 2, "Filters [%s]: [", mode_str);
     attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     
     // Show search text with default color
@@ -508,8 +821,38 @@ void draw_main_screen() {
     
     // Calculate positions for each shortcut
     int start_x = 2;
-    int spacing = 3;
-    
+    int spacing = 2;
+
+    // Category filter (highlight if active)
+    if (category_filter != -1) {
+        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+    } else {
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+    }
+    mvprintw(max_y - 3, start_x, "F:Category");
+    attroff(A_BOLD);
+    start_x += 10 + spacing;
+
+    // Bookmark filter (highlight if active)
+    if (show_bookmarks_only) {
+        attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
+    } else {
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+    }
+    mvprintw(max_y - 3, start_x, "S:Stars");
+    attroff(A_BOLD);
+    start_x += 8 + spacing;
+
+    // Clear filters (highlight if any filter active)
+    if (category_filter != -1 || show_bookmarks_only || search_text[0] != '\0' || search_mode != 0) {
+        attron(COLOR_PAIR(COLOR_PAIR_MAGENTA) | A_BOLD);
+    } else {
+        attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
+    }
+    mvprintw(max_y - 3, start_x, "X:Clear");
+    attroff(A_BOLD);
+    start_x += 7 + spacing;
+
     // Ctrl+N:Names
     if (search_mode & SEARCH_NAMES) {
         attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
@@ -518,9 +861,9 @@ void draw_main_screen() {
     }
     mvprintw(max_y - 3, start_x, "Ctrl+N:Names");
     attroff(A_BOLD);
-    
-    // Ctrl+D:Desc
     start_x += 13 + spacing;
+
+    // Ctrl+D:Desc
     if (search_mode & SEARCH_DESCS) {
         attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
     } else {
@@ -528,9 +871,9 @@ void draw_main_screen() {
     }
     mvprintw(max_y - 3, start_x, "Ctrl+D:Desc");
     attroff(A_BOLD);
-    
-    // Ctrl+F:Flags
     start_x += 11 + spacing;
+
+    // Ctrl+F:Flags
     if (search_mode & SEARCH_FLAGS) {
         attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
     } else {
@@ -538,9 +881,9 @@ void draw_main_screen() {
     }
     mvprintw(max_y - 3, start_x, "Ctrl+F:Flags");
     attroff(A_BOLD);
-    
-    // Ctrl+E:Examples
     start_x += 12 + spacing;
+
+    // Ctrl+E:Examples
     if (search_mode & SEARCH_EXAMPLES) {
         attron(COLOR_PAIR(COLOR_PAIR_GREEN) | A_BOLD);
     } else {
@@ -549,9 +892,11 @@ void draw_main_screen() {
     mvprintw(max_y - 3, start_x, "Ctrl+E:Examples");
     attroff(A_BOLD);
     
+    // Second line of shortcuts
+    start_x = 2;
+    mvprintw(max_y - 2, start_x, "Enter:Details  b:Bookmark  \\:CatSearch  ?:Help");
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
-    // Draw command list
     // Draw command list with scrolling
     int visible_items = max_y - 9;  // Available rows for commands
     char search_lower[MAX_SEARCH_LEN] = "";
@@ -567,6 +912,17 @@ void draw_main_screen() {
     int filtered_indices[command_count];
     
     for (int i = 0; i < command_count; i++) {
+        // Apply bookmark filter first
+        if (show_bookmarks_only && !commands[i].bookmarked) {
+            continue;
+        }
+        
+        // Apply category filter
+        if (category_filter != -1 && 
+            strcmp(commands[i].category, categories[category_filter]) != 0) {
+            continue;
+        }
+        
         // Apply search filter if search text exists
         if (search_text[0] != '\0') {
             // If no search mode is selected, search all fields
@@ -673,22 +1029,23 @@ void draw_main_screen() {
         // Draw command info
         mvprintw(5, preview_start_x + 2, "Name: %s", cmd->name);
         mvprintw(6, preview_start_x + 2, "Desc: %s", cmd->description);
+        mvprintw(7, preview_start_x + 2, "Category: %s", cmd->category);
         
         // Draw flags (first few only)
-        mvprintw(7, preview_start_x + 2, "Flags: ");
+        mvprintw(8, preview_start_x + 2, "Flags: ");
         int x_pos = preview_start_x + 9;
         for (int i = 0; i < cmd->flag_count && i < 4; i++) {
             int flag_len = (int)strlen(cmd->flag_names[i]);
             if (x_pos + flag_len + 2 < max_x - 1) {
-                mvprintw(7, x_pos, "%s", cmd->flag_names[i]);
+                mvprintw(8, x_pos, "%s", cmd->flag_names[i]);
                 x_pos += flag_len + 2;
             }
         }
         
         // Draw basic example with cyan color
-        mvprintw(9, preview_start_x + 2, "Example:");
+        mvprintw(10, preview_start_x + 2, "Example:");
         attron(COLOR_PAIR(COLOR_PAIR_CYAN));
-        mvprintw(10, preview_start_x + 4, "%s", cmd->basic_example);
+        mvprintw(11, preview_start_x + 4, "%s", cmd->basic_example);
         attroff(COLOR_PAIR(COLOR_PAIR_CYAN));
         attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     }
@@ -928,7 +1285,16 @@ int main() {
         // Find the previous visible command in filtered list
         int new_selected = -1;
         for (int i = selected_index - 1; i >= 0; i--) {
-            // Check if this command is visible (matches search)
+            // Check if this command is visible (matches all filters)
+            if (show_bookmarks_only && !commands[i].bookmarked) {
+                continue;
+            }
+            
+            if (category_filter != -1 && 
+                strcmp(commands[i].category, categories[category_filter]) != 0) {
+                continue;
+            }
+            
             if (search_text[0] != '\0') {
                 char search_lower[MAX_SEARCH_LEN];
                 strcpy(search_lower, search_text);
@@ -958,7 +1324,6 @@ int main() {
         if (new_selected != -1) {
             selected_index = new_selected;
             // Adjust scroll if needed
-            int visible_items = max_y - 9;
             if (selected_index < scroll_offset) {
                 scroll_offset = selected_index;
             }
@@ -971,7 +1336,16 @@ case KEY_DOWN:
         // Find the next visible command in filtered list
         int new_selected = -1;
         for (int i = selected_index + 1; i < command_count; i++) {
-            // Check if this command is visible (matches search)
+            // Check if this command is visible (matches all filters)
+            if (show_bookmarks_only && !commands[i].bookmarked) {
+                continue;
+            }
+            
+            if (category_filter != -1 && 
+                strcmp(commands[i].category, categories[category_filter]) != 0) {
+                continue;
+            }
+            
             if (search_text[0] != '\0') {
                 char search_lower[MAX_SEARCH_LEN];
                 strcpy(search_lower, search_text);
@@ -1001,13 +1375,140 @@ case KEY_DOWN:
         if (new_selected != -1) {
             selected_index = new_selected;
             // Adjust scroll if needed
-            int visible_items = max_y - 9;
             if (selected_index >= scroll_offset + visible_items) {
                 scroll_offset = selected_index - visible_items + 1;
             }
         }
     }
     break;
+    
+                        case KEY_HOME:
+                            selected_index = 0;
+                            scroll_offset = 0;
+                            break;
+                            
+                        case KEY_END:
+                            selected_index = command_count - 1;
+                            // Find last visible command
+                            for (int i = command_count - 1; i >= 0; i--) {
+                                if (show_bookmarks_only && !commands[i].bookmarked) continue;
+                                if (category_filter != -1 && 
+                                    strcmp(commands[i].category, categories[category_filter]) != 0) continue;
+                                if (search_text[0] != '\0') {
+                                    char search_lower[MAX_SEARCH_LEN];
+                                    strcpy(search_lower, search_text);
+                                    for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
+                                    
+                                    if (search_mode == 0) {
+                                        char name_lower[MAX_NAME_LEN];
+                                        strcpy(name_lower, commands[i].name);
+                                        for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
+                                        
+                                        char desc_lower[MAX_DESC_LEN];
+                                        strcpy(desc_lower, commands[i].description);
+                                        for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
+                                        
+                                        if (strstr(name_lower, search_lower) == NULL &&
+                                            strstr(desc_lower, search_lower) == NULL) {
+                                            continue;
+                                        }
+                                    } else if (!matches_search(&commands[i], search_lower)) {
+                                        continue;
+                                    }
+                                }
+                                selected_index = i;
+                                break;
+                            }
+                            scroll_offset = selected_index - visible_items + 1;
+                            if (scroll_offset < 0) scroll_offset = 0;
+                            break;
+                            
+                        case KEY_PPAGE:  // Page Up
+                            if (selected_index > 0) {
+                                int pages_to_move = visible_items;
+                                int new_index = selected_index - pages_to_move;
+                                if (new_index < 0) new_index = 0;
+                                
+                                // Find first visible command at or before new_index
+                                for (int i = new_index; i >= 0; i--) {
+                                    if (show_bookmarks_only && !commands[i].bookmarked) continue;
+                                    if (category_filter != -1 && 
+                                        strcmp(commands[i].category, categories[category_filter]) != 0) continue;
+                                    if (search_text[0] != '\0') {
+                                        char search_lower[MAX_SEARCH_LEN];
+                                        strcpy(search_lower, search_text);
+                                        for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
+                                        
+                                        if (search_mode == 0) {
+                                            char name_lower[MAX_NAME_LEN];
+                                            strcpy(name_lower, commands[i].name);
+                                            for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
+                                            
+                                            char desc_lower[MAX_DESC_LEN];
+                                            strcpy(desc_lower, commands[i].description);
+                                            for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
+                                            
+                                            if (strstr(name_lower, search_lower) == NULL &&
+                                                strstr(desc_lower, search_lower) == NULL) {
+                                                continue;
+                                            }
+                                        } else if (!matches_search(&commands[i], search_lower)) {
+                                            continue;
+                                        }
+                                    }
+                                    selected_index = i;
+                                    break;
+                                }
+                                
+                                scroll_offset -= pages_to_move;
+                                if (scroll_offset < 0) scroll_offset = 0;
+                            }
+                            break;
+                            
+                        case KEY_NPAGE:  // Page Down
+                            if (selected_index < command_count - 1) {
+                                int pages_to_move = visible_items;
+                                int new_index = selected_index + pages_to_move;
+                                if (new_index >= command_count) new_index = command_count - 1;
+                                
+                                // Find first visible command at or after new_index
+                                for (int i = new_index; i < command_count; i++) {
+                                    if (show_bookmarks_only && !commands[i].bookmarked) continue;
+                                    if (category_filter != -1 && 
+                                        strcmp(commands[i].category, categories[category_filter]) != 0) continue;
+                                    if (search_text[0] != '\0') {
+                                        char search_lower[MAX_SEARCH_LEN];
+                                        strcpy(search_lower, search_text);
+                                        for (int j = 0; search_lower[j]; j++) search_lower[j] = tolower(search_lower[j]);
+                                        
+                                        if (search_mode == 0) {
+                                            char name_lower[MAX_NAME_LEN];
+                                            strcpy(name_lower, commands[i].name);
+                                            for (int j = 0; name_lower[j]; j++) name_lower[j] = tolower(name_lower[j]);
+                                            
+                                            char desc_lower[MAX_DESC_LEN];
+                                            strcpy(desc_lower, commands[i].description);
+                                            for (int j = 0; desc_lower[j]; j++) desc_lower[j] = tolower(desc_lower[j]);
+                                            
+                                            if (strstr(name_lower, search_lower) == NULL &&
+                                                strstr(desc_lower, search_lower) == NULL) {
+                                                continue;
+                                            }
+                                        } else if (!matches_search(&commands[i], search_lower)) {
+                                            continue;
+                                        }
+                                    }
+                                    selected_index = i;
+                                    break;
+                                }
+                                
+                                scroll_offset += pages_to_move;
+                                if (scroll_offset + visible_items > command_count) {
+                                    scroll_offset = command_count - visible_items;
+                                    if (scroll_offset < 0) scroll_offset = 0;
+                                }
+                            }
+                            break;
                             
                         case 10: // Enter key
                             if (command_count > 0) {
@@ -1033,6 +1534,133 @@ case KEY_DOWN:
                             if (selected_index < command_count) {
                                 commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
                                 save_commands();
+                                show_status_message("Bookmark toggled", COLOR_PAIR_SUCCESS);
+                            }
+                            break;
+                            
+                        case 'f':
+                        case 'F':
+                            if (category_count > 0) {
+                                show_category_menu();
+                                selected_index = 0;
+                                scroll_offset = 0;
+                                draw_main_screen();
+                                continue;
+                            }
+                            break;
+                            
+                        case 's':
+                        case 'S':
+                            show_bookmarks_only = !show_bookmarks_only;
+                            selected_index = 0;
+                            scroll_offset = 0;
+                            if (show_bookmarks_only) {
+                                show_status_message("Showing bookmarked commands only", COLOR_PAIR_SUCCESS);
+                            } else {
+                                show_status_message("Showing all commands", COLOR_PAIR_DEFAULT);
+                            }
+                            break;
+                            
+                        case 'x':
+                        case 'X':
+                            search_text[0] = '\0';
+                            search_mode = 0;
+                            category_filter = -1;
+                            show_bookmarks_only = 0;
+                            selected_index = 0;
+                            scroll_offset = 0;
+                            show_status_message("All filters cleared", COLOR_PAIR_SUCCESS);
+                            break;
+                            
+                        case '\\':
+                            {
+                                echo();
+                                curs_set(1);
+                                
+                                // Save current screen
+                                WINDOW *temp_win = newwin(3, max_x - 4, max_y - 4, 2);
+                                wbkgd(temp_win, COLOR_PAIR(COLOR_PAIR_DEFAULT));
+                                box(temp_win, 0, 0);
+                                
+                                mvwprintw(temp_win, 1, 2, "Search category: ");
+                                wrefresh(temp_win);
+                                
+                                char cat_search[100];
+                                echo();
+                                curs_set(1);
+                                wgetnstr(temp_win, cat_search, 99);
+                                noecho();
+                                curs_set(0);
+                                
+                                if (cat_search[0] != '\0') {
+                                    // Convert to lowercase
+                                    for (int j = 0; cat_search[j]; j++) 
+                                        cat_search[j] = tolower(cat_search[j]);
+                                    
+                                    // Search for matching category
+                                    int found = -1;
+                                    for (int i = 0; i < category_count; i++) {
+                                        char cat_lower[MAX_CAT_NAME_LEN];
+                                        strcpy(cat_lower, categories[i]);
+                                        for (int j = 0; cat_lower[j]; j++) 
+                                            cat_lower[j] = tolower(cat_lower[j]);
+                                        
+                                        if (strstr(cat_lower, cat_search) != NULL) {
+                                            found = i;
+                                            break;
+                                        }
+                                    }
+                                    
+                                    if (found != -1) {
+                                        category_filter = found;
+                                        selected_index = 0;
+                                        scroll_offset = 0;
+                                        char msg[100];
+                                        snprintf(msg, sizeof(msg), "Filtered by category: %s", categories[found]);
+                                        show_status_message(msg, COLOR_PAIR_SUCCESS);
+                                    } else {
+                                        show_status_message("Category not found", COLOR_PAIR_ERROR);
+                                    }
+                                }
+                                
+                                delwin(temp_win);
+                            }
+                            break;
+                            
+                        case '?':
+                            {
+                                // Show help overlay
+                                WINDOW *help_win = newwin(max_y - 4, max_x - 8, 2, 4);
+                                wbkgd(help_win, COLOR_PAIR(COLOR_PAIR_DEFAULT));
+                                box(help_win, 0, 0);
+                                
+                                wattron(help_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+                                mvwprintw(help_win, 1, (max_x - 16) / 2 - 4, "Keyboard Shortcuts");
+                                wattroff(help_win, COLOR_PAIR(COLOR_PAIR_HIGHLIGHT) | A_BOLD);
+                                
+                                // List shortcuts
+                                mvwprintw(help_win, 3, 4, "Navigation:");
+                                mvwprintw(help_win, 4, 6, "↑/↓/PgUp/PgDn/Home/End - Navigate list");
+                                mvwprintw(help_win, 5, 6, "Enter                     - View details");
+                                mvwprintw(help_win, 6, 6, "Backspace                 - Go back/clear search");
+                                
+                                mvwprintw(help_win, 8, 4, "Filtering:");
+                                mvwprintw(help_win, 9, 6, "F                         - Select category");
+                                mvwprintw(help_win, 10, 6, "S                         - Toggle bookmarks only");
+                                mvwprintw(help_win, 11, 6, "\\                         - Quick category search");
+                                mvwprintw(help_win, 12, 6, "X                         - Clear all filters");
+                                mvwprintw(help_win, 13, 6, "Ctrl+N/D/F/E              - Toggle search modes");
+                                
+                                mvwprintw(help_win, 15, 4, "Actions:");
+                                mvwprintw(help_win, 16, 6, "b                         - Toggle bookmark");
+                                mvwprintw(help_win, 17, 6, "?                         - This help screen");
+                                mvwprintw(help_win, 18, 6, "F1                        - Exit");
+                                
+                                mvwprintw(help_win, max_y - 8, (max_x - 16) / 2 - 4, "Press any key to continue...");
+                                
+                                wrefresh(help_win);
+                                getch();
+                                delwin(help_win);
                             }
                             break;
                             
