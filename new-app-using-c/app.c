@@ -720,16 +720,16 @@ void show_category_menu() {
         mvwprintw(cat_win, win_height - 4, win_width - 2, "↓");
     }
     
-    // Instructions
+    // Instructions (updated for Ctrl+C)
     mvwprintw(cat_win, win_height - 3, 2, "↑/↓: Navigate  Enter: Select");
-    mvwprintw(cat_win, win_height - 2, 2, "Esc: Cancel  a: Select All");
+    mvwprintw(cat_win, win_height - 2, 2, "Ctrl+C: Cancel  Ctrl+A: Select All");
     
     wrefresh(cat_win);
     
     // Handle input
     int ch;
     
-    while ((ch = getch()) != 27) {  // ESC to cancel
+    while ((ch = getch()) != 3) {  // Ctrl+C to cancel (ASCII 3)
         switch (ch) {
             case KEY_UP:
                 if (cat_selection > 0) {
@@ -749,8 +749,7 @@ void show_category_menu() {
                 }
                 break;
                 
-            case 'a':
-            case 'A':
+            case 1:  // Ctrl+A (ASCII 1)
                 category_filter = -1;  // All categories
                 werase(cat_win);
                 wrefresh(cat_win);
@@ -783,6 +782,12 @@ void show_category_menu() {
                     scroll_offset_cat = cat_selection - visible_items + 1;
                 }
                 break;
+                
+            case 27:  // ESC - also allow ESC for backward compatibility
+                werase(cat_win);
+                wrefresh(cat_win);
+                delwin(cat_win);
+                return;
         }
         
         // Redraw with new selection
@@ -841,7 +846,7 @@ void show_category_menu() {
         }
         
         mvwprintw(cat_win, win_height - 3, 2, "↑/↓: Navigate  Enter: Select");
-        mvwprintw(cat_win, win_height - 2, 2, "Esc: Cancel  a: Select All");
+        mvwprintw(cat_win, win_height - 2, 2, "Ctrl+C: Cancel  Ctrl+A: Select All");
         
         wrefresh(cat_win);
     }
@@ -965,9 +970,9 @@ void draw_main_screen() {
     } else {
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
     }
-    mvprintw(max_y - 3, start_x, "F:Category");
+    mvprintw(max_y - 3, start_x, "Ctrl+C:Category");
     attroff(A_BOLD);
-    start_x += 10 + spacing;
+    start_x += 15 + spacing;
 
     // Bookmark filter (highlight if active)
     if (show_bookmarks_only) {
@@ -975,9 +980,9 @@ void draw_main_screen() {
     } else {
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
     }
-    mvprintw(max_y - 3, start_x, "S:Stars");
+    mvprintw(max_y - 3, start_x, "Ctrl+S:Stars");
     attroff(A_BOLD);
-    start_x += 8 + spacing;
+    start_x += 13 + spacing;
 
     // Clear filters (highlight if any filter active)
     if (category_filter != -1 || show_bookmarks_only || search_text[0] != '\0' || search_mode != 0) {
@@ -985,9 +990,9 @@ void draw_main_screen() {
     } else {
         attron(COLOR_PAIR(COLOR_PAIR_DEFAULT) | A_BOLD);
     }
-    mvprintw(max_y - 3, start_x, "X:Clear");
+    mvprintw(max_y - 3, start_x, "Ctrl+X:Clear");
     attroff(A_BOLD);
-    start_x += 7 + spacing;
+    start_x += 12 + spacing;
 
     // Ctrl+N:Names
     if (search_mode & SEARCH_NAMES) {
@@ -1030,7 +1035,7 @@ void draw_main_screen() {
     
     // Second line of shortcuts
     start_x = 2;
-    mvprintw(max_y - 2, start_x, "Enter:Details  b:Bookmark  ?:Help");
+    mvprintw(max_y - 2, start_x, "Enter:Details  Ctrl+B:Bookmark  Ctrl+H:Help  F1:Exit");
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
     // Draw command list with scrolling
@@ -1169,7 +1174,7 @@ void draw_detail_screen() {
     attroff(A_BOLD);
     
     attron(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
-    mvprintw(1, max_x - 30, "(press 'b' to bookmark)");
+    mvprintw(1, max_x - 30, "(press Ctrl+B to bookmark)");
     attroff(COLOR_PAIR(COLOR_PAIR_HIGHLIGHT));
     
     // Draw separator
@@ -1497,8 +1502,7 @@ int main() {
                             }
                             break;
                             
-                        case 'b':
-                        case 'B':
+                        case 2:  // Ctrl+B (ASCII 2)
                             // Toggle bookmark
                             if (selected_index < command_count) {
                                 commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
@@ -1508,8 +1512,7 @@ int main() {
                             }
                             break;
                             
-                        case 'f':
-                        case 'F':
+                        case 3:  // Ctrl+C (ASCII 3) - Category filter
                             if (category_count > 0) {
                                 show_category_menu();
                                 selected_index = find_first_filtered_command();
@@ -1519,8 +1522,7 @@ int main() {
                             }
                             break;
                             
-                        case 's':
-                        case 'S':
+                        case 19:  // Ctrl+S (ASCII 19) - Stars/Bookmarks filter
                             show_bookmarks_only = !show_bookmarks_only;
                             selected_index = find_first_filtered_command();
                             scroll_offset = 0;
@@ -1531,8 +1533,7 @@ int main() {
                             }
                             break;
                             
-                        case 'x':
-                        case 'X':
+                        case 24:  // Ctrl+X (ASCII 24) - Clear filters
                             search_text[0] = '\0';
                             search_mode = 0;
                             category_filter = -1;
@@ -1542,7 +1543,7 @@ int main() {
                             show_status_message("All filters cleared", COLOR_PAIR_SUCCESS);
                             break;
                             
-                        case '?':
+                        case 8:   // Ctrl+H (ASCII 8) - Help
                             {
                                 // Show help overlay
                                 WINDOW *help_win = newwin(max_y - 4, max_x - 8, 2, 4);
@@ -1560,14 +1561,14 @@ int main() {
                                 mvwprintw(help_win, 6, 6, "Backspace                 - Go back/clear search");
                                 
                                 mvwprintw(help_win, 8, 4, "Filtering:");
-                                mvwprintw(help_win, 9, 6, "F                         - Select category");
-                                mvwprintw(help_win, 10, 6, "S                         - Toggle bookmarks only");
-                                mvwprintw(help_win, 11, 6, "X                         - Clear all filters");
+                                mvwprintw(help_win, 9, 6, "Ctrl+C                    - Select category");
+                                mvwprintw(help_win, 10, 6, "Ctrl+S                    - Toggle bookmarks only");
+                                mvwprintw(help_win, 11, 6, "Ctrl+X                    - Clear all filters");
                                 mvwprintw(help_win, 12, 6, "Ctrl+N/D/F/E              - Toggle search modes");
                                 
                                 mvwprintw(help_win, 14, 4, "Actions:");
-                                mvwprintw(help_win, 15, 6, "b                         - Toggle bookmark");
-                                mvwprintw(help_win, 16, 6, "?                         - This help screen");
+                                mvwprintw(help_win, 15, 6, "Ctrl+B                    - Toggle bookmark");
+                                mvwprintw(help_win, 16, 6, "Ctrl+H                    - This help screen");
                                 mvwprintw(help_win, 17, 6, "F1                        - Exit");
                                 
                                 mvwprintw(help_win, max_y - 8, (max_x - 16) / 2 - 4, "Press any key to continue...");
@@ -1629,8 +1630,7 @@ int main() {
                         draw_main_screen();
                         break;
                         
-                    case 'b':
-                    case 'B':
+                    case 2:  // Ctrl+B (ASCII 2)
                         // Toggle bookmark
                         if (selected_index < command_count) {
                             commands[selected_index].bookmarked = !commands[selected_index].bookmarked;
