@@ -339,9 +339,9 @@ int matches_search(Command *cmd, const char *search_lower) {
 
 // Load commands from JSON file
 void load_commands() {
-    FILE *file = fopen("commands.json", "r");
+    FILE *file = fopen("/usr/local/bin/termcommands-data/commands.json", "r");
     if (!file) {
-        show_error("Could not open commands.json");
+        show_error("Could not open /usr/local/bin/termcommands-data/commands.json");
         return;
     }
     
@@ -538,7 +538,7 @@ void save_commands() {
     // Write to file
     char *json_str = json_dumps(root, JSON_INDENT(2));
     if (json_str) {
-        FILE *file = fopen("commands.json", "w");
+        FILE *file = fopen("/usr/local/bin/termcommands-data/commands.json", "w");
         if (file) {
             fputs(json_str, file);
             fclose(file);
@@ -1353,7 +1353,7 @@ int main() {
     load_commands();
     
     if (command_count == 0) {
-        printf("No commands loaded. Please check commands.json file.\n");
+        printf("No commands loaded. Please check /usr/local/bin/termcommands-data/commands.json file.\n");
         return 1;
     }
     

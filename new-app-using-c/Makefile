@@ -13,8 +13,9 @@ clean:
 	rm -f $(TARGET) *.o
 
 install: $(TARGET)
+	mkdir /usr/local/bin/termcommands-data/
 	cp $(TARGET) /usr/local/bin/
-	cp commands.json /usr/local/share/termcommands.json
+	cp commands.json /usr/local/bin/termcommands-data/commands.json
 
 uninstall:
 	rm -f /usr/local/bin/$(TARGET) /usr/local/share/termcommands.json
