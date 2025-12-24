@@ -1537,7 +1537,6 @@ int main() {
     init_ncurses();
     
     // Set non-blocking input
-    timeout(50);  // 50ms timeout for responsive updates
     
     // Draw initial screen
     draw_main_screen();
