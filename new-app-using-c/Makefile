@@ -1,29 +1,23 @@
-CC = gcc
-CFLAGS = -Wall -Wextra -O2 -std=c99 -g
-LIBS = -lncursesw -ljansson
-TARGET = termcommands
-SRC = app.c
+all: termcommands
 
-all: $(TARGET)
-
-$(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(LIBS)
+termcommands: app.c
+	gcc -Wall -Wextra -O2 -std=c99 -g -o termcommands app.c -lncursesw -ljansson
 
 clean:
-	rm -f $(TARGET) *.o
+	rm -f termcommands *.o
 
-install: $(TARGET)
+install: termcommands
 	mkdir /usr/local/bin/termcommands-data/
-	cp $(TARGET) /usr/local/bin/
+	cp termcommands /usr/local/bin/
 	cp commands.json /usr/local/bin/termcommands-data/commands.json
 
 uninstall:
-	rm -f /usr/local/bin/$(TARGET) /usr/local/share/termcommands.json
+	rm -rf /usr/local/bin/termcommands /usr/local/bin/termcommands-data/
 
-debug: $(SRC)
-	$(CC) $(CFLAGS) -fsanitize=address -o $(TARGET) $(SRC) $(LIBS)
+debug: app.c
+	gcc -Wall -Wextra -O2 -std=c99 -g -fsanitize=address -o termcommands app.c -lncursesw -ljansson
 
-valgrind: $(TARGET)
-	valgrind --leak-check=full --show-leak-kinds=all ./$(TARGET)
+valgrind: termcommands
+	valgrind --leak-check=full --show-leak-kinds=all ./termcommands
 
 .PHONY: all clean install uninstall debug valgrind
