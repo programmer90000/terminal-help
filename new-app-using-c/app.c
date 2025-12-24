@@ -1544,9 +1544,21 @@ int main() {
     
     // Main input loop
     int ch;
+    int needs_redraw = 1;  // Flag to track if screen needs redrawing
+    
     while (1) {
         // Check and update status messages
         check_and_display_status_message();
+        
+        // Redraw screen if needed
+        if (needs_redraw) {
+            if (current_state == STATE_MAIN) {
+                draw_main_screen();
+            } else if (current_state == STATE_DETAIL) {
+                draw_detail_screen();
+            }
+            needs_redraw = 0;
+        }
         
         ch = getch();
         if (ch == KEY_F(1)) break;  // F1 to exit
@@ -1558,6 +1570,7 @@ int main() {
         
         if (ch == KEY_RESIZE) {
             handle_screen_resize();
+            needs_redraw = 1;
             continue;
         }
         
@@ -1588,6 +1601,7 @@ int main() {
                                     if (filtered_pos != -1 && filtered_pos < scroll_offset) {
                                         scroll_offset = filtered_pos;
                                     }
+                                    needs_redraw = 1;
                                 }
                             }
                             break;
@@ -1610,6 +1624,7 @@ int main() {
                                     if (filtered_pos != -1 && filtered_pos >= scroll_offset + visible_items) {
                                         scroll_offset = filtered_pos - visible_items + 1;
                                     }
+                                    needs_redraw = 1;
                                 }
                             }
                             break;
@@ -1618,6 +1633,7 @@ int main() {
                             if (filtered_count > 0) {
                                 selected_index = find_first_filtered_command();
                                 scroll_offset = 0;
+                                needs_redraw = 1;
                             }
                             break;
                             
@@ -1626,6 +1642,7 @@ int main() {
                                 selected_index = find_last_filtered_command();
                                 scroll_offset = filtered_count - visible_items;
                                 if (scroll_offset < 0) scroll_offset = 0;
+                                needs_redraw = 1;
                             }
                             break;
                             
@@ -1650,6 +1667,7 @@ int main() {
                                     selected_index = filtered_indices[new_filtered_pos];
                                     scroll_offset = new_filtered_pos;
                                 }
+                                needs_redraw = 1;
                             }
                             break;
                             
@@ -1677,6 +1695,7 @@ int main() {
                                     scroll_offset = new_filtered_pos - visible_items + 1;
                                     if (scroll_offset < 0) scroll_offset = 0;
                                 }
+                                needs_redraw = 1;
                             }
                             break;
                             
@@ -1684,6 +1703,7 @@ int main() {
                             if (command_count > 0) {
                                 current_state = STATE_DETAIL;
                                 detail_scroll = 0;
+                                needs_redraw = 1;  // Force redraw with new state
                             }
                             break;
                             
@@ -1695,6 +1715,7 @@ int main() {
                                 search_text[len - 1] = '\0';
                                 selected_index = find_first_filtered_command();
                                 scroll_offset = 0;
+                                needs_redraw = 1;
                             }
                             break;
                             
@@ -1705,6 +1726,7 @@ int main() {
                                 save_commands();
                                 update_filtered_indices();  // Update filtered list
                                 show_status_message_async("Bookmark toggled", COLOR_PAIR_SUCCESS, 600);
+                                needs_redraw = 1;
                             }
                             break;
                             
@@ -1715,7 +1737,7 @@ int main() {
                                 show_category_menu();
                                 selected_index = find_first_filtered_command();
                                 scroll_offset = 0;
-                                draw_main_screen();
+                                needs_redraw = 1;
                                 continue;
                             }
                             break;
@@ -1729,6 +1751,7 @@ int main() {
                             } else {
                                 show_status_message_async("Showing all commands", COLOR_PAIR_DEFAULT, 800);
                             }
+                            needs_redraw = 1;
                             break;
                             
                         case 24:  // Ctrl+X (ASCII 24) - Clear filters
@@ -1739,6 +1762,7 @@ int main() {
                             selected_index = find_first_filtered_command();
                             scroll_offset = 0;
                             show_status_message_async("All filters cleared", COLOR_PAIR_SUCCESS, 800);
+                            needs_redraw = 1;
                             break;
                             
                         case 8:   // Ctrl+H (ASCII 8) - Help
@@ -1778,6 +1802,7 @@ int main() {
                                 getch();
                                 timeout(50);  // Back to non-blocking
                                 delwin(help_win);
+                                needs_redraw = 1;
                             }
                             break;
                             
@@ -1787,6 +1812,7 @@ int main() {
                             search_mode ^= SEARCH_NAMES;
                             selected_index = find_first_filtered_command();
                             scroll_offset = 0;
+                            needs_redraw = 1;
                             break;
                             
                         case 4:   // Ctrl+D (ASCII 4)
@@ -1794,6 +1820,7 @@ int main() {
                             search_mode ^= SEARCH_DESCS;
                             selected_index = find_first_filtered_command();
                             scroll_offset = 0;
+                            needs_redraw = 1;
                             break;
                             
                         case 6:   // Ctrl+F (ASCII 6)
@@ -1801,6 +1828,7 @@ int main() {
                             search_mode ^= SEARCH_FLAGS;
                             selected_index = find_first_filtered_command();
                             scroll_offset = 0;
+                            needs_redraw = 1;
                             break;
                             
                         case 5:   // Ctrl+E (ASCII 5)
@@ -1808,6 +1836,7 @@ int main() {
                             search_mode ^= SEARCH_EXAMPLES;
                             selected_index = find_first_filtered_command();
                             scroll_offset = 0;
+                            needs_redraw = 1;
                             break;
                             
                         default:
@@ -1816,10 +1845,10 @@ int main() {
                                 strncat(search_text, (char*)&ch, 1);
                                 selected_index = find_first_filtered_command();
                                 scroll_offset = 0;
+                                needs_redraw = 1;
                             }
                             break;
                     }
-                    draw_main_screen();
                 }
                 break;
                 
@@ -1836,6 +1865,7 @@ int main() {
                             detail_scroll = 0;
                             // Clear any message when switching screens
                             clear_status_message();
+                            needs_redraw = 1;
                             break;
                             
                         case 2:  // Ctrl+B (ASCII 2)
@@ -1845,12 +1875,14 @@ int main() {
                                 save_commands();
                                 update_filtered_indices();
                                 show_status_message_async("Bookmark toggled", COLOR_PAIR_SUCCESS, 600);
+                                needs_redraw = 1;
                             }
                             break;
                             
                         case KEY_UP:
                             if (detail_scroll > 0) {
                                 detail_scroll--;
+                                needs_redraw = 1;
                             }
                             break;
                             
@@ -1866,12 +1898,15 @@ int main() {
                             
                             if (detail_scroll < max_scroll) {
                                 detail_scroll++;
+                                needs_redraw = 1;
                             }
                             break;
-                    }
-                    
-                    if (current_state == STATE_DETAIL) {
-                        draw_detail_screen();
+                            
+                        case 10:
+                            current_state = STATE_MAIN;
+                            detail_scroll = 0;
+                            needs_redraw = 1;
+                            break;
                     }
                 }
                 break;
