@@ -894,7 +894,7 @@ void draw_main_screen() {
     
     // Second line of shortcuts
     start_x = 2;
-    mvprintw(max_y - 2, start_x, "Enter:Details  b:Bookmark  \\:CatSearch  ?:Help");
+    mvprintw(max_y - 2, start_x, "Enter:Details  b:Bookmark  ?:Help");
     attroff(COLOR_PAIR(COLOR_PAIR_DEFAULT));
     
     // Draw command list with scrolling
@@ -1572,61 +1572,6 @@ case KEY_DOWN:
                             show_status_message("All filters cleared", COLOR_PAIR_SUCCESS);
                             break;
                             
-                        case '\\':
-                            {
-                                echo();
-                                curs_set(1);
-                                
-                                // Save current screen
-                                WINDOW *temp_win = newwin(3, max_x - 4, max_y - 4, 2);
-                                wbkgd(temp_win, COLOR_PAIR(COLOR_PAIR_DEFAULT));
-                                box(temp_win, 0, 0);
-                                
-                                mvwprintw(temp_win, 1, 2, "Search category: ");
-                                wrefresh(temp_win);
-                                
-                                char cat_search[100];
-                                echo();
-                                curs_set(1);
-                                wgetnstr(temp_win, cat_search, 99);
-                                noecho();
-                                curs_set(0);
-                                
-                                if (cat_search[0] != '\0') {
-                                    // Convert to lowercase
-                                    for (int j = 0; cat_search[j]; j++) 
-                                        cat_search[j] = tolower(cat_search[j]);
-                                    
-                                    // Search for matching category
-                                    int found = -1;
-                                    for (int i = 0; i < category_count; i++) {
-                                        char cat_lower[MAX_CAT_NAME_LEN];
-                                        strcpy(cat_lower, categories[i]);
-                                        for (int j = 0; cat_lower[j]; j++) 
-                                            cat_lower[j] = tolower(cat_lower[j]);
-                                        
-                                        if (strstr(cat_lower, cat_search) != NULL) {
-                                            found = i;
-                                            break;
-                                        }
-                                    }
-                                    
-                                    if (found != -1) {
-                                        category_filter = found;
-                                        selected_index = 0;
-                                        scroll_offset = 0;
-                                        char msg[100];
-                                        snprintf(msg, sizeof(msg), "Filtered by category: %s", categories[found]);
-                                        show_status_message(msg, COLOR_PAIR_SUCCESS);
-                                    } else {
-                                        show_status_message("Category not found", COLOR_PAIR_ERROR);
-                                    }
-                                }
-                                
-                                delwin(temp_win);
-                            }
-                            break;
-                            
                         case '?':
                             {
                                 // Show help overlay
@@ -1647,14 +1592,13 @@ case KEY_DOWN:
                                 mvwprintw(help_win, 8, 4, "Filtering:");
                                 mvwprintw(help_win, 9, 6, "F                         - Select category");
                                 mvwprintw(help_win, 10, 6, "S                         - Toggle bookmarks only");
-                                mvwprintw(help_win, 11, 6, "\\                         - Quick category search");
-                                mvwprintw(help_win, 12, 6, "X                         - Clear all filters");
-                                mvwprintw(help_win, 13, 6, "Ctrl+N/D/F/E              - Toggle search modes");
+                                mvwprintw(help_win, 11, 6, "X                         - Clear all filters");
+                                mvwprintw(help_win, 12, 6, "Ctrl+N/D/F/E              - Toggle search modes");
                                 
-                                mvwprintw(help_win, 15, 4, "Actions:");
-                                mvwprintw(help_win, 16, 6, "b                         - Toggle bookmark");
-                                mvwprintw(help_win, 17, 6, "?                         - This help screen");
-                                mvwprintw(help_win, 18, 6, "F1                        - Exit");
+                                mvwprintw(help_win, 14, 4, "Actions:");
+                                mvwprintw(help_win, 15, 6, "b                         - Toggle bookmark");
+                                mvwprintw(help_win, 16, 6, "?                         - This help screen");
+                                mvwprintw(help_win, 17, 6, "F1                        - Exit");
                                 
                                 mvwprintw(help_win, max_y - 8, (max_x - 16) / 2 - 4, "Press any key to continue...");
                                 
