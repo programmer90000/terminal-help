@@ -5854,6 +5854,198 @@
                     "explanation": "Prints colored text"
                 }
             }
+        },
+        {
+            "name": "date",
+            "description": "Print or set the system date and time",
+            "category": "system_info",
+            "bookmarked": false,
+            "flags": {
+                "u": {
+                    "name": "utc",
+                    "description": "Print or set Coordinated Universal Time",
+                    "syntax": "date -u"
+                },
+                "R": {
+                    "name": "rfc-email",
+                    "description": "Output date and time in RFC 5322 format",
+                    "syntax": "date -R"
+                },
+                "I": {
+                    "name": "iso-8601",
+                    "description": "Output date/time in ISO 8601 format",
+                    "syntax": "date -I"
+                },
+                "r": {
+                    "name": "reference",
+                    "description": "Display the last modification time of FILE",
+                    "syntax": "date -r FILE"
+                },
+                "s": {
+                    "name": "set",
+                    "description": "Set time described by STRING",
+                    "syntax": "date -s STRING"
+                },
+                "d": {
+                    "name": "date",
+                    "description": "Display time described by STRING, not 'now'",
+                    "syntax": "date -d STRING"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "date",
+                    "output": "Mon Jan 1 12:00:00 UTC 2024",
+                    "explanation": "Shows current date and time"
+                },
+                "format": {
+                    "command": "date \"+%Y-%m-%d %H:%M:%S\"",
+                    "output": "2024-01-01 12:00:00",
+                    "explanation": "Custom format: YYYY-MM-DD HH:MM:SS"
+                },
+                "utc": {
+                    "command": "date -u",
+                    "explanation": "Shows time in UTC"
+                },
+                "iso": {
+                    "command": "date -Iseconds",
+                    "output": "2024-01-01T12:00:00+00:00",
+                    "explanation": "ISO 8601 format with seconds"
+                },
+                "rfc": {
+                    "command": "date -R",
+                    "output": "Mon, 01 Jan 2024 12:00:00 +0000",
+                    "explanation": "RFC 5322 format for email headers"
+                },
+                "file_mod": {
+                    "command": "date -r /etc/passwd",
+                    "explanation": "Shows modification time of /etc/passwd"
+                },
+                "relative": {
+                    "command": "date -d \"tomorrow\"",
+                    "explanation": "Shows time for tomorrow"
+                },
+                "yesterday": {
+                    "command": "date -d \"yesterday\" \"+%Y-%m-%d\"",
+                    "explanation": "Shows yesterday's date"
+                },
+                "epoch": {
+                    "command": "date +%s",
+                    "output": "1704067200",
+                    "explanation": "Shows Unix timestamp (seconds since epoch)"
+                },
+                "from_epoch": {
+                    "command": "date -d @1704067200",
+                    "explanation": "Converts Unix timestamp to readable date"
+                },
+                "set_time": {
+                    "command": "sudo date -s \"2024-01-01 12:00:00\"",
+                    "explanation": "Sets system date and time (requires root)"
+                },
+                "week_number": {
+                    "command": "date +%V",
+                    "output": "01",
+                    "explanation": "Shows week number of year"
+                }
+            }
+        },
+        {
+            "name": "watch",
+            "description": "Execute a program periodically, showing output fullscreen",
+            "category": "monitoring",
+            "bookmarked": false,
+            "flags": {
+                "n": {
+                    "name": "interval",
+                    "description": "Specify update interval in seconds",
+                    "syntax": "watch -n SECONDS COMMAND"
+                },
+                "d": {
+                    "name": "differences",
+                    "description": "Highlight changes between updates",
+                    "syntax": "watch -d COMMAND"
+                },
+                "t": {
+                    "name": "no-title",
+                    "description": "Turn off header showing interval and command",
+                    "syntax": "watch -t COMMAND"
+                },
+                "b": {
+                    "name": "beep",
+                    "description": "Beep if command has a non-zero exit",
+                    "syntax": "watch -b COMMAND"
+                },
+                "e": {
+                    "name": "errexit",
+                    "description": "Exit on error from command",
+                    "syntax": "watch -e COMMAND"
+                },
+                "g": {
+                    "name": "chgexit",
+                    "description": "Exit when output from command changes",
+                    "syntax": "watch -g COMMAND"
+                },
+                "c": {
+                    "name": "color",
+                    "description": "Interpret ANSI color sequences",
+                    "syntax": "watch -c COMMAND"
+                },
+                "x": {
+                    "name": "exec",
+                    "description": "Pass command to exec instead of sh -c",
+                    "syntax": "watch -x COMMAND"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "watch date",
+                    "explanation": "Updates date display every 2 seconds (default)"
+                },
+                "interval": {
+                    "command": "watch -n 5 \"ls -la\"",
+                    "explanation": "Lists directory every 5 seconds"
+                },
+                "differences": {
+                    "command": "watch -d \"netstat -an | grep ESTABLISHED\"",
+                    "explanation": "Highlights changes in established connections"
+                },
+                "no_title": {
+                    "command": "watch -t free -h",
+                    "explanation": "Shows memory usage without header"
+                },
+                "monitor_processes": {
+                    "command": "watch -n 1 \"ps aux | grep python\"",
+                    "explanation": "Monitors Python processes every second"
+                },
+                "disk_space": {
+                    "command": "watch -n 60 \"df -h /\"",
+                    "explanation": "Checks disk space every minute"
+                },
+                "beep": {
+                    "command": "watch -b \"ping -c 1 google.com\"",
+                    "explanation": "Beeps if ping fails"
+                },
+                "exit_on_change": {
+                    "command": "watch -g \"ls -l file.txt\"",
+                    "explanation": "Exits when file.txt changes"
+                },
+                "color": {
+                    "command": "watch -c \"ls --color=always\"",
+                    "explanation": "Shows colored output"
+                },
+                "monitor_logs": {
+                    "command": "watch \"tail -20 /var/log/syslog\"",
+                    "explanation": "Monitors last 20 lines of syslog"
+                },
+                "network": {
+                    "command": "watch -n 2 \"ifconfig eth0\"",
+                    "explanation": "Monitors network interface every 2 seconds"
+                },
+                "exit_on_error": {
+                    "command": "watch -e \"test -f /tmp/lockfile\"",
+                    "explanation": "Exits when lockfile exists"
+                }
+            }
         }
     ]
 }
