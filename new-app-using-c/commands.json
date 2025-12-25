@@ -1,14 +1,48 @@
 {
     "commands": [
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "pwd",
+            "description": "Print the absolute path of the current working directory",
+            "category": "navigation",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "L": {
+                    "name": "Logical",
+                    "description": "The logical current directory path, respecting symbolic links and environment variables. Shows the path as referenced, even if through symlinks",
+                    "syntax": "pwd -L"
+                },
+                "P": {
+                    "name": "Physical",
+                    "description": "The actual physical path, resolving all symbolic links. Shows the real location in the filesystem",
+                    "syntax": "pwd -P"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about pwd command usage and options",
+                    "syntax": "pwd --help"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "pwd",
+                    "output": "/home/user/documents"
+                },
+                "with_flags": {
+                    "L": {
+                        "command": "cd /tmp/symlink_dir && pwd -L",
+                        "output": "/tmp/symlink_dir",
+                        "explanation": "Shows logical path even when directory is a symbolic link."
+                    },
+                    "P": {
+                        "command": "cd /tmp/symlink_dir && pwd -P",
+                        "output": "/home/user/actual_dir",
+                        "explanation": "Shows physical path after resolving symbolic links."
+                    },
+                    "help": {
+                        "command": "pwd --help",
+                        "output": "INFORMATION ABOUT HOW TO USE PWD"
+                    }
+                }
             }
         },
         {
