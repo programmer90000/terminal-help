@@ -432,14 +432,65 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "rmdir",
+            "description": "Remove empty directories",
+            "category": "file_management",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "ignore-fail-on-non-empty": {
+                    "name": "ignore-fail-on-non-empty",
+                    "description": "Ignore each failure that is solely because a directory is non-empty",
+                    "syntax": "rmdir --ignore-fail-on-non-empty"
+                },
+                "p": {
+                    "name": "parents",
+                    "description": "Remove DIRECTORY and its ancestors; e.g., 'rmdir -p a/b/c' is similar to 'rmdir a/b/c a/b a'",
+                    "syntax": "rmdir -p"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Output a diagnostic for every directory processed",
+                    "syntax": "rmdir -v"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about rmdir command usage",
+                    "syntax": "rmdir --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information and exit",
+                    "syntax": "rmdir --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "rmdir mydir",
+                    "output": "",
+                    "explanation": "Removes the empty directory named 'mydir' from the current location. Fails if the directory is not empty."
+                },
+                "with_flags": {
+                    "p": {
+                        "command": "rmdir -p project/src/components",
+                        "output": "",
+                        "explanation": "Removes the directory path recursively. It will remove 'components', then 'src', then 'project', provided each directory becomes empty after the removal. Useful for cleaning up an empty directory tree."
+                    },
+                    "v": {
+                        "command": "rmdir -v old_backups",
+                        "output": "rmdir: removing directory, 'old_backups'",
+                        "explanation": "Verbose mode outputs a message confirming which directory is being removed."
+                    },
+                    "pv": {
+                        "command": "rmdir -pv a/b/c",
+                        "output": "rmdir: removing directory, 'a/b/c'\nrmdir: removing directory, 'a/b'\nrmdir: removing directory, 'a'",
+                        "explanation": "Combines verbose output with parent removal, showing each step of the recursive directory removal."
+                    },
+                    "ignore-fail-on-non-empty": {
+                        "command": "rmdir --ignore-fail-on-non-empty dir1 dir2 dir3",
+                        "output": "rmdir: failed to remove 'dir2': Directory not empty",
+                        "explanation": "Attempts to remove multiple directories. It will skip errors for directories that are not empty (like 'dir2') and continue to try removing the others (like 'dir1' and 'dir3')."
+                    }
+                }
             }
         },
         {
