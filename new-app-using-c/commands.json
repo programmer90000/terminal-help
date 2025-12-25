@@ -6059,6 +6059,11 @@
                 "description": "Add files to archive",
                 "syntax": "7z a archive.7z files"
             },
+            "b": {
+                "name": "benchmark",
+                "description": "Benchmark compression",
+                "syntax": "7z b"
+            },
             "d": {
                 "name": "delete",
                 "description": "Delete files from archive",
@@ -6069,10 +6074,25 @@
                 "description": "Extract files from archive (without directory names)",
                 "syntax": "7z e archive.7z"
             },
+            "h": {
+                "name": "hash",
+                "description": "Calculate hash values",
+                "syntax": "7z h file"
+            },
+            "i": {
+                "name": "information",
+                "description": "Show information about supported formats",
+                "syntax": "7z i"
+            },
             "l": {
                 "name": "list",
                 "description": "List contents of archive",
                 "syntax": "7z l archive.7z"
+            },
+            "rn": {
+                "name": "rename",
+                "description": "Rename files in archive",
+                "syntax": "7z rn archive.7z oldname newname"
             },
             "t": {
                 "name": "test",
@@ -6089,85 +6109,30 @@
                 "description": "Extract files with full paths",
                 "syntax": "7z x archive.7z"
             },
-            "-t": {
-                "name": "type",
-                "description": "Type of archive (7z, zip, gzip, bzip2, tar, etc.)",
-                "syntax": "7z a -t7z archive.7z files"
+            "-ad": {
+                "name": "archive-directory",
+                "description": "Set archive directory as current directory",
+                "syntax": "7z a -ad archive.7z files"
             },
-            "-m": {
-                "name": "method",
-                "description": "Compression method (LZMA, LZMA2, PPMd, BZip2, Deflate, etc.)",
-                "syntax": "7z a -m0=LZMA archive.7z files"
+            "-ai": {
+                "name": "include-archive",
+                "description": "Include archives",
+                "syntax": "7z a -ai!*.7z archive.7z"
             },
-            "-p": {
-                "name": "password",
-                "description": "Set password",
-                "syntax": "7z a -pPASSWORD archive.7z files"
-            },
-            "-mx": {
-                "name": "compression-level",
-                "description": "Set compression level: 0-9 (0: store, 3: fast, 5: normal, 7: maximum, 9: ultra)",
-                "syntax": "7z a -mx9 archive.7z files"
-            },
-            "-mhe": {
-                "name": "encrypt-headers",
-                "description": "Encrypt archive headers",
-                "syntax": "7z a -mhe=on archive.7z files"
-            },
-            "-o": {
-                "name": "output-directory",
-                "description": "Set output directory",
-                "syntax": "7z x archive.7z -o/path/to/extract"
-            },
-            "-y": {
-                "name": "assume-yes",
-                "description": "Assume Yes on all queries",
-                "syntax": "7z x archive.7z -y"
+            "-an": {
+                "name": "disable-archive-name",
+                "description": "Disable archive_name field",
+                "syntax": "7z a -an archive.7z files"
             },
             "-ao": {
                 "name": "overwrite-mode",
-                "description": "Set overwrite mode: a (Overwrite All), s (Skip existing), u (Update), t (Auto rename extract files)",
-                "syntax": "7z x archive.7z -aoa"
+                "description": "Set overwrite mode: a (Overwrite All), s (Skip existing), u (Update), t (Auto rename)",
+                "syntax": "7z x -aoa archive.7z"
             },
-            "-r": {
-                "name": "recursive",
-                "description": "Recurse subdirectories",
-                "syntax": "7z a -r archive.7z directory"
-            },
-            "-sfx": {
-                "name": "create-sfx",
-                "description": "Create SFX archive",
-                "syntax": "7z a -sfx archive.exe files"
-            },
-            "-si": {
-                "name": "stdin",
-                "description": "Read data from stdin",
-                "syntax": "cat file | 7z a -si archive.7z"
-            },
-            "-so": {
-                "name": "stdout",
-                "description": "Write data to stdout",
-                "syntax": "7z x -so archive.7z > output"
-            },
-            "-slt": {
-                "name": "show-technical",
-                "description": "Show technical information for l (List) command",
-                "syntax": "7z l -slt archive.7z"
-            },
-            "-scc": {
-                "name": "charset",
-                "description": "Set charset for file names",
-                "syntax": "7z l -sccUTF-8 archive.7z"
-            },
-            "-scs": {
-                "name": "list-charset",
-                "description": "Set charset for console input/output",
-                "syntax": "7z l -scsUTF-8 archive.7z"
-            },
-            "-scrc": {
-                "name": "crc",
-                "description": "Set hash function: CRC32, CRC64, SHA1, SHA256, etc.",
-                "syntax": "7z h -scrcSHA256 file"
+            "-ax": {
+                "name": "exclude-archive",
+                "description": "Exclude archives",
+                "syntax": "7z a -ax!*.tmp archive.7z files"
             },
             "-bb": {
                 "name": "logging-level",
@@ -6179,30 +6144,205 @@
                 "description": "Disable percentage indicator",
                 "syntax": "7z a -bd archive.7z files"
             },
-            "-sse": {
-                "name": "stop-on-error",
-                "description": "Stop on error",
-                "syntax": "7z t -sse archive.7z"
+            "-bs": {
+                "name": "output-stream",
+                "description": "Set output stream for output/error/progress line",
+                "syntax": "7z a -bso archive.7z files"
             },
-            "-sns": {
-                "name": "store-nt-security",
-                "description": "Store NT security information",
-                "syntax": "7z a -sns archive.7z files"
+            "-bt": {
+                "name": "show-time",
+                "description": "Show execution time statistics",
+                "syntax": "7z a -bt archive.7z files"
             },
-            "-snl": {
-                "name": "store-symlinks",
-                "description": "Store symbolic links as links",
-                "syntax": "7z a -snl archive.7z files"
+            "-i": {
+                "name": "include",
+                "description": "Include filenames",
+                "syntax": "7z a -i!*.txt archive.7z"
+            },
+            "-m": {
+                "name": "method",
+                "description": "Set compression method",
+                "syntax": "7z a -m0=LZMA archive.7z files"
+            },
+            "-mmt": {
+                "name": "multithread",
+                "description": "Set number of CPU threads",
+                "syntax": "7z a -mmt=4 archive.7z files"
+            },
+            "-mx": {
+                "name": "compression-level",
+                "description": "Set compression level: 0-9",
+                "syntax": "7z a -mx9 archive.7z files"
+            },
+            "-mhe": {
+                "name": "encrypt-headers",
+                "description": "Encrypt archive headers",
+                "syntax": "7z a -mhe=on archive.7z files"
+            },
+            "-o": {
+                "name": "output-directory",
+                "description": "Set output directory",
+                "syntax": "7z x -o/path archive.7z"
+            },
+            "-p": {
+                "name": "password",
+                "description": "Set password",
+                "syntax": "7z a -pPASSWORD archive.7z files"
+            },
+            "-r": {
+                "name": "recurse",
+                "description": "Recurse subdirectories",
+                "syntax": "7z a -r archive.7z directory"
+            },
+            "-sa": {
+                "name": "archive-name-mode",
+                "description": "Set archive name mode: a (append extension), e (use extension), s (set archive name)",
+                "syntax": "7z a -saa archive.7z files"
+            },
+            "-scc": {
+                "name": "console-charset",
+                "description": "Set charset for console input/output",
+                "syntax": "7z a -sccUTF-8 archive.7z files"
+            },
+            "-scrc": {
+                "name": "hash-function",
+                "description": "Set hash function: CRC32, CRC64, SHA1, SHA256, etc.",
+                "syntax": "7z h -scrcSHA256 file"
+            },
+            "-scs": {
+                "name": "list-charset",
+                "description": "Set charset for list files",
+                "syntax": "7z l -scsUTF-8 archive.7z"
+            },
+            "-sdel": {
+                "name": "delete-after",
+                "description": "Delete files after compression",
+                "syntax": "7z a -sdel archive.7z files"
+            },
+            "-seml": {
+                "name": "email",
+                "description": "Send archive by email",
+                "syntax": "7z a -seml. archive.7z files"
+            },
+            "-sfx": {
+                "name": "create-sfx",
+                "description": "Create SFX archive",
+                "syntax": "7z a -sfx archive.exe files"
+            },
+            "-si": {
+                "name": "stdin",
+                "description": "Read data from stdin",
+                "syntax": "cat file | 7z a -si archive.7z"
+            },
+            "-slt": {
+                "name": "show-technical",
+                "description": "Show technical information for l (List) command",
+                "syntax": "7z l -slt archive.7z"
             },
             "-snh": {
                 "name": "store-hardlinks",
                 "description": "Store hard links as links",
                 "syntax": "7z a -snh archive.7z files"
             },
-            "-snc": {
-                "name": "store-nt-compress",
-                "description": "Store NT compressed files as compressed",
-                "syntax": "7z a -snc archive.7z files"
+            "-snl": {
+                "name": "store-symlinks",
+                "description": "Store symbolic links as links",
+                "syntax": "7z a -snl archive.7z files"
+            },
+            "-sni": {
+                "name": "store-nt-security",
+                "description": "Store NT security information",
+                "syntax": "7z a -sni archive.7z files"
+            },
+            "-sns": {
+                "name": "store-ntfs-streams",
+                "description": "Store NTFS alternate streams",
+                "syntax": "7z a -sns archive.7z files"
+            },
+            "-so": {
+                "name": "stdout",
+                "description": "Write data to stdout",
+                "syntax": "7z x -so archive.7z > output"
+            },
+            "-spd": {
+                "name": "disable-wildcards",
+                "description": "Disable wildcard matching for file names",
+                "syntax": "7z a -spd archive.7z files"
+            },
+            "-spe": {
+                "name": "eliminate-duplicate-root",
+                "description": "Eliminate duplication of root folder for extract command",
+                "syntax": "7z x -spe archive.7z"
+            },
+            "-spf": {
+                "name": "fully-qualified-paths",
+                "description": "Use fully qualified file paths",
+                "syntax": "7z a -spf archive.7z files"
+            },
+            "-ssc": {
+                "name": "sensitive-case",
+                "description": "Set sensitive case mode",
+                "syntax": "7z a -ssc- archive.7z files"
+            },
+            "-sse": {
+                "name": "stop-on-error",
+                "description": "Stop archive creating if can't open some input file",
+                "syntax": "7z a -sse archive.7z files"
+            },
+            "-ssp": {
+                "name": "preserve-access-time",
+                "description": "Do not change Last Access Time of source files while archiving",
+                "syntax": "7z a -ssp archive.7z files"
+            },
+            "-ssw": {
+                "name": "compress-shared",
+                "description": "Compress shared files",
+                "syntax": "7z a -ssw archive.7z files"
+            },
+            "-stl": {
+                "name": "archive-timestamp",
+                "description": "Set archive timestamp from the most recently modified file",
+                "syntax": "7z a -stl archive.7z files"
+            },
+            "-stm": {
+                "name": "thread-affinity",
+                "description": "Set CPU thread affinity mask",
+                "syntax": "7z a -stmFF archive.7z files"
+            },
+            "-stx": {
+                "name": "exclude-type",
+                "description": "Exclude archive type",
+                "syntax": "7z a -stxzip archive.7z files"
+            },
+            "-t": {
+                "name": "type",
+                "description": "Set type of archive",
+                "syntax": "7z a -t7z archive.7z files"
+            },
+            "-u": {
+                "name": "update-options",
+                "description": "Update options",
+                "syntax": "7z u -up0q0r0x0y0z0w0 archive.7z files"
+            },
+            "-v": {
+                "name": "volumes",
+                "description": "Create volumes",
+                "syntax": "7z a -v10m archive.7z files"
+            },
+            "-w": {
+                "name": "work-directory",
+                "description": "Assign work directory",
+                "syntax": "7z a -w/tmp archive.7z files"
+            },
+            "-x": {
+                "name": "exclude",
+                "description": "Exclude filenames",
+                "syntax": "7z a -x!*.tmp archive.7z files"
+            },
+            "-y": {
+                "name": "assume-yes",
+                "description": "Assume Yes on all queries",
+                "syntax": "7z x -y archive.7z"
             },
             "help": {
                 "name": "help",
@@ -6236,72 +6376,501 @@
                     "command": "7z t archive.7z",
                     "output": "Testing archive archive.7z\nTesting file1.txt\nTesting file2.txt\nEverything is Ok",
                     "explanation": "Test archive integrity"
-                }
-            }
-        },
-        {
-            "name": "add-apt-repository",
-            "description": "Adds a PPA (Personal Package Archive) repository to the system's software sources",
-            "category": "package-management",
-            "bookmarked": false,
-            "flags": {
-                "r": {
-                    "name": "remove",
-                    "description": "Remove the specified repository",
-                    "syntax": "add-apt-repository -r ppa:user/repo"
                 },
-                "y": {
-                    "name": "yes",
-                    "description": "Assume yes to all queries",
-                    "syntax": "add-apt-repository -y ppa:user/repo"
+                "benchmark": {
+                    "command": "7z b",
+                    "output": "7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nRAM size:   16384 MB\n# CPU hardware threads: 16\n\nDict        Compressing          |        Decompressing\n      Speed Usage    R/U Rating  |    Speed Usage    R/U Rating\n       KB/s     %   MIPS   MIPS  |     KB/s     %   MIPS   MIPS\n22:    10000  1000   1000  10000 |    20000  2000   2000  40000",
+                    "explanation": "Run compression benchmark"
                 },
-                "s": {
-                    "name": "enable-source",
-                    "description": "Enable downloading of source packages from the repository",
-                    "syntax": "add-apt-repository -s ppa:user/repo"
-                },
-                "u": {
-                    "name": "update",
-                    "description": "Update package list after adding repository",
-                    "syntax": "add-apt-repository -u ppa:user/repo"
-                },
-                "c": {
-                    "name": "components",
-                    "description": "Specify repository components",
-                    "syntax": "add-apt-repository 'deb http://example.com/ubuntu focal main universe'"
+                "hash": {
+                    "command": "7z h file.txt",
+                    "output": "Hashes for file.txt:\nCRC32:      A1B2C3D4\nCRC64:      1234567890ABCDEF\nSHA1:       1234567890ABCDEF1234567890ABCDEF12345678\nSHA256:     1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF1234567890ABCDEF",
+                    "explanation": "Calculate hash values for a file"
                 },
                 "help": {
-                    "name": "help",
-                    "description": "Display help information",
-                    "syntax": "add-apt-repository --help"
-                }
-            },
-            "examples": {
-                "basic": {
-                    "command": "add-apt-repository ppa:ubuntu-mozilla-daily/ppa",
-                    "output": "Repository: 'deb http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu focal main'\nDescription: Firefox Daily Build\nMore info: https://launchpad.net/~ubuntu-mozilla-daily/+archive/ubuntu/ppa\nAdding repository.\nPress [ENTER] to continue or Ctrl+C to cancel.",
-                    "explanation": "Add Firefox daily builds PPA repository"
-                },
-                "with_flags": {
-                    "remove": {
-                        "command": "add-apt-repository -r ppa:ubuntu-mozilla-daily/ppa",
-                        "output": "Repository removed successfully.",
-                        "explanation": "Remove previously added PPA repository"
-                    },
-                    "yes": {
-                        "command": "add-apt-repository -y ppa:libreoffice/ppa",
-                        "output": "Repository added successfully.",
-                        "explanation": "Add repository without prompting for confirmation"
-                    },
-                    "source": {
-                        "command": "add-apt-repository -s 'deb http://archive.ubuntu.com/ubuntu focal main'",
-                        "output": "Repository with source enabled added successfully.",
-                        "explanation": "Add repository with source packages enabled"
-                    }
+                    "command": "7z --help",
+                    "output": "7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nUsage: 7z <command> [<switches>...] <archive_name> [<file_names>...]\n\n<Commands>\n  a : Add files to archive\n  b : Benchmark\n  d : Delete files from archive\n  e : Extract files from archive (without using directory names)\n  h : Calculate hash values\n  i : Show information about supported formats\n  l : List contents of archive\n  rn : Rename files in archive\n  t : Test integrity of archive\n  u : Update files to archive\n  x : eXtract files with full paths\n\n<Switches>\n  -- : Stop switches parsing\n  -ai[r[-|0]]{@listfile|!wildcard} : Include archives\n  -ax[r[-|0]]{@listfile|!wildcard} : eXclude archives\n  -ao{a|s|t|u} : set Overwrite mode\n  -an : disable archive_name field\n  -bb[0-3] : set output log level\n  -bd : disable progress indicator\n  -bs{o|e|p}{0|1|2} : set output stream for output/error/progress line\n  -bt : show execution time statistics\n  -i[r[-|0]]{@listfile|!wildcard} : Include filenames\n  -m{Parameters} : set compression Method\n  -o{Directory} : set Output directory\n  -p{Password} : set Password\n  -r[-|0] : Recurse subdirectories\n  -sa{a|e|s} : set Archive name mode\n  -scc{UTF-8|WIN|DOS} : set charset for for console input/output\n  -scs{UTF-8|WIN|DOS} : set charset for list files\n  -scrc[CRC32|CRC64|SHA1|SHA256|*] : set hash function for x, e, h commands\n  -sdel : delete files after compression\n  -seml[.] : send archive by email\n  -sfx[{name}] : Create SFX archive\n  -si[{name}] : read data from stdin\n  -slp : set Large Pages mode\n  -slt : show technical information for l (List) command\n  -snh : store hard links as links\n  -snl : store symbolic links as links\n  -sni : store NT security information\n  -sns[-] : store NTFS alternate streams\n  -so : write data to stdout\n  -spd : disable wildcard matching for file names\n  -spe : eliminate duplication of root folder for extract command\n  -spf : use fully qualified file paths\n  -ssc[-] : set sensitive case mode\n  -sse : stop archive creating, if can't open some input file\n  -ssp : do not change Last Access Time of source files while archiving\n  -ssw : compress shared files\n  -stl : set archive timestamp from the most recently modified file\n  -stm{HexMask} : set CPU thread affinity mask (hexadecimal number)\n  -stx{Type} : exclude archive type\n  -t{Type} : Set type of archive\n  -u[-][p#][q#][r#][x#][y#][z#][!newArchiveName] : Update options\n  -v{Size}[b|k|m|g] : Create volumes\n  -w[{path}] : assign Work directory. Empty path means a temporary directory\n  -x[r[-|0]]{@listfile|!wildcard} : eXclude filenames\n  -y : assume Yes on all queries"
                 }
             }
         }
-    }
+    },
+    {
+        "name": "add-apt-repository",
+        "description": "Adds a PPA (Personal Package Archive) repository to the system's software sources",
+        "category": "package-management",
+        "bookmarked": false,
+        "flags": {
+            "r": {
+                "name": "remove",
+                "description": "Remove the specified repository",
+                "syntax": "add-apt-repository -r ppa:user/repo"
+            },
+            "y": {
+                "name": "yes",
+                "description": "Assume yes to all queries",
+                "syntax": "add-apt-repository -y ppa:user/repo"
+            },
+            "s": {
+                "name": "enable-source",
+                "description": "Enable downloading of source packages from the repository",
+                "syntax": "add-apt-repository -s ppa:user/repo"
+            },
+            "u": {
+                "name": "update",
+                "description": "Update package list after adding repository",
+                "syntax": "add-apt-repository -u ppa:user/repo"
+            },
+            "c": {
+                "name": "components",
+                "description": "Specify repository components",
+                "syntax": "add-apt-repository 'deb http://example.com/ubuntu focal main universe'"
+            },
+            "help": {
+                "name": "help",
+                "description": "Display help information",
+                "syntax": "add-apt-repository --help"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "add-apt-repository ppa:ubuntu-mozilla-daily/ppa",
+                "output": "Repository: 'deb http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu focal main'\nDescription: Firefox Daily Build\nMore info: https://launchpad.net/~ubuntu-mozilla-daily/+archive/ubuntu/ppa\nAdding repository.\nPress [ENTER] to continue or Ctrl+C to cancel.",
+                "explanation": "Add Firefox daily builds PPA repository"
+            },
+            "with_flags": {
+                "remove": {
+                    "command": "add-apt-repository -r ppa:ubuntu-mozilla-daily/ppa",
+                    "output": "Repository removed successfully.",
+                    "explanation": "Remove previously added PPA repository"
+                },
+                "yes": {
+                    "command": "add-apt-repository -y ppa:libreoffice/ppa",
+                    "output": "Repository added successfully.",
+                    "explanation": "Add repository without prompting for confirmation"
+                },
+                "source": {
+                    "command": "add-apt-repository -s 'deb http://archive.ubuntu.com/ubuntu focal main'",
+                    "output": "Repository with source enabled added successfully.",
+                    "explanation": "Add repository with source packages enabled"
+                }
+            }
+        }
+    },
+    {
+        "name": "addpart",
+        "description": "Tell the kernel about the existence of a partition",
+        "category": "storage",
+        "bookmarked": false,
+        "flags": {
+            "help": {
+                "name": "help",
+                "description": "Display help information",
+                "syntax": "addpart --help"
+            },
+            "version": {
+                "name": "version",
+                "description": "Output version information and exit",
+                "syntax": "addpart --version"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "addpart /dev/sda 1 2048 4095",
+                "output": "",
+                "explanation": "Add partition 1 to /dev/sda starting at sector 2048 and ending at sector 4095"
+            },
+            "with_flags": {
+                "help": {
+                    "command": "addpart --help",
+                    "output": "Usage: addpart <device> <partition> <start> <length>\n\nTell the kernel about the existence of the specified partition.\n\nArguments:\n  <device>     The disk device (e.g., /dev/sda)\n  <partition>  The partition number\n  <start>      Starting sector\n  <length>     Length in sectors\n\nOptions:\n  -h, --help     display this help and exit\n  -V, --version  output version information and exit"
+                }
+            }
+        }
+    },
+    {
+        "name": "alias",
+        "description": "Create an alias for a command or series of commands",
+        "category": "shell-builtin",
+        "bookmarked": false,
+        "flags": {
+            "p": {
+                "name": "print",
+                "description": "Print all defined aliases in a reusable format",
+                "syntax": "alias -p"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "alias ll='ls -la'",
+                "output": "",
+                "explanation": "Create alias 'll' for 'ls -la' command"
+            },
+            "with_flags": {
+                "print": {
+                    "command": "alias -p",
+                    "output": "alias ll='ls -la'\nalias grep='grep --color=auto'\nalias rm='rm -i'",
+                    "explanation": "Print all currently defined aliases"
+                },
+                "multiple": {
+                    "command": "alias la='ls -A' lh='ls -lh'",
+                    "output": "",
+                    "explanation": "Create multiple aliases at once"
+                },
+                "complex": {
+                    "command": "alias update='sudo apt update && sudo apt upgrade -y'",
+                    "output": "",
+                    "explanation": "Create alias for a series of commands"
+                }
+            }
+        }
+    },
+    {
+        "name": "apt",
+        "description": "Command-line interface for package management",
+        "category": "package-management",
+        "bookmarked": false,
+        "flags": {
+            "h": {
+                "name": "help",
+                "description": "Show help message and exit",
+                "syntax": "apt -h"
+            },
+            "v": {
+                "name": "version",
+                "description": "Show version and exit",
+                "syntax": "apt -v"
+            },
+            "d": {
+                "name": "download-only",
+                "description": "Download only; package files are only retrieved, not unpacked or installed",
+                "syntax": "apt -d install package"
+            },
+            "f": {
+                "name": "fix-broken",
+                "description": "Fix broken dependencies",
+                "syntax": "apt -f install"
+            },
+            "-fix-broken": {
+                "name": "fix-broken",
+                "description": "Fix broken dependencies",
+                "syntax": "apt --fix-broken install"
+            },
+            "m": {
+                "name": "ignore-missing",
+                "description": "Ignore missing packages",
+                "syntax": "apt -m install package"
+            },
+            "-allow-unauthenticated": {
+                "name": "allow-unauthenticated",
+                "description": "Ignore package authentication",
+                "syntax": "apt --allow-unauthenticated install package"
+            },
+            "-allow-downgrades": {
+                "name": "allow-downgrades",
+                "description": "Allow downgrading packages",
+                "syntax": "apt --allow-downgrades install package"
+            },
+            "-allow-remove-essential": {
+                "name": "allow-remove-essential",
+                "description": "Allow removal of essential packages",
+                "syntax": "apt --allow-remove-essential remove package"
+            },
+            "-allow-change-held-packages": {
+                "name": "allow-change-held-packages",
+                "description": "Allow changing held packages",
+                "syntax": "apt --allow-change-held-packages install package"
+            },
+            "-no-install-recommends": {
+                "name": "no-install-recommends",
+                "description": "Do not install recommended packages",
+                "syntax": "apt --no-install-recommends install package"
+            },
+            "-install-suggests": {
+                "name": "install-suggests",
+                "description": "Install suggested packages",
+                "syntax": "apt --install-suggests install package"
+            },
+            "-reinstall": {
+                "name": "reinstall",
+                "description": "Reinstall package",
+                "syntax": "apt --reinstall install package"
+            },
+            "-dry-run": {
+                "name": "dry-run",
+                "description": "Perform simulation, not actual changes",
+                "syntax": "apt --dry-run install package"
+            },
+            "-simulate": {
+                "name": "simulate",
+                "description": "Perform simulation, not actual changes",
+                "syntax": "apt --simulate install package"
+            },
+            "-show-upgraded": {
+                "name": "show-upgraded",
+                "description": "Show upgraded packages",
+                "syntax": "apt --show-upgraded upgrade"
+            },
+            "-verbose-versions": {
+                "name": "verbose-versions",
+                "description": "Show full versions for upgraded packages",
+                "syntax": "apt --verbose-versions upgrade"
+            },
+            "-quiet": {
+                "name": "quiet",
+                "description": "Quiet mode, less output",
+                "syntax": "apt --quiet install package"
+            },
+            "-silent": {
+                "name": "silent",
+                "description": "Silent mode, no output",
+                "syntax": "apt --silent install package"
+            },
+            "-assume-yes": {
+                "name": "assume-yes",
+                "description": "Automatically answer yes to prompts",
+                "syntax": "apt --assume-yes install package"
+            },
+            "-assume-no": {
+                "name": "assume-no",
+                "description": "Automatically answer no to prompts",
+                "syntax": "apt --assume-no install package"
+            },
+            "-purge": {
+                "name": "purge",
+                "description": "Remove package with configuration files",
+                "syntax": "apt --purge remove package"
+            },
+            "-auto-remove": {
+                "name": "auto-remove",
+                "description": "Remove automatically installed unused packages",
+                "syntax": "apt --auto-remove remove package"
+            },
+            "-only-upgrade": {
+                "name": "only-upgrade",
+                "description": "Only upgrade packages, don't install new ones",
+                "syntax": "apt --only-upgrade upgrade"
+            },
+            "-with-new-pkgs": {
+                "name": "with-new-pkgs",
+                "description": "Allow installing new packages when upgrading",
+                "syntax": "apt --with-new-pkgs upgrade"
+            },
+            "-list-cleanup": {
+                "name": "list-cleanup",
+                "description": "Automatically manage package list files",
+                "syntax": "apt --list-cleanup update"
+            },
+            "-show-progress": {
+                "name": "show-progress",
+                "description": "Show progress bar",
+                "syntax": "apt --show-progress install package"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "apt update",
+                "output": "Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease\nGet:2 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]\nGet:3 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]\nFetched 222 kB in 2s (111 kB/s)\nReading package lists... Done",
+                "explanation": "Update package lists from repositories"
+            },
+            "with_flags": {
+                "install": {
+                    "command": "apt install nginx",
+                    "output": "Reading package lists... Done\nBuilding dependency tree... Done\nReading state information... Done\nThe following NEW packages will be installed:\n  nginx\n0 upgraded, 1 newly installed, 0 to remove and 0 not upgraded.\nNeed to get 1,024 kB of archives.\nAfter this operation, 2,560 kB of additional disk space will be used.\nGet:1 http://archive.ubuntu.com/ubuntu focal/universe amd64 nginx amd64 1.18.0-0ubuntu1 [1,024 kB]\nFetched 1,024 kB in 1s (1,024 kB/s)\nSelecting previously unselected package nginx.\nPreparing to unpack .../nginx_1.18.0-0ubuntu1_amd64.deb ...\nUnpacking nginx (1.18.0-0ubuntu1) ...\nSetting up nginx (1.18.0-0ubuntu1) ...",
+                    "explanation": "Install Nginx web server"
+                },
+                "upgrade": {
+                    "command": "apt upgrade",
+                    "output": "Reading package lists... Done\nBuilding dependency tree... Done\nReading state information... Done\nCalculating upgrade... Done\nThe following packages will be upgraded:\n  package1 package2 package3\n3 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.\nNeed to get 10.2 MB of archives.\nAfter this operation, 1,024 kB of additional disk space will be used.\nDo you want to continue? [Y/n]",
+                    "explanation": "Upgrade all installed packages"
+                },
+                "remove": {
+                    "command": "apt remove package",
+                    "output": "Reading package lists... Done\nBuilding dependency tree... Done\nReading state information... Done\nThe following packages will be REMOVED:\n  package\n0 upgraded, 0 newly installed, 1 to remove and 0 not upgraded.\nAfter this operation, 1,024 kB disk space will be freed.\nDo you want to continue? [Y/n]",
+                    "explanation": "Remove a package but keep configuration files"
+                },
+                "search": {
+                    "command": "apt search editor",
+                    "output": "Sorting... Done\nFull Text Search... Done\nnano/focal 4.8-1ubuntu1 amd64\n  small, friendly text editor inspired by Pico\n\nvim/focal 2:8.1.2269-1ubuntu5 amd64\n  Vi IMproved - enhanced vi editor\n\nemacs/focal 1:27.1+1-3ubuntu2 amd64\n  GNU Emacs editor (metapackage)",
+                    "explanation": "Search for packages containing 'editor' in name or description"
+                },
+                "show": {
+                    "command": "apt show nginx",
+                    "output": "Package: nginx\nVersion: 1.18.0-0ubuntu1\nPriority: optional\nSection: web\nOrigin: Ubuntu\nMaintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>\nOriginal-Maintainer: Debian Nginx Maintainers <pkg-nginx-maintainers@lists.alioth.debian.org>\nBugs: https://bugs.launchpad.net/ubuntu/+filebug\nInstalled-Size: 2,560 kB\nDepends: nginx-core (>= 1.18.0-0ubuntu1) | nginx-full (>= 1.18.0-0ubuntu1) | nginx-light (>= 1.18.0-0ubuntu1) | nginx-extras (>= 1.18.0-0ubuntu1), nginx-core (<< 1.18.0-0ubuntu1.1~) | nginx-full (<< 1.18.0-0ubuntu1.1~) | nginx-light (<< 1.18.0-0ubuntu1.1~) | nginx-extras (<< 1.18.0-0ubuntu1.1~)\nHomepage: https://nginx.org\nDownload-Size: 1,024 kB\nAPT-Sources: http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages\nDescription: small, powerful, scalable web/proxy server\n Nginx (engine x) is a HTTP and reverse proxy server, as well as a mail proxy\n server, written by Igor Sysoev. The nginx package contains a version of nginx\n with the complete set of standard modules, but does not contain third-party\n modules.\n .\n This is a dependency package that installs nginx with one of the four\n flavors: nginx-core, nginx-full, nginx-light or nginx-extras.\nDescription-md5: 8a1c2a9e9b7e8d2c8b8e9a9c8d8e9f8a",
+                    "explanation": "Show detailed information about a package"
+                },
+                "list": {
+                    "command": "apt list --installed",
+                    "output": "Listing... Done\nadduser/focal,now 3.118ubuntu2 all [installed]\napt/focal-updates,now 2.0.9 amd64 [installed]\nbase-files/focal-updates,now 11ubuntu5.6 amd64 [installed]\nbase-passwd/focal,now 3.5.47 amd64 [installed]\nbash/focal-updates,now 5.0-6ubuntu1.2 amd64 [installed]\n...",
+                    "explanation": "List all installed packages"
+                },
+                "autoremove": {
+                    "command": "apt autoremove",
+                    "output": "Reading package lists... Done\nBuilding dependency tree... Done\nReading state information... Done\nThe following packages will be REMOVED:\n  package1 package2 package3\n0 upgraded, 0 newly installed, 3 to remove and 0 not upgraded.\nAfter this operation, 3,072 kB disk space will be freed.\nDo you want to continue? [Y/n]",
+                    "explanation": "Remove automatically installed packages that are no longer needed"
+                },
+                "help": {
+                    "command": "apt --help",
+                    "output": "apt 2.0.9 (amd64)\nUsage: apt [options] command\n\napt is a commandline package manager and provides commands for\nsearching and managing as well as querying information about packages.\nIt provides the same functionality as the specialized APT tools,\nlike apt-get and apt-cache but enables options more suitable for\ninteractive use by default.\n\nMost used commands:\n  list - list packages based on package names\n  search - search in package descriptions\n  show - show package details\n  install - install packages\n  remove - remove packages\n  autoremove - Remove automatically all unused packages\n  update - update list of available packages\n  upgrade - upgrade the system by installing/upgrading packages\n  full-upgrade - upgrade the system by removing/installing/upgrading packages\n  edit-sources - edit the source information file\n  satisfy - satisfy dependency strings\n\nSee apt(8) for more information about the available commands.\nConfiguration options and syntax is detailed in apt.conf(5).\nInformation about how to configure sources can be found in sources.list(5).\nPackage and version choices can be expressed via apt_preferences(5).\nSecurity details are available in apt-secure(8).\n                                        This APT has Super Cow Powers."
+                }
+            }
+        }
+    },
+    {
+        "name": "apt-cache",
+        "description": "Query the APT cache",
+        "category": "package-management",
+        "bookmarked": false,
+        "flags": {
+            "p": {
+                "name": "pkg-names",
+                "description": "Package names only",
+                "syntax": "apt-cache -p search"
+            },
+            "q": {
+                "name": "quiet",
+                "description": "Quiet mode",
+                "syntax": "apt-cache -q search"
+            },
+            "i": {
+                "name": "important",
+                "description": "Important fields only",
+                "syntax": "apt-cache -i show"
+            },
+            "-no-pre-depends": {
+                "name": "no-pre-depends",
+                "description": "Don't show Pre-Depends",
+                "syntax": "apt-cache --no-pre-depends depends"
+            },
+            "-recurse": {
+                "name": "recurse",
+                "description": "Recursive dependency listing",
+                "syntax": "apt-cache --recurse depends"
+            },
+            "-installed": {
+                "name": "installed",
+                "description": "Only show installed packages",
+                "syntax": "apt-cache --installed search"
+            },
+            "-all-versions": {
+                "name": "all-versions",
+                "description": "Show all versions",
+                "syntax": "apt-cache --all-versions show"
+            },
+            "-full": {
+                "name": "full",
+                "description": "Full record",
+                "syntax": "apt-cache --full show"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "apt-cache search editor",
+                "output": "Search results",
+                "explanation": "Search for packages"
+            }
+        }
+    },
+    {
+        "name": "apt-cdrom",
+        "description": "Add CD-ROM to APT sources",
+        "category": "package-management",
+        "bookmarked": false,
+        "flags": {
+            "d": {
+                "name": "cdrom",
+                "description": "Mount point",
+                "syntax": "apt-cdrom -d /mnt/cdrom add"
+            },
+            "r": {
+                "name": "rename",
+                "description": "Rename CD",
+                "syntax": "apt-cdrom -r rename"
+            },
+            "m": {
+                "name": "no-mount",
+                "description": "No mounting",
+                "syntax": "apt-cdrom -m add"
+            },
+            "f": {
+                "name": "fast",
+                "description": "Fast copy",
+                "syntax": "apt-cdrom -f add"
+            },
+            "a": {
+                "name": "thorough",
+                "description": "Thorough scan",
+                "syntax": "apt-cdrom -a add"
+            },
+            "-no-act": {
+                "name": "no-act",
+                "description": "Simulation only",
+                "syntax": "apt-cdrom --no-act add"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "apt-cdrom add",
+                "output": "Adding CD-ROM to sources",
+                "explanation": "Add CD-ROM as package source"
+            }
+        }
+    },
+    {
+        "name": "apt-config",
+        "description": "Query APT configuration",
+        "category": "package-management",
+        "bookmarked": false,
+        "flags": {
+            "dump": {
+                "name": "dump",
+                "description": "Show all configuration",
+                "syntax": "apt-config dump"
+            },
+            "shell": {
+                "name": "shell",
+                "description": "Shell format output",
+                "syntax": "apt-config shell"
+            },
+            "format": {
+                "name": "format",
+                "description": "Output format",
+                "syntax": "apt-config --format"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "apt-config dump",
+                "output": "APT configuration",
+                "explanation": "Show all APT configuration"
+            }
+        }
+    },
+    {
+        "name": "apt-extracttemplates",
+        "description": "Extract configuration templates from packages",
+        "category": "package-management",
+        "bookmarked": false,
+        "flags": {
+            "t": {
+                "name": "temp-dir",
+                "description": "Temporary directory",
+                "syntax": "apt-extracttemplates -t /tmp"
+            },
+            "help": {
+                "name": "help",
+                "description": "Show help",
+                "syntax": "apt-extracttemplates --help"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "apt-extracttemplates package.deb",
+                "output": "Extracted templates",
+                "explanation": "Extract templates from package"
+            }
+        }
+    },
+}
 }
 
 Commands I have already looked at and need to add to this file: 7z
