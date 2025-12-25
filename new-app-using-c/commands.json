@@ -606,14 +606,85 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "mv",
+            "description": "Move or rename files and directories",
+            "category": "file_operations",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "i": {
+                    "name": "interactive",
+                    "description": "Prompt before overwriting existing files",
+                    "syntax": "mv -i"
+                },
+                "n": {
+                    "name": "no-clobber",
+                    "description": "Do not overwrite an existing file",
+                    "syntax": "mv -n"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Print the name of each file before moving",
+                    "syntax": "mv -v"
+                },
+                "b": {
+                    "name": "backup",
+                    "description": "Make a backup of each existing destination file",
+                    "syntax": "mv -b"
+                },
+                "u": {
+                    "name": "update",
+                    "description": "Move only when the source file is newer than the destination file or when the destination file is missing",
+                    "syntax": "mv -u"
+                },
+                "t": {
+                    "name": "target-directory",
+                    "description": "Move all source arguments into the specified directory",
+                    "syntax": "mv -t DIRECTORY SOURCE..."
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about mv command usage and options",
+                    "syntax": "mv --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information and exit",
+                    "syntax": "mv --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic_rename": {
+                    "command": "mv oldname.txt newname.txt",
+                    "output": "",
+                    "explanation": "Renames oldname.txt to newname.txt in the current directory"
+                },
+                "basic_move": {
+                    "command": "mv file.txt /path/to/destination/",
+                    "output": "",
+                    "explanation": "Moves file.txt to the specified directory"
+                },
+                "with_flags": {
+                    "i": {
+                        "command": "mv -i source.txt destination.txt",
+                        "output": "mv: overwrite 'destination.txt'?",
+                        "explanation": "Prompts before overwriting if destination.txt already exists"
+                    },
+                    "v": {
+                        "command": "mv -v file.txt /backup/",
+                        "output": "'file.txt' -> '/backup/file.txt'",
+                        "explanation": "Verbose output shows what is being moved"
+                    },
+                    "multiple": {
+                        "command": "mv file1.txt file2.txt dir/",
+                        "output": "",
+                        "explanation": "Moves multiple files to a directory"
+                    },
+                    "rename_dir": {
+                        "command": "mv old_dir/ new_dir/",
+                        "output": "",
+                        "explanation": "Renames a directory from old_dir to new_dir"
+                    }
+                }
             }
         },
         {
