@@ -2364,6 +2364,291 @@
                     "explanation": "Floods localhost with ping requests (requires root)"
                 }
             }
+        },
+        {
+            "name": "ifconfig",
+            "description": "Configure network interface parameters (legacy command)",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "a": {
+                    "name": "all",
+                    "description": "Display all interfaces, even those that are down",
+                    "syntax": "ifconfig -a"
+                },
+                "s": {
+                    "name": "short",
+                    "description": "Display short listing",
+                    "syntax": "ifconfig -s"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Be more verbose for some error conditions",
+                    "syntax": "ifconfig -v"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "ifconfig",
+                    "output": "eth0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n        inet 192.168.1.100  netmask 255.255.255.0  broadcast 192.168.1.255\n        inet6 fe80::20c:29ff:fe12:3456  prefixlen 64  scopeid 0x20<link>\n        ether 00:0c:29:12:34:56  txqueuelen 1000  (Ethernet)\n        RX packets 123456  bytes 123456789 (117.7 MiB)\n        RX errors 0  dropped 0  overruns 0  frame 0\n        TX packets 98765  bytes 98765432 (94.2 MiB)\n        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0",
+                    "explanation": "Shows all active network interfaces with details"
+                },
+                "all": {
+                    "command": "ifconfig -a",
+                    "explanation": "Shows all interfaces including inactive ones"
+                },
+                "specific": {
+                    "command": "ifconfig eth0",
+                    "explanation": "Shows details for eth0 interface only"
+                },
+                "up_down": {
+                    "command": "sudo ifconfig eth0 up",
+                    "explanation": "Brings eth0 interface up (requires root)"
+                },
+                "set_ip": {
+                    "command": "sudo ifconfig eth0 192.168.1.100 netmask 255.255.255.0",
+                    "explanation": "Sets IP address and netmask for eth0 (requires root)"
+                }
+            }
+        },
+        {
+            "name": "ip",
+            "description": "Show / manipulate routing, network devices, interfaces and tunnels",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "address": {
+                    "name": "address",
+                    "description": "Manage IP addresses on devices",
+                    "syntax": "ip address"
+                },
+                "link": {
+                    "name": "link",
+                    "description": "Manage network interfaces",
+                    "syntax": "ip link"
+                },
+                "route": {
+                    "name": "route",
+                    "description": "Manage routing table",
+                    "syntax": "ip route"
+                },
+                "neigh": {
+                    "name": "neighbor",
+                    "description": "Manage ARP/NDISC cache entries",
+                    "syntax": "ip neigh"
+                },
+                "s": {
+                    "name": "stats",
+                    "description": "Output more information",
+                    "syntax": "ip -s"
+                },
+                "br": {
+                    "name": "brief",
+                    "description": "Brief output",
+                    "syntax": "ip -br"
+                },
+                "c": {
+                    "name": "color",
+                    "description": "Use color output",
+                    "syntax": "ip -c"
+                }
+            },
+            "examples": {
+                "address": {
+                    "command": "ip address show",
+                    "explanation": "Shows IP addresses on all interfaces (modern replacement for ifconfig)"
+                },
+                "brief": {
+                    "command": "ip -br address show",
+                    "output": "lo               UNKNOWN        127.0.0.1/8 ::1/128\neth0             UP             192.168.1.100/24 fe80::20c:29ff:fe12:3456/64\nwlan0            DOWN",
+                    "explanation": "Shows brief interface status"
+                },
+                "link": {
+                    "command": "ip link show",
+                    "explanation": "Shows network interface information"
+                },
+                "route": {
+                    "command": "ip route show",
+                    "output": "default via 192.168.1.1 dev eth0 proto dhcp metric 100\n192.168.1.0/24 dev eth0 proto kernel scope link src 192.168.1.100 metric 100",
+                    "explanation": "Shows routing table"
+                },
+                "add_address": {
+                    "command": "sudo ip address add 192.168.1.200/24 dev eth0",
+                    "explanation": "Adds secondary IP address to eth0"
+                },
+                "neighbors": {
+                    "command": "ip neigh show",
+                    "explanation": "Shows ARP/neighbor cache"
+                }
+            }
+        },
+        {
+            "name": "netstat",
+            "description": "Print network connections, routing tables, interface statistics, masquerade connections, and multicast memberships",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "a": {
+                    "name": "all",
+                    "description": "Show both listening and non-listening sockets",
+                    "syntax": "netstat -a"
+                },
+                "t": {
+                    "name": "tcp",
+                    "description": "Show TCP connections",
+                    "syntax": "netstat -t"
+                },
+                "u": {
+                    "name": "udp",
+                    "description": "Show UDP connections",
+                    "syntax": "netstat -u"
+                },
+                "l": {
+                    "name": "listening",
+                    "description": "Show only listening sockets",
+                    "syntax": "netstat -l"
+                },
+                "p": {
+                    "name": "program",
+                    "description": "Show PID/Program name for sockets",
+                    "syntax": "netstat -p"
+                },
+                "n": {
+                    "name": "numeric",
+                    "description": "Show numerical addresses instead of trying to determine symbolic host, port or user names",
+                    "syntax": "netstat -n"
+                },
+                "r": {
+                    "name": "route",
+                    "description": "Show kernel routing table",
+                    "syntax": "netstat -r"
+                },
+                "i": {
+                    "name": "interfaces",
+                    "description": "Show interface table",
+                    "syntax": "netstat -i"
+                },
+                "s": {
+                    "name": "statistics",
+                    "description": "Show network statistics by protocol",
+                    "syntax": "netstat -s"
+                },
+                "c": {
+                    "name": "continuous",
+                    "description": "Continuous listing",
+                    "syntax": "netstat -c"
+                }
+            },
+            "examples": {
+                "all": {
+                    "command": "netstat -tunap",
+                    "explanation": "Shows all TCP/UDP connections with programs and numeric addresses"
+                },
+                "listening": {
+                    "command": "netstat -tlnp",
+                    "output": "Proto Recv-Q Send-Q Local Address           Foreign Address         State       PID/Program name\ntcp        0      0 0.0.0.0:22              0.0.0.0:*               LISTEN      1234/sshd\ntcp        0      0 127.0.0.1:631           0.0.0.0:*               LISTEN      5678/cupsd",
+                    "explanation": "Shows all listening TCP sockets with program names"
+                },
+                "route": {
+                    "command": "netstat -rn",
+                    "explanation": "Shows kernel routing table in numeric format"
+                },
+                "statistics": {
+                    "command": "netstat -s",
+                    "explanation": "Shows network statistics by protocol"
+                },
+                "continuous": {
+                    "command": "netstat -c",
+                    "explanation": "Continuously displays network connections"
+                }
+            }
+        },
+        {
+            "name": "ss",
+            "description": "Socket statistics (modern replacement for netstat)",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "t": {
+                    "name": "tcp",
+                    "description": "Display TCP sockets",
+                    "syntax": "ss -t"
+                },
+                "u": {
+                    "name": "udp",
+                    "description": "Display UDP sockets",
+                    "syntax": "ss -u"
+                },
+                "l": {
+                    "name": "listening",
+                    "description": "Display listening sockets",
+                    "syntax": "ss -l"
+                },
+                "a": {
+                    "name": "all",
+                    "description": "Display all sockets",
+                    "syntax": "ss -a"
+                },
+                "n": {
+                    "name": "numeric",
+                    "description": "Do not resolve service names",
+                    "syntax": "ss -n"
+                },
+                "p": {
+                    "name": "processes",
+                    "description": "Show process using socket",
+                    "syntax": "ss -p"
+                },
+                "s": {
+                    "name": "summary",
+                    "description": "Print summary statistics",
+                    "syntax": "ss -s"
+                },
+                "4": {
+                    "name": "ipv4",
+                    "description": "Display only IPv4 sockets",
+                    "syntax": "ss -4"
+                },
+                "6": {
+                    "name": "ipv6",
+                    "description": "Display only IPv6 sockets",
+                    "syntax": "ss -6"
+                },
+                "o": {
+                    "name": "options",
+                    "description": "Show timer information",
+                    "syntax": "ss -o"
+                },
+                "i": {
+                    "name": "info",
+                    "description": "Show internal TCP information",
+                    "syntax": "ss -i"
+                }
+            },
+            "examples": {
+                "all": {
+                    "command": "ss -tunap",
+                    "output": "Netid  State   Recv-Q  Send-Q  Local Address:Port   Peer Address:Port  Process\ntcp    LISTEN  0       128     0.0.0.0:22           0.0.0.0:*         users:((\"sshd\",pid=1234,fd=3))\ntcp    ESTAB   0       0       192.168.1.100:22     192.168.1.50:54321 users:((\"sshd\",pid=5678,fd=3))\nudp    UNCONN  0       0       0.0.0.0:68           0.0.0.0:*         users:((\"dhclient\",pid=9012,fd=6))",
+                    "explanation": "Shows all TCP/UDP sockets with processes"
+                },
+                "listening": {
+                    "command": "ss -tln",
+                    "explanation": "Shows all listening TCP sockets in numeric format"
+                },
+                "summary": {
+                    "command": "ss -s",
+                    "output": "Total: 234\nTCP:   45 (estab 10, closed 20, orphaned 0, timewait 20)\nUDP:   15\nRAW:   2\nFRAG:  0",
+                    "explanation": "Shows socket statistics summary"
+                },
+                "established": {
+                    "command": "ss -t state established",
+                    "explanation": "Shows only established TCP connections"
+                },
+                "filter": {
+                    "command": "ss -t '( dport = :22 or sport = :22 )'",
+                    "explanation": "Shows TCP sockets with port 22"
+                }
+            }
         }
     ]
 }
