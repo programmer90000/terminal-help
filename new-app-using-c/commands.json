@@ -688,14 +688,85 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "rm",
+            "description": "Remove files or directories",
+            "category": "file_operations",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "i": {
+                    "name": "interactive",
+                    "description": "Prompt before every removal",
+                    "syntax": "rm -i"
+                },
+                "r": {
+                    "name": "recursive",
+                    "description": "Remove directories and their contents recursively",
+                    "syntax": "rm -r"
+                },
+                "f": {
+                    "name": "force",
+                    "description": "Ignore nonexistent files and arguments, never prompt",
+                    "syntax": "rm -f"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Print a message for each removed file",
+                    "syntax": "rm -v"
+                },
+                "d": {
+                    "name": "dir",
+                    "description": "Remove empty directories",
+                    "syntax": "rm -d"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about rm command usage and options",
+                    "syntax": "rm --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information and exit",
+                    "syntax": "rm --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "rm file.txt",
+                    "output": "",
+                    "explanation": "Removes file.txt from the current directory"
+                },
+                "with_flags": {
+                    "r": {
+                        "command": "rm -r directory/",
+                        "output": "",
+                        "explanation": "Recursively removes directory and all its contents"
+                    },
+                    "i": {
+                        "command": "rm -i *.txt",
+                        "output": "rm: remove regular file 'file1.txt'?",
+                        "explanation": "Prompts for confirmation before removing each .txt file"
+                    },
+                    "rf": {
+                        "command": "rm -rf directory/",
+                        "output": "",
+                        "explanation": "Forcefully and recursively removes directory without prompting (USE WITH CAUTION). WARNING: rm -rf / or rm -rf ~ are EXTREMELY DANGEROUS commands that can wipe your entire system or home directory. Always double-check the path before using rm with -r and -f flags."
+                    },
+                    "v": {
+                        "command": "rm -v old_file.txt",
+                        "output": "removed 'old_file.txt'",
+                        "explanation": "Verbose output shows what was removed"
+                    },
+                    "multiple": {
+                        "command": "rm file1.txt file2.txt file3.txt",
+                        "output": "",
+                        "explanation": "Removes multiple files at once"
+                    },
+                    "pattern": {
+                        "command": "rm *.tmp",
+                        "output": "",
+                        "explanation": "Removes all files with .tmp extension in current directory"
+                    }
+                }
             }
         },
         {
