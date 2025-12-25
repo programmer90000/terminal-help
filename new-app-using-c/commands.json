@@ -6047,7 +6047,199 @@
                 }
             }
         }
-    ]
+    ],
+    {
+        "name": "7z",
+        "description": "A file archiver with high compression ratio",
+        "category": "compression",
+        "bookmarked": false,
+        "flags": {
+            "a": {
+                "name": "add",
+                "description": "Add files to archive",
+                "syntax": "7z a archive.7z files"
+            },
+            "d": {
+                "name": "delete",
+                "description": "Delete files from archive",
+                "syntax": "7z d archive.7z files"
+            },
+            "e": {
+                "name": "extract",
+                "description": "Extract files from archive (without directory names)",
+                "syntax": "7z e archive.7z"
+            },
+            "l": {
+                "name": "list",
+                "description": "List contents of archive",
+                "syntax": "7z l archive.7z"
+            },
+            "t": {
+                "name": "test",
+                "description": "Test integrity of archive",
+                "syntax": "7z t archive.7z"
+            },
+            "u": {
+                "name": "update",
+                "description": "Update files to archive",
+                "syntax": "7z u archive.7z files"
+            },
+            "x": {
+                "name": "extract-full",
+                "description": "Extract files with full paths",
+                "syntax": "7z x archive.7z"
+            },
+            "-t": {
+                "name": "type",
+                "description": "Type of archive (7z, zip, gzip, bzip2, tar, etc.)",
+                "syntax": "7z a -t7z archive.7z files"
+            },
+            "-m": {
+                "name": "method",
+                "description": "Compression method (LZMA, LZMA2, PPMd, BZip2, Deflate, etc.)",
+                "syntax": "7z a -m0=LZMA archive.7z files"
+            },
+            "-p": {
+                "name": "password",
+                "description": "Set password",
+                "syntax": "7z a -pPASSWORD archive.7z files"
+            },
+            "-mx": {
+                "name": "compression-level",
+                "description": "Set compression level: 0-9 (0: store, 3: fast, 5: normal, 7: maximum, 9: ultra)",
+                "syntax": "7z a -mx9 archive.7z files"
+            },
+            "-mhe": {
+                "name": "encrypt-headers",
+                "description": "Encrypt archive headers",
+                "syntax": "7z a -mhe=on archive.7z files"
+            },
+            "-o": {
+                "name": "output-directory",
+                "description": "Set output directory",
+                "syntax": "7z x archive.7z -o/path/to/extract"
+            },
+            "-y": {
+                "name": "assume-yes",
+                "description": "Assume Yes on all queries",
+                "syntax": "7z x archive.7z -y"
+            },
+            "-ao": {
+                "name": "overwrite-mode",
+                "description": "Set overwrite mode: a (Overwrite All), s (Skip existing), u (Update), t (Auto rename extract files)",
+                "syntax": "7z x archive.7z -aoa"
+            },
+            "-r": {
+                "name": "recursive",
+                "description": "Recurse subdirectories",
+                "syntax": "7z a -r archive.7z directory"
+            },
+            "-sfx": {
+                "name": "create-sfx",
+                "description": "Create SFX archive",
+                "syntax": "7z a -sfx archive.exe files"
+            },
+            "-si": {
+                "name": "stdin",
+                "description": "Read data from stdin",
+                "syntax": "cat file | 7z a -si archive.7z"
+            },
+            "-so": {
+                "name": "stdout",
+                "description": "Write data to stdout",
+                "syntax": "7z x -so archive.7z > output"
+            },
+            "-slt": {
+                "name": "show-technical",
+                "description": "Show technical information for l (List) command",
+                "syntax": "7z l -slt archive.7z"
+            },
+            "-scc": {
+                "name": "charset",
+                "description": "Set charset for file names",
+                "syntax": "7z l -sccUTF-8 archive.7z"
+            },
+            "-scs": {
+                "name": "list-charset",
+                "description": "Set charset for console input/output",
+                "syntax": "7z l -scsUTF-8 archive.7z"
+            },
+            "-scrc": {
+                "name": "crc",
+                "description": "Set hash function: CRC32, CRC64, SHA1, SHA256, etc.",
+                "syntax": "7z h -scrcSHA256 file"
+            },
+            "-bb": {
+                "name": "logging-level",
+                "description": "Set logging level: 0-3 (0: disable, 1: error, 2: warning, 3: info)",
+                "syntax": "7z a -bb3 archive.7z files"
+            },
+            "-bd": {
+                "name": "disable-percent",
+                "description": "Disable percentage indicator",
+                "syntax": "7z a -bd archive.7z files"
+            },
+            "-sse": {
+                "name": "stop-on-error",
+                "description": "Stop on error",
+                "syntax": "7z t -sse archive.7z"
+            },
+            "-sns": {
+                "name": "store-nt-security",
+                "description": "Store NT security information",
+                "syntax": "7z a -sns archive.7z files"
+            },
+            "-snl": {
+                "name": "store-symlinks",
+                "description": "Store symbolic links as links",
+                "syntax": "7z a -snl archive.7z files"
+            },
+            "-snh": {
+                "name": "store-hardlinks",
+                "description": "Store hard links as links",
+                "syntax": "7z a -snh archive.7z files"
+            },
+            "-snc": {
+                "name": "store-nt-compress",
+                "description": "Store NT compressed files as compressed",
+                "syntax": "7z a -snc archive.7z files"
+            },
+            "help": {
+                "name": "help",
+                "description": "Display help information",
+                "syntax": "7z --help"
+            }
+        },
+        "examples": {
+            "basic": {
+                "command": "7z a archive.7z file1.txt file2.txt",
+                "output": "Creating archive archive.7z\nCompressing file1.txt\nCompressing file2.txt\nEverything is Ok",
+                "explanation": "Create a new 7z archive containing two files"
+            },
+            "with_flags": {
+                "extract": {
+                    "command": "7z x archive.7z -o/path/to/extract",
+                    "output": "Extracting archive.7z\nExtracting file1.txt\nExtracting file2.txt\nEverything is Ok",
+                    "explanation": "Extract archive to specific directory"
+                },
+                "list": {
+                    "command": "7z l archive.7z",
+                    "output": "Listing archive: archive.7z\nPath = archive.7z\nType = 7z\nPhysical Size = 1024\n\n   Date      Time    Attr         Size   Compressed  Name\n------------------- ----- ------------ ------------  ------------------------\n2023-01-01 12:00:00 ....A         1024          512  file1.txt\n2023-01-01 12:00:00 ....A         2048         1024  file2.txt",
+                    "explanation": "List contents of archive with details"
+                },
+                "password": {
+                    "command": "7z a -pSECRET archive.7z files",
+                    "output": "Creating archive archive.7z\nEnter password (will not be echoed):\nVerify password (will not be echoed):\nCompressing files\nEverything is Ok",
+                    "explanation": "Create encrypted archive with password"
+                },
+                "test": {
+                    "command": "7z t archive.7z",
+                    "output": "Testing archive archive.7z\nTesting file1.txt\nTesting file2.txt\nEverything is Ok",
+                    "explanation": "Test archive integrity"
+                }
+            }
+        }
+    }
 }
 
 Commands I have already looked at and need to add to this file: 7z
