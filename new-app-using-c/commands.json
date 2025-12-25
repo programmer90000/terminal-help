@@ -3083,6 +3083,714 @@
                     "explanation": "Kills all firefox processes"
                 }
             }
+        },
+        {
+            "name": "killall",
+            "description": "Kill processes by name",
+            "category": "process_management",
+            "bookmarked": false,
+            "flags": {
+                "i": {
+                    "name": "interactive",
+                    "description": "Ask for confirmation before killing",
+                    "syntax": "killall -i PROCESS"
+                },
+                "e": {
+                    "name": "exact",
+                    "description": "Require exact match for very long names",
+                    "syntax": "killall -e PROCESS"
+                },
+                "I": {
+                    "name": "ignore-case",
+                    "description": "Case insensitive process name match",
+                    "syntax": "killall -I PROCESS"
+                },
+                "r": {
+                    "name": "regexp",
+                    "description": "Interpret process name as extended regular expression",
+                    "syntax": "killall -r PATTERN"
+                },
+                "u": {
+                    "name": "user",
+                    "description": "Only kill processes owned by USER",
+                    "syntax": "killall -u USER PROCESS"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Report if the signal was successfully sent",
+                    "syntax": "killall -v PROCESS"
+                },
+                "w": {
+                    "name": "wait",
+                    "description": "Wait for all killed processes to die",
+                    "syntax": "killall -w PROCESS"
+                },
+                "s": {
+                    "name": "signal",
+                    "description": "Send specified signal instead of SIGTERM",
+                    "syntax": "killall -s SIGNAL PROCESS"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "killall firefox",
+                    "explanation": "Terminates all firefox processes"
+                },
+                "force": {
+                    "command": "killall -9 apache2",
+                    "explanation": "Forcefully kills all apache2 processes"
+                },
+                "interactive": {
+                    "command": "killall -i python",
+                    "explanation": "Asks for confirmation before killing each python process"
+                },
+                "user": {
+                    "command": "sudo killall -u john bash",
+                    "explanation": "Kills all bash processes owned by user john"
+                },
+                "signal": {
+                    "command": "killall -s HUP nginx",
+                    "explanation": "Sends HUP signal to reload nginx configuration"
+                },
+                "regex": {
+                    "command": "killall -r \"^chrome\"",
+                    "explanation": "Kills processes starting with 'chrome'"
+                }
+            }
+        },
+        {
+            "name": "pkill",
+            "description": "Signal processes based on name and other attributes",
+            "category": "process_management",
+            "bookmarked": false,
+            "flags": {
+                "f": {
+                    "name": "full",
+                    "description": "Match against full argument list instead of process name",
+                    "syntax": "pkill -f PATTERN"
+                },
+                "u": {
+                    "name": "user",
+                    "description": "Only match processes owned by the specified user",
+                    "syntax": "pkill -u USER PATTERN"
+                },
+                "x": {
+                    "name": "exact",
+                    "description": "Match processes with exactly matching names",
+                    "syntax": "pkill -x PATTERN"
+                },
+                "n": {
+                    "name": "newest",
+                    "description": "Select only the newest process",
+                    "syntax": "pkill -n PATTERN"
+                },
+                "o": {
+                    "name": "oldest",
+                    "description": "Select only the oldest process",
+                    "syntax": "pkill -o PATTERN"
+                },
+                "P": {
+                    "name": "parent",
+                    "description": "Match only processes whose parent PID is listed",
+                    "syntax": "pkill -P PPID PATTERN"
+                },
+                "G": {
+                    "name": "group",
+                    "description": "Match only processes in specified process group",
+                    "syntax": "pkill -G GID PATTERN"
+                },
+                "t": {
+                    "name": "terminal",
+                    "description": "Match only processes running on specified terminal",
+                    "syntax": "pkill -t TTY PATTERN"
+                },
+                "signal": {
+                    "name": "signal",
+                    "description": "Send specified signal (default: SIGTERM)",
+                    "syntax": "pkill -SIGNAL PATTERN"
+                },
+                "v": {
+                    "name": "inverse",
+                    "description": "Negate the matching",
+                    "syntax": "pkill -v PATTERN"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "pkill firefox",
+                    "explanation": "Kills processes named firefox"
+                },
+                "full_match": {
+                    "command": "pkill -f \"python script.py\"",
+                    "explanation": "Kills processes with full command line matching pattern"
+                },
+                "user": {
+                    "command": "pkill -u john",
+                    "explanation": "Kills all processes owned by user john"
+                },
+                "signal": {
+                    "command": "pkill -HUP nginx",
+                    "explanation": "Sends HUP signal to nginx processes"
+                },
+                "newest": {
+                    "command": "pkill -n chrome",
+                    "explanation": "Kills only the newest chrome process"
+                },
+                "terminal": {
+                    "command": "pkill -t pts/1",
+                    "explanation": "Kills all processes on terminal pts/1"
+                }
+            }
+        },
+        {
+            "name": "jobs",
+            "description": "Display status of jobs in the current shell",
+            "category": "process_management",
+            "bookmarked": false,
+            "flags": {
+                "l": {
+                    "name": "list",
+                    "description": "List process IDs in addition to normal information",
+                    "syntax": "jobs -l"
+                },
+                "p": {
+                    "name": "pid",
+                    "description": "List only process IDs of job leaders",
+                    "syntax": "jobs -p"
+                },
+                "n": {
+                    "name": "new",
+                    "description": "Display only jobs that have changed status since last notification",
+                    "syntax": "jobs -n"
+                },
+                "r": {
+                    "name": "running",
+                    "description": "Display only running jobs",
+                    "syntax": "jobs -r"
+                },
+                "s": {
+                    "name": "stopped",
+                    "description": "Display only stopped jobs",
+                    "syntax": "jobs -s"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "jobs",
+                    "output": "[1]  + running    sleep 100 &\n[2]  - suspended  vim file.txt",
+                    "explanation": "Lists all background and suspended jobs"
+                },
+                "detailed": {
+                    "command": "jobs -l",
+                    "output": "[1]  + 1234 running    sleep 100 &\n[2]  - 5678 suspended  vim file.txt",
+                    "explanation": "Lists jobs with process IDs"
+                },
+                "pids": {
+                    "command": "jobs -p",
+                    "output": "1234\n5678",
+                    "explanation": "Lists only process IDs of job leaders"
+                },
+                "running": {
+                    "command": "jobs -r",
+                    "explanation": "Lists only running background jobs"
+                },
+                "stopped": {
+                    "command": "jobs -s",
+                    "explanation": "Lists only stopped/suspended jobs"
+                }
+            }
+        },
+        {
+            "name": "nohup",
+            "description": "Run a command immune to hangups, with output to a non-tty",
+            "category": "process_management",
+            "bookmarked": false,
+            "flags": {
+                "none": "nohup accepts command as argument and runs it ignoring hangup signals"
+            },
+            "examples": {
+                "basic": {
+                    "command": "nohup ./long_script.sh &",
+                    "explanation": "Runs script in background, immune to terminal disconnection"
+                },
+                "with_output": {
+                    "command": "nohup python server.py > server.log 2>&1 &",
+                    "explanation": "Runs Python server, redirecting output to log file"
+                },
+                "check": {
+                    "command": "ps aux | grep long_script.sh",
+                    "explanation": "Verify the nohup process is still running"
+                },
+                "stop": {
+                    "command": "kill $(cat nohup.pid)",
+                    "explanation": "Stops nohup process using saved PID file"
+                }
+            }
+        },
+        {
+            "name": "tar",
+            "description": "Archive utility for creating and extracting tar files",
+            "category": "file_management",
+            "bookmarked": false,
+            "flags": {
+                "c": {
+                    "name": "create",
+                    "description": "Create a new archive",
+                    "syntax": "tar -c -f ARCHIVE.tar FILES"
+                },
+                "x": {
+                    "name": "extract",
+                    "description": "Extract files from an archive",
+                    "syntax": "tar -x -f ARCHIVE.tar"
+                },
+                "t": {
+                    "name": "list",
+                    "description": "List contents of an archive",
+                    "syntax": "tar -t -f ARCHIVE.tar"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Verbosely list files processed",
+                    "syntax": "tar -v -f ARCHIVE.tar"
+                },
+                "f": {
+                    "name": "file",
+                    "description": "Use archive file",
+                    "syntax": "tar -f ARCHIVE.tar"
+                },
+                "z": {
+                    "name": "gzip",
+                    "description": "Filter the archive through gzip",
+                    "syntax": "tar -z -f ARCHIVE.tar.gz"
+                },
+                "j": {
+                    "name": "bzip2",
+                    "description": "Filter the archive through bzip2",
+                    "syntax": "tar -j -f ARCHIVE.tar.bz2"
+                },
+                "J": {
+                    "name": "xz",
+                    "description": "Filter the archive through xz",
+                    "syntax": "tar -J -f ARCHIVE.tar.xz"
+                },
+                "C": {
+                    "name": "directory",
+                    "description": "Change to directory before performing operations",
+                    "syntax": "tar -x -f ARCHIVE.tar -C DIRECTORY"
+                },
+                "r": {
+                    "name": "append",
+                    "description": "Append files to end of archive",
+                    "syntax": "tar -r -f ARCHIVE.tar FILES"
+                },
+                "u": {
+                    "name": "update",
+                    "description": "Append files newer than copy in archive",
+                    "syntax": "tar -u -f ARCHIVE.tar FILES"
+                },
+                "p": {
+                    "name": "preserve",
+                    "description": "Preserve permissions",
+                    "syntax": "tar -p -f ARCHIVE.tar"
+                },
+                "exclude": {
+                    "name": "exclude",
+                    "description": "Exclude files matching PATTERN",
+                    "syntax": "tar --exclude=PATTERN -f ARCHIVE.tar"
+                }
+            },
+            "examples": {
+                "create": {
+                    "command": "tar -cvf archive.tar file1.txt file2.txt",
+                    "explanation": "Creates archive.tar containing specified files"
+                },
+                "extract": {
+                    "command": "tar -xvf archive.tar",
+                    "explanation": "Extracts all files from archive.tar"
+                },
+                "list": {
+                    "command": "tar -tvf archive.tar",
+                    "output": "-rw-r--r-- user/group 1024 2024-01-01 12:00 file1.txt\n-rw-r--r-- user/group 2048 2024-01-01 12:00 file2.txt",
+                    "explanation": "Lists contents of archive.tar"
+                },
+                "gzip": {
+                    "command": "tar -czvf archive.tar.gz directory/",
+                    "explanation": "Creates gzipped tar archive of directory"
+                },
+                "extract_gzip": {
+                    "command": "tar -xzvf archive.tar.gz",
+                    "explanation": "Extracts gzipped tar archive"
+                },
+                "extract_to": {
+                    "command": "tar -xvf archive.tar -C /target/directory/",
+                    "explanation": "Extracts archive to specific directory"
+                },
+                "create_exclude": {
+                    "command": "tar -cvf backup.tar --exclude=\"*.tmp\" directory/",
+                    "explanation": "Creates archive excluding .tmp files"
+                },
+                "bz2": {
+                    "command": "tar -cjvf archive.tar.bz2 files/",
+                    "explanation": "Creates bzip2 compressed archive"
+                },
+                "xz": {
+                    "command": "tar -cJvf archive.tar.xz large_directory/",
+                    "explanation": "Creates xz compressed archive (high compression)"
+                }
+            }
+        },
+        {
+            "name": "gzip",
+            "description": "Compress files using Lempel-Ziv coding (LZ77)",
+            "category": "file_management",
+            "bookmarked": false,
+            "flags": {
+                "d": {
+                    "name": "decompress",
+                    "description": "Decompress instead of compress",
+                    "syntax": "gzip -d FILE.gz"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Display compression ratio for each file",
+                    "syntax": "gzip -v FILE"
+                },
+                "r": {
+                    "name": "recursive",
+                    "description": "Recursively compress directories",
+                    "syntax": "gzip -r DIRECTORY"
+                },
+                "k": {
+                    "name": "keep",
+                    "description": "Keep original files (don't delete them)",
+                    "syntax": "gzip -k FILE"
+                },
+                "l": {
+                    "name": "list",
+                    "description": "List compressed file contents",
+                    "syntax": "gzip -l FILE.gz"
+                },
+                "1": {
+                    "name": "fast",
+                    "description": "Fastest compression method (least compression)",
+                    "syntax": "gzip -1 FILE"
+                },
+                "9": {
+                    "name": "best",
+                    "description": "Slowest compression method (best compression)",
+                    "syntax": "gzip -9 FILE"
+                },
+                "c": {
+                    "name": "stdout",
+                    "description": "Write output to stdout, keep original files unchanged",
+                    "syntax": "gzip -c FILE > FILE.gz"
+                },
+                "t": {
+                    "name": "test",
+                    "description": "Test compressed file integrity",
+                    "syntax": "gzip -t FILE.gz"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "gzip file.txt",
+                    "explanation": "Compresses file.txt to file.txt.gz (removes original)"
+                },
+                "keep": {
+                    "command": "gzip -k file.txt",
+                    "explanation": "Compresses file.txt but keeps original"
+                },
+                "decompress": {
+                    "command": "gzip -d file.txt.gz",
+                    "explanation": "Decompresses file.txt.gz to file.txt"
+                },
+                "verbose": {
+                    "command": "gzip -v largefile.log",
+                    "output": "largefile.log:     75.4% -- replaced with largefile.log.gz",
+                    "explanation": "Shows compression ratio"
+                },
+                "recursive": {
+                    "command": "gzip -r logs/",
+                    "explanation": "Recursively compresses all files in logs directory"
+                },
+                "stdout": {
+                    "command": "gzip -c file.txt > file.txt.gz",
+                    "explanation": "Compresses to stdout, keeps original"
+                },
+                "best": {
+                    "command": "gzip -9 archive.tar",
+                    "explanation": "Maximum compression for archive.tar"
+                },
+                "list": {
+                    "command": "gzip -l file.txt.gz",
+                    "output": "compressed        uncompressed  ratio uncompressed_name\n10240             40960        75.0% file.txt",
+                    "explanation": "Shows compression information"
+                }
+            }
+        },
+        {
+            "name": "gunzip",
+            "description": "Decompress files compressed by gzip",
+            "category": "file_management",
+            "bookmarked": false,
+            "flags": {
+                "v": {
+                    "name": "verbose",
+                    "description": "Display name and percentage reduction for each file",
+                    "syntax": "gunzip -v FILE.gz"
+                },
+                "l": {
+                    "name": "list",
+                    "description": "List compressed file contents",
+                    "syntax": "gunzip -l FILE.gz"
+                },
+                "r": {
+                    "name": "recursive",
+                    "description": "Recursively decompress directories",
+                    "syntax": "gunzip -r DIRECTORY"
+                },
+                "k": {
+                    "name": "keep",
+                    "description": "Keep original compressed files",
+                    "syntax": "gunzip -k FILE.gz"
+                },
+                "c": {
+                    "name": "stdout",
+                    "description": "Write output to stdout, keep original files unchanged",
+                    "syntax": "gunzip -c FILE.gz > FILE"
+                },
+                "t": {
+                    "name": "test",
+                    "description": "Test compressed file integrity",
+                    "syntax": "gunzip -t FILE.gz"
+                },
+                "f": {
+                    "name": "force",
+                    "description": "Force overwrite of output file",
+                    "syntax": "gunzip -f FILE.gz"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "gunzip file.txt.gz",
+                    "explanation": "Decompresses file.txt.gz to file.txt"
+                },
+                "keep": {
+                    "command": "gunzip -k archive.tar.gz",
+                    "explanation": "Decompresses but keeps the .gz file"
+                },
+                "verbose": {
+                    "command": "gunzip -v compressed.gz",
+                    "output": "compressed.gz:     75.4% -- replaced with compressed",
+                    "explanation": "Shows decompression information"
+                },
+                "stdout": {
+                    "command": "gunzip -c file.txt.gz > decompressed.txt",
+                    "explanation": "Decompresses to stdout, can redirect to different file"
+                },
+                "recursive": {
+                    "command": "gunzip -r compressed_files/",
+                    "explanation": "Recursively decompresses all .gz files in directory"
+                },
+                "multiple": {
+                    "command": "gunzip *.gz",
+                    "explanation": "Decompresses all .gz files in current directory"
+                },
+                "test": {
+                    "command": "gunzip -t backup.tar.gz",
+                    "explanation": "Tests integrity of compressed file"
+                }
+            }
+        },
+        {
+            "name": "zip",
+            "description": "Package and compress (archive) files into zip file",
+            "category": "file_management",
+            "bookmarked": false,
+            "flags": {
+                "r": {
+                    "name": "recurse",
+                    "description": "Travel directory structure recursively",
+                    "syntax": "zip -r ARCHIVE.zip DIRECTORY"
+                },
+                "q": {
+                    "name": "quiet",
+                    "description": "Quiet mode (suppress informational messages)",
+                    "syntax": "zip -q ARCHIVE.zip FILES"
+                },
+                "e": {
+                    "name": "encrypt",
+                    "description": "Encrypt contents with password",
+                    "syntax": "zip -e ARCHIVE.zip FILES"
+                },
+                "x": {
+                    "name": "exclude",
+                    "description": "Exclude specified files",
+                    "syntax": "zip ARCHIVE.zip * -x \"*.tmp\""
+                },
+                "u": {
+                    "name": "update",
+                    "description": "Update existing entries if newer on file system",
+                    "syntax": "zip -u ARCHIVE.zip FILES"
+                },
+                "m": {
+                    "name": "move",
+                    "description": "Move files into archive (delete originals)",
+                    "syntax": "zip -m ARCHIVE.zip FILES"
+                },
+                "j": {
+                    "name": "junk",
+                    "description": "Store just the name of a saved file (junk the path)",
+                    "syntax": "zip -j ARCHIVE.zip FILES"
+                },
+                "0": {
+                    "name": "store",
+                    "description": "Store files without compression",
+                    "syntax": "zip -0 ARCHIVE.zip FILES"
+                },
+                "9": {
+                    "name": "best",
+                    "description": "Compress better (slower)",
+                    "syntax": "zip -9 ARCHIVE.zip FILES"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Verbose mode",
+                    "syntax": "zip -v ARCHIVE.zip FILES"
+                },
+                "T": {
+                    "name": "test",
+                    "description": "Test integrity of new zip file",
+                    "syntax": "zip -T ARCHIVE.zip"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "zip archive.zip file1.txt file2.txt",
+                    "explanation": "Creates archive.zip with specified files"
+                },
+                "recursive": {
+                    "command": "zip -r archive.zip directory/",
+                    "explanation": "Recursively zips entire directory"
+                },
+                "encrypt": {
+                    "command": "zip -e secret.zip confidential.txt",
+                    "explanation": "Creates encrypted zip (will prompt for password)"
+                },
+                "exclude": {
+                    "command": "zip -r project.zip . -x \"*.log\" -x \"tmp/*\"",
+                    "explanation": "Zips current directory excluding .log files and tmp/ subdirectory"
+                },
+                "update": {
+                    "command": "zip -u archive.zip newfile.txt",
+                    "explanation": "Adds or updates newfile.txt in existing archive"
+                },
+                "move": {
+                    "command": "zip -m backup.zip old_logs/*.log",
+                    "explanation": "Moves log files into zip (deletes originals)"
+                },
+                "best": {
+                    "command": "zip -9 compressed.zip largefile.iso",
+                    "explanation": "Maximum compression for large file"
+                },
+                "test": {
+                    "command": "zip -T backup.zip",
+                    "explanation": "Tests integrity of zip file"
+                }
+            }
+        },
+        {
+            "name": "unzip",
+            "description": "List, test and extract compressed files in a ZIP archive",
+            "category": "file_management",
+            "bookmarked": false,
+            "flags": {
+                "l": {
+                    "name": "list",
+                    "description": "List contents of archive",
+                    "syntax": "unzip -l ARCHIVE.zip"
+                },
+                "t": {
+                    "name": "test",
+                    "description": "Test integrity of archive",
+                    "syntax": "unzip -t ARCHIVE.zip"
+                },
+                "o": {
+                    "name": "overwrite",
+                    "description": "Overwrite files without prompting",
+                    "syntax": "unzip -o ARCHIVE.zip"
+                },
+                "d": {
+                    "name": "directory",
+                    "description": "Extract files into directory",
+                    "syntax": "unzip ARCHIVE.zip -d DIRECTORY"
+                },
+                "j": {
+                    "name": "junk",
+                    "description": "Junk paths (store just files, not directory structure)",
+                    "syntax": "unzip -j ARCHIVE.zip"
+                },
+                "q": {
+                    "name": "quiet",
+                    "description": "Quiet mode (suppress informational messages)",
+                    "syntax": "unzip -q ARCHIVE.zip"
+                },
+                "P": {
+                    "name": "password",
+                    "description": "Use password to decrypt",
+                    "syntax": "unzip -P PASSWORD ARCHIVE.zip"
+                },
+                "x": {
+                    "name": "exclude",
+                    "description": "Exclude files from extraction",
+                    "syntax": "unzip ARCHIVE.zip -x \"*.tmp\""
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Verbose mode",
+                    "syntax": "unzip -v ARCHIVE.zip"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "unzip archive.zip",
+                    "explanation": "Extracts all files from archive.zip"
+                },
+                "list": {
+                    "command": "unzip -l archive.zip",
+                    "output": "Archive:  archive.zip\n  Length      Date    Time    Name\n---------  ---------- -----   ----\n     1024  2024-01-01 12:00   file1.txt\n     2048  2024-01-01 12:00   file2.txt\n---------                     -------\n     3072                     2 files",
+                    "explanation": "Lists contents without extracting"
+                },
+                "test": {
+                    "command": "unzip -t backup.zip",
+                    "output": "Archive:  backup.zip\n    testing: file1.txt            OK\n    testing: file2.txt            OK\nNo errors detected in compressed data of backup.zip.",
+                    "explanation": "Tests archive integrity"
+                },
+                "directory": {
+                    "command": "unzip archive.zip -d /target/directory/",
+                    "explanation": "Extracts to specified directory"
+                },
+                "overwrite": {
+                    "command": "unzip -o archive.zip",
+                    "explanation": "Extracts and overwrites existing files without prompting"
+                },
+                "exclude": {
+                    "command": "unzip archive.zip -x \"*.tmp\"",
+                    "explanation": "Extracts all files except .tmp files"
+                },
+                "password": {
+                    "command": "unzip -P secret encrypted.zip",
+                    "explanation": "Extracts password-protected zip"
+                },
+                "quiet": {
+                    "command": "unzip -q archive.zip",
+                    "explanation": "Extracts without showing file list"
+                },
+                "specific": {
+                    "command": "unzip archive.zip \"*.txt\"",
+                    "explanation": "Extracts only txt files from archive"
+                }
+            }
         }
     ]
 }
