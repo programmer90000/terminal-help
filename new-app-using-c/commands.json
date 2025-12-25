@@ -302,14 +302,67 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "cd",
+            "description": "Change the current working directory",
+            "category": "navigation",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "L": {
+                    "name": "logical",
+                    "description": "Follow symbolic links. Resolve '..' components before symbolic links (default behavior in most shells)",
+                    "syntax": "cd -L dir"
+                },
+                "P": {
+                    "name": "physical",
+                    "description": "Use physical directory structure without following symbolic links. Resolve '..' after symbolic links",
+                    "syntax": "cd -P dir"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about cd command usage",
+                    "syntax": "help cd"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "home": {
+                        "command": "cd",
+                        "output": "",
+                        "explanation": "Changes to the user's home directory (~)"
+                    },
+                    "absolute": {
+                        "command": "cd /usr/bin",
+                        "output": "",
+                        "explanation": "Changes to absolute path /usr/bin"
+                    },
+                    "relative": {
+                        "command": "cd Documents",
+                        "output": "",
+                        "explanation": "Changes to Documents subdirectory of current directory"
+                    },
+                    "parent": {
+                        "command": "cd ..",
+                        "output": "",
+                        "explanation": "Moves up one directory level to parent directory"
+                    },
+                    "previous": {
+                        "command": "cd -",
+                        "output": "/previous/directory/path",
+                        "explanation": "Changes to previous working directory and prints its path"
+                    }
+                },
+                "with_flags": {
+                    "P": {
+                        "command": "cd -P symlink_dir",
+                        "output": "",
+                        "explanation": "Changes to the actual physical directory instead of following symbolic links"
+                    },
+                    "L": {
+                        "command": "cd -L symlink_dir",
+                        "output": "",
+                        "explanation": "Follows symbolic links when changing directory (default behavior)"
+                    }
+                }
             }
         },
         {
