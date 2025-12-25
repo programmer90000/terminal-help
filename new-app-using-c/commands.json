@@ -366,14 +366,69 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "mkdir",
+            "description": "Create directories",
+            "category": "file management",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "p": {
+                    "name": "parents",
+                    "description": "Create parent directories as needed; no error if existing",
+                    "syntax": "mkdir -p dir/subdir"
+                },
+                "m": {
+                    "name": "mode",
+                    "description": "Set file mode (permissions) for created directories",
+                    "syntax": "mkdir -m 755 directory"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Print a message for each created directory",
+                    "syntax": "mkdir -v directory"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about mkdir command usage and options",
+                    "syntax": "mkdir --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information and exit",
+                    "syntax": "mkdir --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "mkdir new_folder",
+                    "output": "",
+                    "explanation": "Creates a single directory named 'new_folder' in the current location"
+                },
+                "with_flags": {
+                    "p": {
+                        "command": "mkdir -p projects/2024/src",
+                        "output": "",
+                        "explanation": "Creates the entire directory path. If 'projects' or '2024' don't exist, they are created automatically."
+                    },
+                    "m": {
+                        "command": "mkdir -m 750 secure_dir",
+                        "output": "",
+                        "explanation": "Creates a directory with specific permissions (rwxr-x--- in this example)"
+                    },
+                    "v": {
+                        "command": "mkdir -v logs",
+                        "output": "mkdir: created directory 'logs'",
+                        "explanation": "Verbose output confirms the directory creation"
+                    },
+                    "multiple directories": {
+                        "command": "mkdir dir1 dir2 dir3",
+                        "output": "",
+                        "explanation": "Creates multiple directories at once"
+                    },
+                    "help": {
+                        "command": "mkdir --help",
+                        "output": "INFORMATION ABOUT HOW TO USE MKDIR"
+                    }
+                }
             }
         },
         {
