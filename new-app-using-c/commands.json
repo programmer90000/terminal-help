@@ -1449,146 +1449,920 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "chmod",
+            "description": "Change file mode bits (permissions) for files and directories",
+            "category": "file_management",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "R": {
+                    "name": "recursive",
+                    "description": "Change files and directories recursively",
+                    "syntax": "chmod -R MODE FILE"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Output a diagnostic for every file processed",
+                    "syntax": "chmod -v MODE FILE"
+                },
+                "c": {
+                    "name": "changes",
+                    "description": "Like verbose but report only when a change is made",
+                    "syntax": "chmod -c MODE FILE"
+                },
+                "f": {
+                    "name": "silent",
+                    "description": "Suppress most error messages",
+                    "syntax": "chmod -f MODE FILE"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "chmod 755 script.sh",
+                    "explanation": "Sets permissions to rwxr-xr-x (user: read, write, execute; group/others: read, execute)"
+                },
+                "symbolic": {
+                    "command": "chmod u+x,g-w,o=r file.txt",
+                    "explanation": "Adds execute permission for user, removes write for group, sets others to read-only"
+                },
+                "recursive": {
+                    "command": "chmod -R 644 directory/",
+                    "explanation": "Recursively sets all files in directory to rw-r--r--"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "chown",
+            "description": "Change file owner and group",
+            "category": "file_management",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "R": {
+                    "name": "recursive",
+                    "description": "Operate on files and directories recursively",
+                    "syntax": "chown -R OWNER:GROUP FILE"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Output a diagnostic for every file processed",
+                    "syntax": "chown -v OWNER:GROUP FILE"
+                },
+                "c": {
+                    "name": "changes",
+                    "description": "Like verbose but report only when a change is made",
+                    "syntax": "chown -c OWNER:GROUP FILE"
+                },
+                "from": {
+                    "name": "from",
+                    "description": "Change the owner and/or group only if current owner/group matches specified",
+                    "syntax": "chown --from=CURRENT_OWNER:CURRENT_GROUP NEW_OWNER:NEW_GROUP FILE"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "chown john file.txt",
+                    "explanation": "Changes file ownership to user 'john'"
+                },
+                "owner_group": {
+                    "command": "chown john:developers file.txt",
+                    "explanation": "Changes owner to 'john' and group to 'developers'"
+                },
+                "recursive": {
+                    "command": "chown -R john:www-data /var/www/",
+                    "explanation": "Recursively changes ownership of web directory"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "chgrp",
+            "description": "Change group ownership of files and directories",
+            "category": "file_management",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "R": {
+                    "name": "recursive",
+                    "description": "Operate on files and directories recursively",
+                    "syntax": "chgrp -R GROUP FILE"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Output a diagnostic for every file processed",
+                    "syntax": "chgrp -v GROUP FILE"
+                },
+                "c": {
+                    "name": "changes",
+                    "description": "Like verbose but report only when a change is made",
+                    "syntax": "chgrp -c GROUP FILE"
+                },
+                "reference": {
+                    "name": "reference",
+                    "description": "Use GROUP from reference file",
+                    "syntax": "chgrp --reference=RFILE FILE"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "chgrp developers file.txt",
+                    "explanation": "Changes file group to 'developers'"
+                },
+                "recursive": {
+                    "command": "chgrp -R www-data /var/www/",
+                    "explanation": "Recursively changes group ownership of web directory"
+                },
+                "reference": {
+                    "command": "chgrp --reference=source.txt target.txt",
+                    "explanation": "Sets target.txt's group to match source.txt's group"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "find",
+            "description": "Search for files in a directory hierarchy",
+            "category": "search",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "name": {
+                    "name": "name",
+                    "description": "Search for files with specific name pattern",
+                    "syntax": "find PATH -name PATTERN"
+                },
+                "type": {
+                    "name": "type",
+                    "description": "Search for specific file type (f=file, d=directory, l=symlink)",
+                    "syntax": "find PATH -type TYPE"
+                },
+                "mtime": {
+                    "name": "modified-time",
+                    "description": "Find files modified N days ago",
+                    "syntax": "find PATH -mtime N"
+                },
+                "size": {
+                    "name": "size",
+                    "description": "Find files by size",
+                    "syntax": "find PATH -size [+-]SIZE"
+                },
+                "exec": {
+                    "name": "execute",
+                    "description": "Execute command on found files",
+                    "syntax": "find PATH -exec COMMAND {} \\;"
+                },
+                "delete": {
+                    "name": "delete",
+                    "description": "Delete found files",
+                    "syntax": "find PATH -delete"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "find /home -name \"*.txt\"",
+                    "explanation": "Finds all .txt files in /home directory"
+                },
+                "type_size": {
+                    "command": "find /var/log -type f -size +1M",
+                    "explanation": "Finds files larger than 1MB in /var/log"
+                },
+                "modified": {
+                    "command": "find . -mtime -7",
+                    "explanation": "Finds files modified in the last 7 days"
+                },
+                "execute": {
+                    "command": "find . -name \"*.bak\" -exec rm {} \\;",
+                    "explanation": "Finds and deletes all .bak files"
+                },
+                "permissions": {
+                    "command": "find /home -type f -perm 777",
+                    "explanation": "Finds files with 777 permissions"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "grep",
+            "description": "Print lines matching a pattern",
+            "category": "text_processing",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "i": {
+                    "name": "ignore-case",
+                    "description": "Ignore case distinctions",
+                    "syntax": "grep -i PATTERN FILE"
+                },
+                "r": {
+                    "name": "recursive",
+                    "description": "Read all files under each directory, recursively",
+                    "syntax": "grep -r PATTERN DIRECTORY"
+                },
+                "v": {
+                    "name": "invert-match",
+                    "description": "Select non-matching lines",
+                    "syntax": "grep -v PATTERN FILE"
+                },
+                "n": {
+                    "name": "line-number",
+                    "description": "Print line numbers with output lines",
+                    "syntax": "grep -n PATTERN FILE"
+                },
+                "l": {
+                    "name": "files-with-matches",
+                    "description": "Print only names of files with matching lines",
+                    "syntax": "grep -l PATTERN FILE"
+                },
+                "c": {
+                    "name": "count",
+                    "description": "Print only a count of matching lines per file",
+                    "syntax": "grep -c PATTERN FILE"
+                },
+                "E": {
+                    "name": "extended-regexp",
+                    "description": "Interpret PATTERN as an extended regular expression",
+                    "syntax": "grep -E PATTERN FILE"
+                },
+                "w": {
+                    "name": "word-regexp",
+                    "description": "Select only lines containing matches that form whole words",
+                    "syntax": "grep -w PATTERN FILE"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "grep \"error\" logfile.txt",
+                    "explanation": "Finds lines containing 'error' in logfile.txt"
+                },
+                "case_insensitive": {
+                    "command": "grep -i \"ERROR\" logfile.txt",
+                    "explanation": "Finds 'ERROR' regardless of case"
+                },
+                "recursive": {
+                    "command": "grep -r \"TODO\" /home/user/project/",
+                    "explanation": "Recursively searches for 'TODO' in project directory"
+                },
+                "invert": {
+                    "command": "grep -v \"^#\" config.conf",
+                    "explanation": "Shows lines not starting with # (comments)"
+                },
+                "with_line_numbers": {
+                    "command": "grep -n \"function\" script.js",
+                    "explanation": "Shows line numbers with matching lines"
+                },
+                "count": {
+                    "command": "grep -c \"warning\" build.log",
+                    "explanation": "Counts number of warning lines"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "locate",
+            "description": "Find files by name using pre-built database",
+            "category": "search",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "i": {
+                    "name": "ignore-case",
+                    "description": "Ignore case distinctions when matching patterns",
+                    "syntax": "locate -i PATTERN"
+                },
+                "c": {
+                    "name": "count",
+                    "description": "Only print number of found entries",
+                    "syntax": "locate -c PATTERN"
+                },
+                "l": {
+                    "name": "limit",
+                    "description": "Limit output to specified number of entries",
+                    "syntax": "locate -l N PATTERN"
+                },
+                "r": {
+                    "name": "regexp",
+                    "description": "Use basic regexp for pattern matching",
+                    "syntax": "locate -r PATTERN"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "locate httpd.conf",
+                    "explanation": "Finds httpd.conf file quickly using database"
+                },
+                "case_insensitive": {
+                    "command": "locate -i README",
+                    "explanation": "Finds README files regardless of case"
+                },
+                "count": {
+                    "command": "locate -c \".pdf\"",
+                    "explanation": "Counts number of PDF files"
+                },
+                "limit": {
+                    "command": "locate -l 10 \"*.log\"",
+                    "explanation": "Shows only first 10 log files"
+                },
+                "pattern": {
+                    "command": "locate \"*backup*\"",
+                    "explanation": "Finds files with 'backup' in name"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "which",
+            "description": "Locate a command and show its path",
+            "category": "system_info",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "a": {
+                    "name": "all",
+                    "description": "Print all matching executables in PATH, not just the first",
+                    "syntax": "which -a COMMAND"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "which python",
+                    "output": "/usr/bin/python",
+                    "explanation": "Shows path to python executable"
+                },
+                "all": {
+                    "command": "which -a java",
+                    "output": "/usr/bin/java\n/opt/java/bin/java",
+                    "explanation": "Shows all java executables in PATH"
+                },
+                "verify": {
+                    "command": "which ls",
+                    "output": "/bin/ls",
+                    "explanation": "Shows location of ls command"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "whereis",
+            "description": "Locate binary, source, and manual page files for a command",
+            "category": "system_info",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "b": {
+                    "name": "binaries",
+                    "description": "Search only for binaries",
+                    "syntax": "whereis -b COMMAND"
+                },
+                "m": {
+                    "name": "manuals",
+                    "description": "Search only for manual pages",
+                    "syntax": "whereis -m COMMAND"
+                },
+                "s": {
+                    "name": "sources",
+                    "description": "Search only for sources",
+                    "syntax": "whereis -s COMMAND"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "whereis ls",
+                    "output": "ls: /bin/ls /usr/share/man/man1/ls.1.gz",
+                    "explanation": "Shows binary and man page locations for ls"
+                },
+                "binary_only": {
+                    "command": "whereis -b gcc",
+                    "output": "gcc: /usr/bin/gcc",
+                    "explanation": "Shows only binary location for gcc"
+                },
+                "man_page_only": {
+                    "command": "whereis -m grep",
+                    "output": "grep: /usr/share/man/man1/grep.1.gz",
+                    "explanation": "Shows only man page location for grep"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "uname",
+            "description": "Print system information",
+            "category": "system_info",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "a": {
+                    "name": "all",
+                    "description": "Print all information",
+                    "syntax": "uname -a"
+                },
+                "s": {
+                    "name": "kernel-name",
+                    "description": "Print the kernel name",
+                    "syntax": "uname -s"
+                },
+                "n": {
+                    "name": "node-name",
+                    "description": "Print the network node hostname",
+                    "syntax": "uname -n"
+                },
+                "r": {
+                    "name": "kernel-release",
+                    "description": "Print the kernel release",
+                    "syntax": "uname -r"
+                },
+                "v": {
+                    "name": "kernel-version",
+                    "description": "Print the kernel version",
+                    "syntax": "uname -v"
+                },
+                "m": {
+                    "name": "machine",
+                    "description": "Print the machine hardware name",
+                    "syntax": "uname -m"
+                },
+                "p": {
+                    "name": "processor",
+                    "description": "Print the processor type",
+                    "syntax": "uname -p"
+                },
+                "o": {
+                    "name": "operating-system",
+                    "description": "Print the operating system",
+                    "syntax": "uname -o"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "all": {
+                    "command": "uname -a",
+                    "output": "Linux server1 5.4.0-42-generic #46-Ubuntu SMP Fri Jul 10 00:24:02 UTC 2020 x86_64 x86_64 x86_64 GNU/Linux",
+                    "explanation": "Shows all system information"
+                },
+                "kernel": {
+                    "command": "uname -r",
+                    "output": "5.4.0-42-generic",
+                    "explanation": "Shows kernel release version"
+                },
+                "machine": {
+                    "command": "uname -m",
+                    "output": "x86_64",
+                    "explanation": "Shows machine architecture"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "df",
+            "description": "Report file system disk space usage",
+            "category": "system_info",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "h": {
+                    "name": "human-readable",
+                    "description": "Print sizes in human readable format (e.g., 1K, 234M, 2G)",
+                    "syntax": "df -h"
+                },
+                "H": {
+                    "name": "si",
+                    "description": "Print sizes in powers of 1000 (e.g., 1K = 1000 bytes)",
+                    "syntax": "df -H"
+                },
+                "T": {
+                    "name": "print-type",
+                    "description": "Print file system type",
+                    "syntax": "df -T"
+                },
+                "i": {
+                    "name": "inodes",
+                    "description": "List inode information instead of block usage",
+                    "syntax": "df -i"
+                },
+                "a": {
+                    "name": "all",
+                    "description": "Include dummy file systems",
+                    "syntax": "df -a"
+                },
+                "l": {
+                    "name": "local",
+                    "description": "Limit listing to local file systems",
+                    "syntax": "df -l"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "human": {
+                    "command": "df -h",
+                    "output": "Filesystem      Size  Used Avail Use% Mounted on\ndevtmpfs        3.9G     0  3.9G   0% /dev\n/dev/sda1        50G   30G   17G  64% /",
+                    "explanation": "Shows disk usage in human readable format"
+                },
+                "with_type": {
+                    "command": "df -hT",
+                    "output": "Filesystem     Type      Size  Used Avail Use% Mounted on\ndevtmpfs       devtmpfs  3.9G     0  3.9G   0% /dev\n/dev/sda1      ext4       50G   30G   17G  64% /",
+                    "explanation": "Shows disk usage with file system types"
+                },
+                "inodes": {
+                    "command": "df -i",
+                    "output": "Filesystem      Inodes  IUsed   IFree IUse% Mounted on\ndevtmpfs       1000000    500  999500    1% /dev\n/dev/sda1      3276800 100000 3176800    4% /",
+                    "explanation": "Shows inode usage statistics"
+                },
+                "specific": {
+                    "command": "df -h /home",
+                    "explanation": "Shows disk usage for /home partition only"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "du",
+            "description": "Estimate file space usage",
+            "category": "system_info",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "h": {
+                    "name": "human-readable",
+                    "description": "Print sizes in human readable format",
+                    "syntax": "du -h"
+                },
+                "s": {
+                    "name": "summarize",
+                    "description": "Display only a total for each argument",
+                    "syntax": "du -s"
+                },
+                "c": {
+                    "name": "total",
+                    "description": "Produce a grand total",
+                    "syntax": "du -c"
+                },
+                "a": {
+                    "name": "all",
+                    "description": "Write counts for all files, not just directories",
+                    "syntax": "du -a"
+                },
+                "d": {
+                    "name": "max-depth",
+                    "description": "Print total for directory only if it is N or fewer levels below command line argument",
+                    "syntax": "du -d N"
+                },
+                "sh": {
+                    "name": "si",
+                    "description": "Use powers of 1000 not 1024",
+                    "syntax": "du --si"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "human": {
+                    "command": "du -h file.txt",
+                    "output": "4.0K    file.txt",
+                    "explanation": "Shows file size in human readable format"
+                },
+                "summarize": {
+                    "command": "du -sh /var/log",
+                    "output": "1.2G    /var/log",
+                    "explanation": "Shows total size of /var/log directory"
+                },
+                "all": {
+                    "command": "du -ah directory/",
+                    "explanation": "Shows sizes of all files in directory"
+                },
+                "depth": {
+                    "command": "du -h --max-depth=1 /home",
+                    "explanation": "Shows sizes of first-level subdirectories in /home"
+                },
+                "total": {
+                    "command": "du -ch *.log",
+                    "explanation": "Shows sizes of all log files with grand total"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "free",
+            "description": "Display amount of free and used memory in the system",
+            "category": "system_info",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "h": {
+                    "name": "human",
+                    "description": "Show human readable output",
+                    "syntax": "free -h"
+                },
+                "b": {
+                    "name": "bytes",
+                    "description": "Show output in bytes",
+                    "syntax": "free -b"
+                },
+                "k": {
+                    "name": "kilo",
+                    "description": "Show output in kilobytes",
+                    "syntax": "free -k"
+                },
+                "m": {
+                    "name": "mega",
+                    "description": "Show output in megabytes",
+                    "syntax": "free -m"
+                },
+                "g": {
+                    "name": "giga",
+                    "description": "Show output in gigabytes",
+                    "syntax": "free -g"
+                },
+                "t": {
+                    "name": "total",
+                    "description": "Display line showing totals",
+                    "syntax": "free -t"
+                },
+                "s": {
+                    "name": "seconds",
+                    "description": "Continuously display, delaying seconds between updates",
+                    "syntax": "free -s SECONDS"
+                },
+                "c": {
+                    "name": "count",
+                    "description": "Display count times",
+                    "syntax": "free -c COUNT"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "human": {
+                    "command": "free -h",
+                    "output": "              total        used        free      shared  buff/cache   available\nMem:           15Gi       5.2Gi       7.1Gi       1.2Gi       2.7Gi       8.3Gi\nSwap:         2.0Gi       0.0Gi       2.0Gi",
+                    "explanation": "Shows memory usage in human readable format"
+                },
+                "megabytes": {
+                    "command": "free -m",
+                    "explanation": "Shows memory usage in megabytes"
+                },
+                "continuous": {
+                    "command": "free -s 5",
+                    "explanation": "Updates memory display every 5 seconds"
+                },
+                "with_total": {
+                    "command": "free -h -t",
+                    "explanation": "Shows memory usage with total line"
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "ps",
+            "description": "Report a snapshot of current processes",
+            "category": "process_management",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "e": {
+                    "name": "every",
+                    "description": "Select all processes",
+                    "syntax": "ps -e"
+                },
+                "f": {
+                    "name": "full-format",
+                    "description": "Do full-format listing",
+                    "syntax": "ps -f"
+                },
+                "aux": {
+                    "name": "all-users",
+                    "description": "Show processes for all users",
+                    "syntax": "ps aux"
+                },
+                "ef": {
+                    "name": "every-full",
+                    "description": "Show every process in full format",
+                    "syntax": "ps -ef"
+                },
+                "u": {
+                    "name": "user",
+                    "description": "Select by effective user ID or name",
+                    "syntax": "ps -u USER"
+                },
+                "p": {
+                    "name": "pid",
+                    "description": "Select by process ID",
+                    "syntax": "ps -p PID"
+                },
+                "C": {
+                    "name": "cmd",
+                    "description": "Select by command name",
+                    "syntax": "ps -C COMMAND"
+                },
+                "o": {
+                    "name": "format",
+                    "description": "User-defined format",
+                    "syntax": "ps -o pid,user,%cpu,%mem,command"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "all": {
+                    "command": "ps aux",
+                    "output": "USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND\nroot         1  0.0  0.1 169572 13192 ?        Ss   10:00   0:01 /sbin/init\nuser      1234  0.5  2.1 1023456 175000 ?       Sl   10:05   0:15 /usr/bin/firefox",
+                    "explanation": "Shows all processes with detailed info"
+                },
+                "user": {
+                    "command": "ps -u john",
+                    "explanation": "Shows processes owned by user 'john'"
+                },
+                "pid": {
+                    "command": "ps -p 1234",
+                    "explanation": "Shows information about process with PID 1234"
+                },
+                "custom": {
+                    "command": "ps -eo pid,user,pcpu,pmem,cmd --sort=-pcpu | head -10",
+                    "explanation": "Shows top 10 processes by CPU usage"
+                },
+                "tree": {
+                    "command": "ps -ef --forest",
+                    "explanation": "Shows process tree/hierarchy"
+                }
+            }
+        },
+        {
+            "name": "top",
+            "description": "Display Linux processes (dynamic real-time view)",
+            "category": "process_management",
+            "bookmarked": false,
+            "flags": {
+                "d": {
+                    "name": "delay",
+                    "description": "Specify delay between updates in seconds",
+                    "syntax": "top -d SECONDS"
+                },
+                "n": {
+                    "name": "iterations",
+                    "description": "Number of iterations before ending",
+                    "syntax": "top -n NUMBER"
+                },
+                "p": {
+                    "name": "pid",
+                    "description": "Monitor only processes with specified PID",
+                    "syntax": "top -p PID"
+                },
+                "u": {
+                    "name": "user",
+                    "description": "Monitor only processes for specified user",
+                    "syntax": "top -u USER"
+                },
+                "b": {
+                    "name": "batch",
+                    "description": "Run in batch mode, useful for sending output to file",
+                    "syntax": "top -b"
+                },
+                "c": {
+                    "name": "command-line",
+                    "description": "Show full command line instead of just command name",
+                    "syntax": "top -c"
+                },
+                "H": {
+                    "name": "threads",
+                    "description": "Show individual threads",
+                    "syntax": "top -H"
+                },
+                "i": {
+                    "name": "idle",
+                    "description": "Hide idle processes",
+                    "syntax": "top -i"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "top",
+                    "explanation": "Starts interactive process viewer"
+                },
+                "delay": {
+                    "command": "top -d 2",
+                    "explanation": "Updates every 2 seconds instead of default 3"
+                },
+                "batch": {
+                    "command": "top -b -n 1 > processes.txt",
+                    "explanation": "Runs once in batch mode and saves to file"
+                },
+                "user": {
+                    "command": "top -u mysql",
+                    "explanation": "Shows only processes owned by mysql user"
+                },
+                "pids": {
+                    "command": "top -p 1234,5678",
+                    "explanation": "Monitors only processes with PIDs 1234 and 5678"
+                },
+                "threads": {
+                    "command": "top -H -p 1234",
+                    "explanation": "Shows threads for process 1234"
+                }
+            }
+        },
+        {
+            "name": "htop",
+            "description": "Interactive process viewer (enhanced version of top)",
+            "category": "process_management",
+            "bookmarked": false,
+            "flags": {
+                "u": {
+                    "name": "user",
+                    "description": "Show only processes of given user",
+                    "syntax": "htop -u USER"
+                },
+                "p": {
+                    "name": "pid",
+                    "description": "Show only given PIDs",
+                    "syntax": "htop -p PID[,PID,...]"
+                },
+                "s": {
+                    "name": "sort",
+                    "description": "Sort by COLUMN (use once for ascending, twice for descending)",
+                    "syntax": "htop -s COLUMN"
+                },
+                "d": {
+                    "name": "delay",
+                    "description": "Delay between updates in tenths of seconds",
+                    "syntax": "htop -d DELAY"
+                },
+                "C": {
+                    "name": "no-color",
+                    "description": "Use a monochrome color scheme",
+                    "syntax": "htop -C"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "htop",
+                    "explanation": "Starts interactive htop interface"
+                },
+                "user": {
+                    "command": "htop -u www-data",
+                    "explanation": "Shows only processes owned by www-data user"
+                },
+                "sort": {
+                    "command": "htop -s PERCENT_CPU",
+                    "explanation": "Sorts processes by CPU percentage"
+                },
+                "delay": {
+                    "command": "htop -d 10",
+                    "explanation": "Sets update delay to 1 second (10 tenths)"
+                },
+                "tree": {
+                    "command": "Press F5 in htop",
+                    "explanation": "Switches to tree view showing parent-child relationships"
+                },
+                "search": {
+                    "command": "Press F3 in htop",
+                    "explanation": "Search for processes by name"
+                }
+            }
+        },
+        {
+            "name": "ping",
+            "description": "Send ICMP ECHO_REQUEST to network hosts",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "c": {
+                    "name": "count",
+                    "description": "Stop after sending COUNT packets",
+                    "syntax": "ping -c COUNT HOST"
+                },
+                "i": {
+                    "name": "interval",
+                    "description": "Wait INTERVAL seconds between sending each packet",
+                    "syntax": "ping -i INTERVAL HOST"
+                },
+                "s": {
+                    "name": "size",
+                    "description": "Send SIZE data bytes in packets (default is 56)",
+                    "syntax": "ping -s SIZE HOST"
+                },
+                "w": {
+                    "name": "deadline",
+                    "description": "Timeout in seconds to stop ping",
+                    "syntax": "ping -w SECONDS HOST"
+                },
+                "W": {
+                    "name": "timeout",
+                    "description": "Time to wait for a response in seconds",
+                    "syntax": "ping -W SECONDS HOST"
+                },
+                "q": {
+                    "name": "quiet",
+                    "description": "Quiet output - only summary at startup and finish",
+                    "syntax": "ping -q HOST"
+                },
+                "f": {
+                    "name": "flood",
+                    "description": "Flood ping - output packets as fast as they come back",
+                    "syntax": "ping -f HOST"
+                },
+                "4": {
+                    "name": "ipv4",
+                    "description": "Use IPv4 only",
+                    "syntax": "ping -4 HOST"
+                },
+                "6": {
+                    "name": "ipv6",
+                    "description": "Use IPv6 only",
+                    "syntax": "ping -6 HOST"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "ping google.com",
+                    "explanation": "Continuously ping google.com until interrupted"
+                },
+                "count": {
+                    "command": "ping -c 4 8.8.8.8",
+                    "output": "PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.\n64 bytes from 8.8.8.8: icmp_seq=1 ttl=117 time=12.3 ms\n64 bytes from 8.8.8.8: icmp_seq=2 ttl=117 time=11.8 ms\n64 bytes from 8.8.8.8: icmp_seq=3 ttl=117 time=12.1 ms\n64 bytes from 8.8.8.8: icmp_seq=4 ttl=117 time=12.0 ms\n\n--- 8.8.8.8 ping statistics ---\n4 packets transmitted, 4 received, 0% packet loss, time 3005ms\nrtt min/avg/max/mdev = 11.834/12.087/12.312/0.182 ms",
+                    "explanation": "Pings 8.8.8.8 exactly 4 times and shows statistics"
+                },
+                "size": {
+                    "command": "ping -s 1000 google.com",
+                    "explanation": "Sends 1000 byte packets to google.com"
+                },
+                "interval": {
+                    "command": "ping -i 5 example.com",
+                    "explanation": "Pings every 5 seconds instead of default 1 second"
+                },
+                "timeout": {
+                    "command": "ping -w 10 example.com",
+                    "explanation": "Stops pinging after 10 seconds"
+                },
+                "flood": {
+                    "command": "ping -f localhost",
+                    "explanation": "Floods localhost with ping requests (requires root)"
+                }
             }
         }
     ]
