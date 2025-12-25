@@ -6238,6 +6238,68 @@
                     "explanation": "Test archive integrity"
                 }
             }
+        },
+        {
+            "name": "add-apt-repository",
+            "description": "Adds a PPA (Personal Package Archive) repository to the system's software sources",
+            "category": "package-management",
+            "bookmarked": false,
+            "flags": {
+                "r": {
+                    "name": "remove",
+                    "description": "Remove the specified repository",
+                    "syntax": "add-apt-repository -r ppa:user/repo"
+                },
+                "y": {
+                    "name": "yes",
+                    "description": "Assume yes to all queries",
+                    "syntax": "add-apt-repository -y ppa:user/repo"
+                },
+                "s": {
+                    "name": "enable-source",
+                    "description": "Enable downloading of source packages from the repository",
+                    "syntax": "add-apt-repository -s ppa:user/repo"
+                },
+                "u": {
+                    "name": "update",
+                    "description": "Update package list after adding repository",
+                    "syntax": "add-apt-repository -u ppa:user/repo"
+                },
+                "c": {
+                    "name": "components",
+                    "description": "Specify repository components",
+                    "syntax": "add-apt-repository 'deb http://example.com/ubuntu focal main universe'"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information",
+                    "syntax": "add-apt-repository --help"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "add-apt-repository ppa:ubuntu-mozilla-daily/ppa",
+                    "output": "Repository: 'deb http://ppa.launchpad.net/ubuntu-mozilla-daily/ppa/ubuntu focal main'\nDescription: Firefox Daily Build\nMore info: https://launchpad.net/~ubuntu-mozilla-daily/+archive/ubuntu/ppa\nAdding repository.\nPress [ENTER] to continue or Ctrl+C to cancel.",
+                    "explanation": "Add Firefox daily builds PPA repository"
+                },
+                "with_flags": {
+                    "remove": {
+                        "command": "add-apt-repository -r ppa:ubuntu-mozilla-daily/ppa",
+                        "output": "Repository removed successfully.",
+                        "explanation": "Remove previously added PPA repository"
+                    },
+                    "yes": {
+                        "command": "add-apt-repository -y ppa:libreoffice/ppa",
+                        "output": "Repository added successfully.",
+                        "explanation": "Add repository without prompting for confirmation"
+                    },
+                    "source": {
+                        "command": "add-apt-repository -s 'deb http://archive.ubuntu.com/ubuntu focal main'",
+                        "output": "Repository with source enabled added successfully.",
+                        "explanation": "Add repository with source packages enabled"
+                    }
+                }
+            }
         }
     }
 }
