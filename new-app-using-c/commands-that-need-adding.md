@@ -1,5 +1,6 @@
 # Commands That Have Been Added
 ```
+touch
 ```
 
 # Commands That Still Need Adding
@@ -403,7 +404,6 @@ tee
 termcommands
 tesseract
 top
-touch
 tree
 truncate
 tty

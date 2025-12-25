@@ -1,5 +1,110 @@
 {
     "commands": [
-        {}
+        {
+            "name": "touch",
+            "description": "The touch command in Linux is used to create new empty files or update the access and modification timestamps of existing files. It's commonly used to:\n1) Create new empty files quickly\n2) Update file timestamps without modifying content\n3) Ensure files exist before other operations\n4) Set specific timestamps for files\n\nThe command works by updating the file's access time (atime), modification time (mtime), and change time (ctime) to the current time by default.",
+            "category": "File Management",
+            "bookmarked": false,
+            "flags": {
+                "-a": {
+                    "name": "Access Time Only",
+                    "description": "Update only the access time of the file, not the modification time",
+                    "syntax": "touch -a filename"
+                },
+                "-c": {
+                    "name": "No Create",
+                    "description": "Do not create the file if it does not exist. Only update timestamps of existing files",
+                    "syntax": "touch -c filename"
+                },
+                "-d": {
+                    "name": "Custom Date/Time",
+                    "description": "Use specified date/time string instead of current time. Accepts various date formats",
+                    "syntax": "touch -d 'DATE_STRING' filename"
+                },
+                "-h": {
+                    "name": "Dereference Symbolic Links",
+                    "description": "Affect the target of symbolic links instead of the links themselves (when supported)",
+                    "syntax": "touch -h filename"
+                },
+                "-m": {
+                    "name": "Modification Time Only",
+                    "description": "Update only the modification time, not the access time",
+                    "syntax": "touch -m filename"
+                },
+                "-r": {
+                    "name": "Reference File",
+                    "description": "Use the timestamps from a reference file instead of current time",
+                    "syntax": "touch -r reference_file target_file"
+                },
+                "-t": {
+                    "name": "Timestamp Format",
+                    "description": "Use specified timestamp in [[CC]YY]MMDDhhmm[.ss] format",
+                    "syntax": "touch -t [[CC]YY]MMDDhhmm[.ss] filename"
+                },
+                "--help": {
+                    "name": "Display Help",
+                    "description": "Display help information and exit",
+                    "syntax": "touch --help"
+                },
+                "--version": {
+                    "name": "Display Version",
+                    "description": "Output version information and exit",
+                    "syntax": "touch --version"
+                },
+                "--no-dereference": {
+                    "name": "No Dereference",
+                    "description": "Always dereference symbolic links (GNU extension)",
+                    "syntax": "touch --no-dereference filename"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "touch file.txt",
+                    "output": "Creates 'file.txt' if it doesn't exist, or updates its timestamps to current time if it exists"
+                },
+                "with_flags": {
+                    "-a": {
+                        "command": "touch -a logfile.txt",
+                        "output": "Updates only the access time of 'logfile.txt' to current time without changing modification time"
+                    },
+                    "-c": {
+                        "command": "touch -c nonexistent.txt",
+                        "output": "No file is created. If 'nonexistent.txt' doesn't exist, nothing happens"
+                    },
+                    "-d": {
+                        "command": "touch -d '2024-01-15 14:30:00' file.txt",
+                        "output": "Sets all timestamps of 'file.txt' to January 15, 2024, 2:30 PM"
+                    },
+                    "-h": {
+                        "command": "touch -h symlink_to_file",
+                        "output": "Updates timestamps of the file that symlink_to_file points to"
+                    },
+                    "-m": {
+                        "command": "touch -m document.pdf",
+                        "output": "Updates only the modification time of 'document.pdf' to current time"
+                    },
+                    "-r": {
+                        "command": "touch -r source.txt target.txt",
+                        "output": "Sets timestamps of 'target.txt' to match those of 'source.txt'"
+                    },
+                    "-t": {
+                        "command": "touch -t 202401151430.59 timestamped.txt",
+                        "output": "Sets timestamps of 'timestamped.txt' to 2024-01-15 14:30:59"
+                    },
+                    "--help": {
+                        "command": "touch --help",
+                        "output": "Displays comprehensive help information about touch command usage and options"
+                    },
+                    "--version": {
+                        "command": "touch --version",
+                        "output": "Displays version information of the touch command"
+                    },
+                    "--no-dereference": {
+                        "command": "touch --no-dereference mysymlink",
+                        "output": "Treats 'mysymlink' as a regular file regardless of whether it's a symbolic link"
+                    }
+                }
+            }
+        }
     ]
 }
