@@ -862,113 +862,590 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "cat",
+            "description": "Concatenate and display the entire contents of files. Primarily used to read, combine, and create files.",
+            "category": "file-viewing",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "A": {
+                    "name": "show-all",
+                    "description": "Equivalent to -vET. Show non-printing characters, display $ at end of each line, and show tabs as ^I.",
+                    "syntax": "cat -A"
+                },
+                "b": {
+                    "name": "number-nonblank",
+                    "description": "Number all non-empty output lines, starting at 1.",
+                    "syntax": "cat -b"
+                },
+                "e": {
+                    "name": "show-ends",
+                    "description": "Equivalent to -vE. Show non-printing characters and display $ at end of each line.",
+                    "syntax": "cat -e"
+                },
+                "E": {
+                    "name": "show-ends",
+                    "description": "Display $ at the end of each line.",
+                    "syntax": "cat -E"
+                },
+                "n": {
+                    "name": "number",
+                    "description": "Number all output lines, starting at 1.",
+                    "syntax": "cat -n"
+                },
+                "s": {
+                    "name": "squeeze-blank",
+                    "description": "Suppress repeated empty output lines. Multiple consecutive blank lines are replaced with one.",
+                    "syntax": "cat -s"
+                },
+                "t": {
+                    "name": "show-tabs",
+                    "description": "Equivalent to -vT. Show non-printing characters and display tabs as ^I.",
+                    "syntax": "cat -t"
+                },
+                "T": {
+                    "name": "show-tabs",
+                    "description": "Display TAB characters as ^I.",
+                    "syntax": "cat -T"
+                },
+                "v": {
+                    "name": "show-nonprinting",
+                    "description": "Use ^ and M- notation, except for LFD and TAB. Display non-printing characters.",
+                    "syntax": "cat -v"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information.",
+                    "syntax": "cat --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information.",
+                    "syntax": "cat --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "cat file.txt",
+                    "output": "This is line one.\nThis is line two.",
+                    "explanation": "Displays the entire content of 'file.txt' to the terminal."
+                },
+                "with_flags": {
+                    "n": {
+                        "command": "cat -n file.txt",
+                        "output": "1  This is line one.\n2  This is line two.",
+                        "explanation": "Displays the file with line numbers for all lines."
+                    },
+                    "b": {
+                        "command": "cat -b file.txt",
+                        "output": "1  This is line one.\n\n2  This is line two.",
+                        "explanation": "Displays the file with line numbers only for non-blank lines."
+                    },
+                    "E": {
+                        "command": "cat -E file.txt",
+                        "output": "This is line one.$\nThis is line two.$",
+                        "explanation": "Makes the end of each line visible with a $ character."
+                    },
+                    "multiple_files": {
+                        "command": "cat file1.txt file2.txt",
+                        "output": "Content from file1.\nContent from file2.",
+                        "explanation": "Concatenates and displays the contents of multiple files in sequence."
+                    },
+                    "create_file": {
+                        "command": "cat > newfile.txt",
+                        "output": "",
+                        "explanation": "Creates 'newfile.txt'. Type input, then press Ctrl+D to save and exit."
+                    },
+                    "append_file": {
+                        "command": "cat >> existing.txt",
+                        "output": "",
+                        "explanation": "Appends typed input to the end of 'existing.txt'. Press Ctrl+D to finish."
+                    },
+                    "combine_files": {
+                        "command": "cat part1.txt part2.txt > whole.txt",
+                        "output": "",
+                        "explanation": "Combines 'part1.txt' and 'part2.txt' and saves the result into a new file 'whole.txt'."
+                    }
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "less",
+            "description": "A powerful, interactive terminal pager for viewing file contents one screenful at a time. Allows forward and backward navigation.",
+            "category": "file-viewing",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "e": {
+                    "name": "quit-at-eof",
+                    "description": "Causes less to automatically exit the second time it reaches end-of-file. Default is to require 'q' to quit.",
+                    "syntax": "less -e"
+                },
+                "f": {
+                    "name": "force-open",
+                    "description": "Forces non-regular files (directories, device files) to be opened.",
+                    "syntax": "less -f"
+                },
+                "g": {
+                    "name": "highlight-search",
+                    "description": "Highlights only the string that matched the last search command, not all matches.",
+                    "syntax": "less -g"
+                },
+                "i": {
+                    "name": "ignore-case",
+                    "description": "Causes searches to ignore case, unless the search pattern contains uppercase letters.",
+                    "syntax": "less -i"
+                },
+                "N": {
+                    "name": "line-numbers",
+                    "description": "Displays a line number at the beginning of each line.",
+                    "syntax": "less -N"
+                },
+                "r": {
+                    "name": "raw-control-chars",
+                    "description": "Causes 'raw' control characters to be displayed. Useful for viewing output containing ANSI color codes.",
+                    "syntax": "less -r"
+                },
+                "s": {
+                    "name": "squeeze-blank-lines",
+                    "description": "Causes consecutive blank lines to be squeezed into a single blank line.",
+                    "syntax": "less -s"
+                },
+                "S": {
+                    "name": "chop-long-lines",
+                    "description": "Causes lines longer than the screen width to be chopped (truncated) rather than wrapped.",
+                    "syntax": "less -S"
+                },
+                "X": {
+                    "name": "no-init",
+                    "description": "Disables sending the termcap initialization and deinitialization strings to the terminal. Useful if content should remain on screen after quitting.",
+                    "syntax": "less -X"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information.",
+                    "syntax": "less --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Display version information.",
+                    "syntax": "less --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "less longfile.txt",
+                    "output": "",
+                    "explanation": "Opens 'longfile.txt' in the less viewer. You can navigate with arrow keys, Page Up/Down."
+                },
+                "with_flags": {
+                    "N": {
+                        "command": "less -N longfile.txt",
+                        "output": "",
+                        "explanation": "Views the file with line numbers displayed."
+                    },
+                    "i_Search": {
+                        "command": "less -i +/error logfile.txt",
+                        "output": "",
+                        "explanation": "Opens 'logfile.txt' and performs an initial case-insensitive search for the string 'error'."
+                    }
+                },
+                "common_commands_inside_less": {
+                    "navigation": {
+                        "command": "Space, f, Page Down",
+                        "explanation": "Move forward one screen."
+                    },
+                    "navigation_back": {
+                        "command": "b, Page Up",
+                        "explanation": "Move backward one screen."
+                    },
+                    "navigation_down": {
+                        "command": "Down Arrow, Enter, j",
+                        "explanation": "Move forward one line."
+                    },
+                    "navigation_up": {
+                        "command": "Up Arrow, k",
+                        "explanation": "Move backward one line."
+                    },
+                    "search_forward": {
+                        "command": "/pattern",
+                        "explanation": "Search forward for 'pattern'. Press 'n' for next match, 'N' for previous."
+                    },
+                    "search_backward": {
+                        "command": "?pattern",
+                        "explanation": "Search backward for 'pattern'."
+                    },
+                    "goto_line": {
+                        "command": "50g",
+                        "explanation": "Go to line 50. '1g' goes to start, 'G' goes to end."
+                    },
+                    "quit": {
+                        "command": "q",
+                        "explanation": "Exit less."
+                    },
+                    "help": {
+                        "command": "h",
+                        "explanation": "Display help summary within less."
+                    }
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "more",
+            "description": "A basic terminal pager for viewing file contents one screen at a time. Allows only forward navigation. (Note: 'less' is more powerful and generally preferred).",
+            "category": "file-viewing",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "d": {
+                    "name": "prompt",
+                    "description": "Displays '[Press space to continue, 'q' to quit.]' and displays '[Press 'h' for instructions.]' instead of ringing the bell when an illegal key is pressed.",
+                    "syntax": "more -d"
+                },
+                "f": {
+                    "name": "count-lines",
+                    "description": "Count logical lines, rather than screen lines. Prevents long lines from causing wrapping/paging issues.",
+                    "syntax": "more -f"
+                },
+                "l": {
+                    "name": "no-pause",
+                    "description": "Do not pause after any line containing a ^L (form feed).",
+                    "syntax": "more -l"
+                },
+                "p": {
+                    "name": "clear",
+                    "description": "Do not scroll. Instead, clear the whole screen and then display the text.",
+                    "syntax": "more -p"
+                },
+                "c": {
+                    "name": "paint",
+                    "description": "Do not scroll. Instead, repaint each line from the top, avoiding scrolling artifacts.",
+                    "syntax": "more -c"
+                },
+                "s": {
+                    "name": "squeeze",
+                    "description": "Squeeze multiple blank lines into one.",
+                    "syntax": "more -s"
+                },
+                "u": {
+                    "name": "no-underline",
+                    "description": "Suppress underline formatting.",
+                    "syntax": "more -u"
+                },
+                "+/": {
+                    "name": "search-pattern",
+                    "description": "Start two lines before the line containing the specified pattern.",
+                    "syntax": "more +/pattern file.txt"
+                },
+                "+n": {
+                    "name": "start-line",
+                    "description": "Start at line number n.",
+                    "syntax": "more +10 file.txt"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "more longfile.txt",
+                    "output": "--More--(XX%)",
+                    "explanation": "Opens 'longfile.txt'. Displays '--More--(XX%)' at the bottom. Press Space to page forward, Enter for one line. Cannot go back."
+                },
+                "with_flags": {
+                    "d": {
+                        "command": "more -d longfile.txt",
+                        "output": "[Press space to continue, 'q' to quit.]",
+                        "explanation": "Provides a clearer prompt for the user."
+                    },
+                    "+10": {
+                        "command": "more +10 longfile.txt",
+                        "output": "",
+                        "explanation": "Starts viewing the file from line 10."
+                    },
+                    "+/error": {
+                        "command": "more +/error logfile.txt",
+                        "output": "",
+                        "explanation": "Starts viewing two lines before the first occurrence of the word 'error'."
+                    }
+                },
+                "common_commands_inside_more": {
+                    "next_screen": {
+                        "command": "Space",
+                        "explanation": "Display next screenful of text."
+                    },
+                    "next_line": {
+                        "command": "Enter",
+                        "explanation": "Display next line."
+                    },
+                    "quit": {
+                        "command": "q",
+                        "explanation": "Exit more."
+                    },
+                    "help": {
+                        "command": "h",
+                        "explanation": "Display help summary."
+                    }
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "head",
+            "description": "Outputs the first part (beginning) of files. Default is 10 lines.",
+            "category": "file-viewing",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "c": {
+                    "name": "bytes",
+                    "description": "Print the first NUM bytes of each file. Can use suffixes like K, M, G.",
+                    "syntax": "head -c 100 file.txt"
+                },
+                "n": {
+                    "name": "lines",
+                    "description": "Print the first NUM lines of each file (instead of the default 10).",
+                    "syntax": "head -n 20 file.txt"
+                },
+                "q": {
+                    "name": "quiet",
+                    "description": "Never print headers giving file names. (Default when viewing one file).",
+                    "syntax": "head -q file1.txt file2.txt"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Always print headers giving file names.",
+                    "syntax": "head -v file.txt"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information.",
+                    "syntax": "head --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information.",
+                    "syntax": "head --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "head file.txt",
+                    "output": "Line 1\nLine 2\n...\nLine 10",
+                    "explanation": "Displays the first 10 lines of 'file.txt'."
+                },
+                "with_flags": {
+                    "n": {
+                        "command": "head -n 5 file.txt",
+                        "output": "Line 1\nLine 2\nLine 3\nLine 4\nLine 5",
+                        "explanation": "Displays only the first 5 lines of the file."
+                    },
+                    "c": {
+                        "command": "head -c 50 file.txt",
+                        "output": "This is the first 50 bytes, includin",
+                        "explanation": "Displays the first 50 bytes (characters) of the file."
+                    },
+                    "multiple_files": {
+                        "command": "head -n 3 file1.txt file2.txt",
+                        "output": "==> file1.txt <==\nLine1A\nLine2A\nLine3A\n\n==> file2.txt <==\nLine1B\nLine2B\nLine3B",
+                        "explanation": "Displays the first 3 lines of each specified file, with headers."
+                    }
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "tail",
+            "description": "Outputs the last part (end) of files. Extremely useful for monitoring log files. Default is 10 lines.",
+            "category": "file-viewing",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "c": {
+                    "name": "bytes",
+                    "description": "Output the last NUM bytes of each file. Can use suffixes like K, M, G.",
+                    "syntax": "tail -c 200 file.txt"
+                },
+                "n": {
+                    "name": "lines",
+                    "description": "Output the last NUM lines of each file (instead of the default 10).",
+                    "syntax": "tail -n 20 file.txt"
+                },
+                "f": {
+                    "name": "follow",
+                    "description": "Output appended data as the file grows. This is the primary way to follow log files in real-time.",
+                    "syntax": "tail -f /var/log/syslog"
+                },
+                "F": {
+                    "name": "follow-retry",
+                    "description": "Like -f, but also keeps trying to reopen the file if it becomes inaccessible (e.g., due to log rotation). Better for production monitoring.",
+                    "syntax": "tail -F /var/log/app.log"
+                },
+                "q": {
+                    "name": "quiet",
+                    "description": "Never output headers giving file names.",
+                    "syntax": "tail -q file1.txt file2.txt"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Always output headers giving file names.",
+                    "syntax": "tail -v file.txt"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information.",
+                    "syntax": "tail --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information.",
+                    "syntax": "tail --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "tail file.txt",
+                    "output": "Line 91\nLine 92\n...\nLine 100",
+                    "explanation": "Displays the last 10 lines of 'file.txt'."
+                },
+                "with_flags": {
+                    "n": {
+                        "command": "tail -n 5 file.txt",
+                        "output": "Line 96\nLine 97\nLine 98\nLine 99\nLine 100",
+                        "explanation": "Displays only the last 5 lines of the file."
+                    },
+                    "f": {
+                        "command": "tail -f application.log",
+                        "output": "",
+                        "explanation": "Displays the last 10 lines of 'application.log' and then continues to output new lines as they are written to the file. Press Ctrl+C to stop."
+                    },
+                    "F": {
+                        "command": "tail -F application.log",
+                        "output": "",
+                        "explanation": "Like -f, but robust against log rotation. If the file is renamed and a new one created, tail will continue following the new file."
+                    },
+                    "c": {
+                        "command": "tail -c 1K largefile.bin",
+                        "output": "",
+                        "explanation": "Displays the last 1 kilobyte (1024 bytes) of the binary file."
+                    },
+                    "multiple_files": {
+                        "command": "tail -n 2 log1.txt log2.txt",
+                        "output": "==> log1.txt <==\n[2023-10-01 23:59:01] Event A\n[2023-10-01 23:59:02] Event B\n\n==> log2.txt <==\n[2023-10-01 23:58:59] Start\n[2023-10-01 23:59:00] Initialize",
+                        "explanation": "Displays the last 2 lines of each log file."
+                    }
+                }
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "nano",
+            "description": "A simple, user-friendly command-line text editor. Easy for beginners as it displays common shortcuts at the bottom of the screen.",
+            "category": "text-editing",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "A": {
+                    "name": "smarthome",
+                    "description": "Enable 'smart home' behavior. Home key takes cursor to first non-whitespace character of line, then to start of line.",
+                    "syntax": "nano -A"
+                },
+                "B": {
+                    "name": "backup",
+                    "description": "When saving a file, back up the previous version to 'filename~'.",
+                    "syntax": "nano -B"
+                },
+                "E": {
+                    "name": "tabstospaces",
+                    "description": "Convert typed tabs to spaces.",
+                    "syntax": "nano -E"
+                },
+                "i": {
+                    "name": "autoindent",
+                    "description": "Automatically indent new lines to the same level as the previous line.",
+                    "syntax": "nano -i"
+                },
+                "k": {
+                    "name": "cut-from-cursor",
+                    "description": "Enable 'cut from cursor to end of line' feature.",
+                    "syntax": "nano -k"
+                },
+                "l": {
+                    "name": "nofollow",
+                    "description": "Don't follow symbolic links; overwrite the link itself.",
+                    "syntax": "nano -l"
+                },
+                "m": {
+                    "name": "mouse",
+                    "description": "Enable mouse support for positioning the cursor.",
+                    "syntax": "nano -m"
+                },
+                "v": {
+                    "name": "view",
+                    "description": "View mode (read-only). Disables editing.",
+                    "syntax": "nano -v file.txt"
+                },
+                "w": {
+                    "name": "nowrap",
+                    "description": "Disable line wrapping.",
+                    "syntax": "nano -w"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Show help text and exit.",
+                    "syntax": "nano --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Show version information and exit.",
+                    "syntax": "nano --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
-            }
-        },
-        {
-            "name": "",
-            "description": "",
-            "category": "",
-            "bookmarked": false,
-            "flags": {},
-            "examples": {
-                "basic": {},
-                "with_flags": {}
-            }
-        },
-        {
-            "name": "",
-            "description": "",
-            "category": "",
-            "bookmarked": false,
-            "flags": {},
-            "examples": {
-                "basic": {},
-                "with_flags": {}
-            }
-        },
-        {
-            "name": "",
-            "description": "",
-            "category": "",
-            "bookmarked": false,
-            "flags": {},
-            "examples": {
-                "basic": {},
-                "with_flags": {}
-            }
-        },
-        {
-            "name": "",
-            "description": "",
-            "category": "",
-            "bookmarked": false,
-            "flags": {},
-            "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "nano myfile.txt",
+                    "output": "",
+                    "explanation": "Opens 'myfile.txt' for editing. If it doesn't exist, it starts a new buffer with that name."
+                },
+                "with_flags": {
+                    "v": {
+                        "command": "nano -v /etc/fstab",
+                        "output": "",
+                        "explanation": "Opens the system file '/etc/fstab' in read-only view mode to prevent accidental changes."
+                    },
+                    "B": {
+                        "command": "nano -B config.cfg",
+                        "output": "",
+                        "explanation": "Edits 'config.cfg'. When saved, the old version will be automatically backed up as 'config.cfg~'."
+                    },
+                    "mw": {
+                        "command": "nano -mw script.py",
+                        "output": "",
+                        "explanation": "Opens 'script.py' with mouse support enabled (-m) and line wrapping disabled (-w)."
+                    }
+                },
+                "common_commands_inside_nano": {
+                    "save": {
+                        "command": "Ctrl+O",
+                        "explanation": "Write Out (Save). Press Enter to confirm filename."
+                    },
+                    "exit": {
+                        "command": "Ctrl+X",
+                        "explanation": "Exit nano. You will be prompted to save if buffer is modified."
+                    },
+                    "cut_line": {
+                        "command": "Ctrl+K",
+                        "explanation": "Cut the current line (or marked region)."
+                    },
+                    "paste": {
+                        "command": "Ctrl+U",
+                        "explanation": "Uncut (Paste) the last cut line/region."
+                    },
+                    "search": {
+                        "command": "Ctrl+W",
+                        "explanation": "Search for text within the file."
+                    },
+                    "replace": {
+                        "command": "Ctrl+\\",
+                        "explanation": "Search and replace text."
+                    },
+                    "go_to_line": {
+                        "command": "Ctrl+_",
+                        "explanation": "Go to a specific line and column number."
+                    },
+                    "help": {
+                        "command": "Ctrl+G",
+                        "explanation": "Display the full help screen."
+                    }
+                }
             }
         },
         {
