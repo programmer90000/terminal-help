@@ -494,14 +494,115 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "cp",
+            "description": "Copy files and directories",
+            "category": "file_operations",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "i": {
+                    "name": "interactive",
+                    "description": "Prompt before overwriting existing files",
+                    "syntax": "cp -i"
+                },
+                "n": {
+                    "name": "no-clobber",
+                    "description": "Do not overwrite an existing file",
+                    "syntax": "cp -n"
+                },
+                "r": {
+                    "name": "recursive",
+                    "description": "Copy directories recursively",
+                    "syntax": "cp -r"
+                },
+                "a": {
+                    "name": "archive",
+                    "description": "Preserve all file attributes, including permissions, timestamps, and symbolic links",
+                    "syntax": "cp -a"
+                },
+                "p": {
+                    "name": "preserve",
+                    "description": "Preserve file attributes like mode, ownership, and timestamps",
+                    "syntax": "cp -p"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Print the name of each file before copying",
+                    "syntax": "cp -v"
+                },
+                "u": {
+                    "name": "update",
+                    "description": "Copy only when the source file is newer than the destination file or when the destination file is missing",
+                    "syntax": "cp -u"
+                },
+                "l": {
+                    "name": "link",
+                    "description": "Create hard links instead of copying",
+                    "syntax": "cp -l"
+                },
+                "s": {
+                    "name": "symbolic-link",
+                    "description": "Create symbolic links instead of copying",
+                    "syntax": "cp -s"
+                },
+                "b": {
+                    "name": "backup",
+                    "description": "Make a backup of each existing destination file",
+                    "syntax": "cp -b"
+                },
+                "t": {
+                    "name": "target-directory",
+                    "description": "Copy all source arguments into the specified directory",
+                    "syntax": "cp -t DIRECTORY SOURCE..."
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about cp command usage and options",
+                    "syntax": "cp --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information and exit",
+                    "syntax": "cp --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "cp file1.txt file2.txt",
+                    "output": "",
+                    "explanation": "Copies file1.txt to file2.txt in the current directory"
+                },
+                "with_flags": {
+                    "r": {
+                        "command": "cp -r dir1 dir2",
+                        "output": "",
+                        "explanation": "Recursively copies directory dir1 and its contents to dir2"
+                    },
+                    "i": {
+                        "command": "cp -i source.txt destination.txt",
+                        "output": "cp: overwrite 'destination.txt'?",
+                        "explanation": "Prompts before overwriting if destination.txt already exists"
+                    },
+                    "v": {
+                        "command": "cp -v file1.txt file2.txt",
+                        "output": "'file1.txt' -> 'file2.txt'",
+                        "explanation": "Verbose output shows what is being copied"
+                    },
+                    "a": {
+                        "command": "cp -a source_dir backup_dir",
+                        "output": "",
+                        "explanation": "Creates an exact archive copy preserving all attributes"
+                    },
+                    "u": {
+                        "command": "cp -u *.txt /backup/",
+                        "output": "",
+                        "explanation": "Only copies text files that are newer than existing ones in /backup/"
+                    },
+                    "multiple": {
+                        "command": "cp file1.txt file2.txt file3.txt destination_dir/",
+                        "output": "",
+                        "explanation": "Copies multiple files to a directory"
+                    }
+                }
             }
         },
         {
