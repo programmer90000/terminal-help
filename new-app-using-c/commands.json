@@ -3791,6 +3791,1618 @@
                     "explanation": "Extracts only txt files from archive"
                 }
             }
+        },
+        {
+            "name": "awk",
+            "description": "Pattern scanning and processing language",
+            "category": "text_processing",
+            "bookmarked": false,
+            "flags": {
+                "F": {
+                    "name": "field-separator",
+                    "description": "Use FS as field separator",
+                    "syntax": "awk -F SEPARATOR PROGRAM"
+                },
+                "v": {
+                    "name": "variable",
+                    "description": "Assign value to var before program execution",
+                    "syntax": "awk -v VAR=VALUE PROGRAM"
+                },
+                "f": {
+                    "name": "file",
+                    "description": "Read program from file",
+                    "syntax": "awk -f PROGRAM_FILE"
+                }
+            },
+            "examples": {
+                "print_field": {
+                    "command": "awk '{print $1}' file.txt",
+                    "explanation": "Prints first field of each line"
+                },
+                "field_separator": {
+                    "command": "awk -F ':' '{print $1}' /etc/passwd",
+                    "output": "root\nbin\ndaemon\n...",
+                    "explanation": "Prints usernames from /etc/passwd using : as separator"
+                },
+                "pattern": {
+                    "command": "awk '/error/ {print $0}' logfile.txt",
+                    "explanation": "Prints lines containing 'error'"
+                },
+                "multiple_fields": {
+                    "command": "awk '{print $1, $NF}' data.txt",
+                    "explanation": "Prints first and last field of each line"
+                },
+                "sum": {
+                    "command": "awk '{sum += $1} END {print sum}' numbers.txt",
+                    "explanation": "Sums values in first column"
+                },
+                "conditional": {
+                    "command": "awk '$3 > 100 {print $1, $3}' data.txt",
+                    "explanation": "Prints first and third field where third field > 100"
+                },
+                "begin_end": {
+                    "command": "awk 'BEGIN {print \"Start\"} {print $0} END {print \"End\"}' file.txt",
+                    "explanation": "Prints text before and after processing"
+                },
+                "format": {
+                    "command": "awk '{printf \"Name: %-20s Age: %d\\n\", $1, $2}' people.txt",
+                    "explanation": "Formatted output with printf"
+                },
+                "builtin_vars": {
+                    "command": "awk '{print NR \": \" $0}' file.txt",
+                    "explanation": "Prints line numbers with each line"
+                }
+            }
+        },
+        {
+            "name": "sed",
+            "description": "Stream editor for filtering and transforming text",
+            "category": "text_processing",
+            "bookmarked": false,
+            "flags": {
+                "e": {
+                    "name": "expression",
+                    "description": "Add script to commands to be executed",
+                    "syntax": "sed -e 'SCRIPT' FILE"
+                },
+                "f": {
+                    "name": "file",
+                    "description": "Add contents of script-file to commands",
+                    "syntax": "sed -f SCRIPT_FILE FILE"
+                },
+                "i": {
+                    "name": "in-place",
+                    "description": "Edit files in place (makes backup if extension supplied)",
+                    "syntax": "sed -i[SUFFIX] 'SCRIPT' FILE"
+                },
+                "n": {
+                    "name": "quiet",
+                    "description": "Suppress automatic printing of pattern space",
+                    "syntax": "sed -n 'SCRIPT' FILE"
+                },
+                "r": {
+                    "name": "regex-extended",
+                    "description": "Use extended regular expressions",
+                    "syntax": "sed -r 'SCRIPT' FILE"
+                }
+            },
+            "examples": {
+                "substitute": {
+                    "command": "sed 's/old/new/g' file.txt",
+                    "explanation": "Replaces all occurrences of 'old' with 'new'"
+                },
+                "delete": {
+                    "command": "sed '/pattern/d' file.txt",
+                    "explanation": "Deletes lines containing pattern"
+                },
+                "in_place": {
+                    "command": "sed -i 's/foo/bar/g' file.txt",
+                    "explanation": "Replaces foo with bar in file (modifies original)"
+                },
+                "backup": {
+                    "command": "sed -i.bak 's/foo/bar/g' file.txt",
+                    "explanation": "Creates backup file.txt.bak before modifying"
+                },
+                "print_range": {
+                    "command": "sed -n '10,20p' file.txt",
+                    "explanation": "Prints lines 10 through 20"
+                },
+                "multiple": {
+                    "command": "sed -e 's/foo/bar/' -e 's/baz/qux/' file.txt",
+                    "explanation": "Performs multiple substitutions"
+                },
+                "insert": {
+                    "command": "sed '3i\\New line' file.txt",
+                    "explanation": "Inserts 'New line' before line 3"
+                },
+                "append": {
+                    "command": "sed '$a\\End of file' file.txt",
+                    "explanation": "Appends text at end of file"
+                },
+                "change": {
+                    "command": "sed '/pattern/c\\Replacement line' file.txt",
+                    "explanation": "Replaces matching lines with new text"
+                },
+                "transform": {
+                    "command": "sed 'y/abc/ABC/' file.txt",
+                    "explanation": "Translates characters a→A, b→B, c→C"
+                }
+            }
+        },
+        {
+            "name": "cut",
+            "description": "Remove sections from each line of files",
+            "category": "text_processing",
+            "bookmarked": false,
+            "flags": {
+                "c": {
+                    "name": "characters",
+                    "description": "Select only these characters",
+                    "syntax": "cut -c LIST FILE"
+                },
+                "f": {
+                    "name": "fields",
+                    "description": "Select only these fields",
+                    "syntax": "cut -f LIST FILE"
+                },
+                "d": {
+                    "name": "delimiter",
+                    "description": "Use DELIM instead of TAB for field delimiter",
+                    "syntax": "cut -d DELIM -f LIST FILE"
+                },
+                "s": {
+                    "name": "only-delimited",
+                    "description": "Do not print lines not containing delimiters",
+                    "syntax": "cut -d DELIM -f LIST -s FILE"
+                },
+                "complement": {
+                    "name": "complement",
+                    "description": "Complement the set of selected bytes, characters or fields",
+                    "syntax": "cut --complement -c LIST FILE"
+                }
+            },
+            "examples": {
+                "characters": {
+                    "command": "cut -c 1-10 file.txt",
+                    "explanation": "Extracts characters 1 through 10 from each line"
+                },
+                "fields": {
+                    "command": "cut -f 1,3 -d ',' data.csv",
+                    "explanation": "Extracts first and third fields using comma as delimiter"
+                },
+                "tab_delimited": {
+                    "command": "cut -f 2-4 data.tsv",
+                    "explanation": "Extracts fields 2 through 4 from tab-separated file"
+                },
+                "password_file": {
+                    "command": "cut -d ':' -f 1 /etc/passwd",
+                    "output": "root\nbin\ndaemon\n...",
+                    "explanation": "Extracts usernames from /etc/passwd"
+                },
+                "complement": {
+                    "command": "cut --complement -c 1-5 file.txt",
+                    "explanation": "Extracts all characters except 1-5"
+                },
+                "multiple_ranges": {
+                    "command": "cut -c 1-5,10-15 file.txt",
+                    "explanation": "Extracts characters 1-5 and 10-15"
+                },
+                "delimited_only": {
+                    "command": "cut -d ',' -f 2 -s data.csv",
+                    "explanation": "Extracts second field only from lines with commas"
+                }
+            }
+        },
+        {
+            "name": "sort",
+            "description": "Sort lines of text files",
+            "category": "text_processing",
+            "bookmarked": false,
+            "flags": {
+                "r": {
+                    "name": "reverse",
+                    "description": "Reverse the result of comparisons",
+                    "syntax": "sort -r FILE"
+                },
+                "n": {
+                    "name": "numeric",
+                    "description": "Compare according to string numerical value",
+                    "syntax": "sort -n FILE"
+                },
+                "u": {
+                    "name": "unique",
+                    "description": "Output only the first of an equal run",
+                    "syntax": "sort -u FILE"
+                },
+                "k": {
+                    "name": "key",
+                    "description": "Sort via a key; KEYDEF gives location and type",
+                    "syntax": "sort -k POS FILE"
+                },
+                "t": {
+                    "name": "field-separator",
+                    "description": "Use SEP instead of non-blank to blank transition",
+                    "syntax": "sort -t SEP FILE"
+                },
+                "o": {
+                    "name": "output",
+                    "description": "Write result to FILE instead of standard output",
+                    "syntax": "sort -o OUTPUT_FILE FILE"
+                },
+                "f": {
+                    "name": "ignore-case",
+                    "description": "Fold lower case to upper case characters",
+                    "syntax": "sort -f FILE"
+                },
+                "h": {
+                    "name": "human-numeric",
+                    "description": "Compare human readable numbers (e.g., 2K 1G)",
+                    "syntax": "sort -h FILE"
+                },
+                "R": {
+                    "name": "random",
+                    "description": "Sort by random hash of keys",
+                    "syntax": "sort -R FILE"
+                },
+                "c": {
+                    "name": "check",
+                    "description": "Check whether input is sorted",
+                    "syntax": "sort -c FILE"
+                },
+                "M": {
+                    "name": "month",
+                    "description": "Sort by month abbreviations",
+                    "syntax": "sort -M FILE"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "sort file.txt",
+                    "explanation": "Sorts lines alphabetically"
+                },
+                "numeric": {
+                    "command": "sort -n numbers.txt",
+                    "explanation": "Sorts numerically (2 comes before 10)"
+                },
+                "reverse": {
+                    "command": "sort -r file.txt",
+                    "explanation": "Sorts in reverse order"
+                },
+                "unique": {
+                    "command": "sort -u file.txt",
+                    "explanation": "Sorts and removes duplicates"
+                },
+                "field": {
+                    "command": "sort -k 2,2 data.txt",
+                    "explanation": "Sorts by second field"
+                },
+                "delimiter": {
+                    "command": "sort -t ',' -k 3 data.csv",
+                    "explanation": "Sorts CSV by third column using comma delimiter"
+                },
+                "output": {
+                    "command": "sort -o sorted.txt file.txt",
+                    "explanation": "Sorts file and writes to sorted.txt"
+                },
+                "human": {
+                    "command": "sort -h sizes.txt",
+                    "explanation": "Sorts human readable sizes (1K, 2M, 1G)"
+                },
+                "check": {
+                    "command": "sort -c file.txt",
+                    "output": "sort: file.txt:3: disorder: apple",
+                    "explanation": "Checks if file is already sorted"
+                },
+                "multiple_keys": {
+                    "command": "sort -k 2,2 -k 1,1 data.txt",
+                    "explanation": "Sorts by second field, then by first field"
+                },
+                "ignore_case": {
+                    "command": "sort -f mixed.txt",
+                    "explanation": "Case-insensitive sort"
+                },
+                "random": {
+                    "command": "sort -R list.txt",
+                    "explanation": "Randomly shuffles lines"
+                }
+            }
+        },
+        {
+            "name": "uniq",
+            "description": "Report or omit repeated lines",
+            "category": "text_processing",
+            "bookmarked": false,
+            "flags": {
+                "c": {
+                    "name": "count",
+                    "description": "Prefix lines by the number of occurrences",
+                    "syntax": "uniq -c FILE"
+                },
+                "d": {
+                    "name": "repeated",
+                    "description": "Only output duplicate lines",
+                    "syntax": "uniq -d FILE"
+                },
+                "u": {
+                    "name": "unique",
+                    "description": "Only output unique lines",
+                    "syntax": "uniq -u FILE"
+                },
+                "i": {
+                    "name": "ignore-case",
+                    "description": "Ignore differences in case when comparing",
+                    "syntax": "uniq -i FILE"
+                },
+                "f": {
+                    "name": "skip-fields",
+                    "description": "Avoid comparing first N fields",
+                    "syntax": "uniq -f N FILE"
+                },
+                "s": {
+                    "name": "skip-chars",
+                    "description": "Avoid comparing first N characters",
+                    "syntax": "uniq -s N FILE"
+                },
+                "w": {
+                    "name": "check-chars",
+                    "description": "Compare no more than N characters in lines",
+                    "syntax": "uniq -w N FILE"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "uniq file.txt",
+                    "explanation": "Removes consecutive duplicate lines"
+                },
+                "count": {
+                    "command": "uniq -c file.txt",
+                    "output": "3 apple\n2 banana\n1 orange",
+                    "explanation": "Counts occurrences of each line"
+                },
+                "repeated": {
+                    "command": "uniq -d file.txt",
+                    "explanation": "Shows only duplicated lines"
+                },
+                "unique": {
+                    "command": "uniq -u file.txt",
+                    "explanation": "Shows only unique lines"
+                },
+                "ignore_case": {
+                    "command": "uniq -i file.txt",
+                    "explanation": "Case-insensitive duplicate removal"
+                },
+                "sorted_input": {
+                    "command": "sort file.txt | uniq -c",
+                    "explanation": "Sort first to count all duplicates, not just consecutive"
+                },
+                "skip_fields": {
+                    "command": "uniq -f 2 data.txt",
+                    "explanation": "Ignores first 2 fields when comparing"
+                },
+                "skip_chars": {
+                    "command": "uniq -s 5 file.txt",
+                    "explanation": "Ignores first 5 characters when comparing"
+                },
+                "max_chars": {
+                    "command": "uniq -w 10 file.txt",
+                    "explanation": "Compares only first 10 characters"
+                }
+            }
+        },
+        {
+            "name": "wc",
+            "description": "Print newline, word, and byte counts for each file",
+            "category": "text_processing",
+            "bookmarked": false,
+            "flags": {
+                "l": {
+                    "name": "lines",
+                    "description": "Print the newline counts",
+                    "syntax": "wc -l FILE"
+                },
+                "w": {
+                    "name": "words",
+                    "description": "Print the word counts",
+                    "syntax": "wc -w FILE"
+                },
+                "c": {
+                    "name": "bytes",
+                    "description": "Print the byte counts",
+                    "syntax": "wc -c FILE"
+                },
+                "m": {
+                    "name": "chars",
+                    "description": "Print the character counts",
+                    "syntax": "wc -m FILE"
+                },
+                "L": {
+                    "name": "max-line-length",
+                    "description": "Print the length of the longest line",
+                    "syntax": "wc -L FILE"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "wc file.txt",
+                    "output": "100  500 4000 file.txt",
+                    "explanation": "Shows lines, words, and bytes (100 lines, 500 words, 4000 bytes)"
+                },
+                "lines": {
+                    "command": "wc -l file.txt",
+                    "output": "100 file.txt",
+                    "explanation": "Counts lines only"
+                },
+                "words": {
+                    "command": "wc -w document.txt",
+                    "explanation": "Counts words only"
+                },
+                "bytes": {
+                    "command": "wc -c file.txt",
+                    "explanation": "Counts bytes only"
+                },
+                "chars": {
+                    "command": "wc -m file.txt",
+                    "explanation": "Counts characters (multibyte aware)"
+                },
+                "longest": {
+                    "command": "wc -L file.txt",
+                    "explanation": "Finds length of longest line"
+                },
+                "multiple": {
+                    "command": "wc *.txt",
+                    "output": "100  500 4000 file1.txt\n200 1000 8000 file2.txt\n300 1500 12000 total",
+                    "explanation": "Counts multiple files with total"
+                },
+                "stdin": {
+                    "command": "echo \"hello world\" | wc -w",
+                    "output": "2",
+                    "explanation": "Counts words from stdin"
+                },
+                "all": {
+                    "command": "wc -lwm file.txt",
+                    "explanation": "Shows lines, words, and characters"
+                }
+            }
+        },
+        {
+            "name": "whoami",
+            "description": "Print effective userid",
+            "category": "system_info",
+            "bookmarked": false,
+            "flags": {},
+            "examples": {
+                "basic": {
+                    "command": "whoami",
+                    "output": "john",
+                    "explanation": "Prints current username"
+                },
+                "script": {
+                    "command": "echo \"Running as $(whoami)\"",
+                    "explanation": "Used in scripts to identify user"
+                },
+                "sudo": {
+                    "command": "sudo whoami",
+                    "output": "root",
+                    "explanation": "Prints root when run with sudo"
+                }
+            }
+        },
+        {
+            "name": "id",
+            "description": "Print real and effective user and group IDs",
+            "category": "system_info",
+            "bookmarked": false,
+            "flags": {
+                "u": {
+                    "name": "user",
+                    "description": "Print only the effective user ID",
+                    "syntax": "id -u"
+                },
+                "g": {
+                    "name": "group",
+                    "description": "Print only the effective group ID",
+                    "syntax": "id -g"
+                },
+                "G": {
+                    "name": "groups",
+                    "description": "Print all group IDs",
+                    "syntax": "id -G"
+                },
+                "n": {
+                    "name": "name",
+                    "description": "Print name instead of number",
+                    "syntax": "id -un"
+                },
+                "r": {
+                    "name": "real",
+                    "description": "Print real instead of effective IDs",
+                    "syntax": "id -r"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "id",
+                    "output": "uid=1000(john) gid=1000(john) groups=1000(john),4(adm),24(cdrom),27(sudo)",
+                    "explanation": "Shows user ID, group ID, and supplementary groups"
+                },
+                "user_id": {
+                    "command": "id -u",
+                    "output": "1000",
+                    "explanation": "Prints numeric user ID only"
+                },
+                "username": {
+                    "command": "id -un",
+                    "output": "john",
+                    "explanation": "Prints username (same as whoami)"
+                },
+                "group_id": {
+                    "command": "id -g",
+                    "output": "1000",
+                    "explanation": "Prints numeric group ID only"
+                },
+                "group_name": {
+                    "command": "id -gn",
+                    "output": "john",
+                    "explanation": "Prints group name"
+                },
+                "all_groups": {
+                    "command": "id -G",
+                    "output": "1000 4 24 27",
+                    "explanation": "Prints all group IDs"
+                },
+                "all_group_names": {
+                    "command": "id -Gn",
+                    "output": "john adm cdrom sudo",
+                    "explanation": "Prints all group names"
+                },
+                "specific_user": {
+                    "command": "id root",
+                    "output": "uid=0(root) gid=0(root) groups=0(root)",
+                    "explanation": "Shows IDs for specified user"
+                }
+            }
+        },
+        {
+            "name": "su",
+            "description": "Change user ID or become superuser",
+            "category": "user_management",
+            "bookmarked": false,
+            "flags": {
+                "-": {
+                    "name": "login",
+                    "description": "Provide an environment similar to what the user would expect had the user logged in directly",
+                    "syntax": "su - USER"
+                },
+                "c": {
+                    "name": "command",
+                    "description": "Pass command to shell",
+                    "syntax": "su -c \"COMMAND\" USER"
+                },
+                "s": {
+                    "name": "shell",
+                    "description": "Run shell if no command given",
+                    "syntax": "su -s SHELL USER"
+                },
+                "m": {
+                    "name": "preserve-environment",
+                    "description": "Preserve entire environment",
+                    "syntax": "su -m USER"
+                },
+                "p": {
+                    "name": "preserve-environment",
+                    "description": "Same as -m",
+                    "syntax": "su -p USER"
+                }
+            },
+            "examples": {
+                "root": {
+                    "command": "su",
+                    "explanation": "Switch to root user (prompts for root password)"
+                },
+                "login": {
+                    "command": "su -",
+                    "explanation": "Switch to root with login environment"
+                },
+                "specific_user": {
+                    "command": "su - john",
+                    "explanation": "Switch to user john with login environment"
+                },
+                "command": {
+                    "command": "su -c \"apt update\" root",
+                    "explanation": "Run single command as root"
+                },
+                "preserve_env": {
+                    "command": "su -p mysql",
+                    "explanation": "Switch to mysql user preserving current environment"
+                },
+                "shell": {
+                    "command": "su -s /bin/bash www-data",
+                    "explanation": "Switch to www-data user with bash shell"
+                },
+                "verify": {
+                    "command": "whoami",
+                    "explanation": "Verify current user after su"
+                }
+            }
+        },
+        {
+            "name": "sudo",
+            "description": "Execute a command as another user (superuser do)",
+            "category": "user_management",
+            "bookmarked": false,
+            "flags": {
+                "u": {
+                    "name": "user",
+                    "description": "Run command as specified user",
+                    "syntax": "sudo -u USER COMMAND"
+                },
+                "i": {
+                    "name": "login",
+                    "description": "Run login shell as target user",
+                    "syntax": "sudo -i"
+                },
+                "s": {
+                    "name": "shell",
+                    "description": "Run shell as target user",
+                    "syntax": "sudo -s"
+                },
+                "b": {
+                    "name": "background",
+                    "description": "Run command in background",
+                    "syntax": "sudo -b COMMAND"
+                },
+                "v": {
+                    "name": "validate",
+                    "description": "Update user's timestamp without running a command",
+                    "syntax": "sudo -v"
+                },
+                "k": {
+                    "name": "kill",
+                    "description": "Invalidate user's timestamp",
+                    "syntax": "sudo -k"
+                },
+                "l": {
+                    "name": "list",
+                    "description": "List user's privileges or check specific command",
+                    "syntax": "sudo -l"
+                },
+                "H": {
+                    "name": "home",
+                    "description": "Set HOME variable to target user's home directory",
+                    "syntax": "sudo -H COMMAND"
+                },
+                "e": {
+                    "name": "edit",
+                    "description": "Edit files as another user",
+                    "syntax": "sudo -e FILE"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "sudo apt update",
+                    "explanation": "Run apt update as root (prompts for user password)"
+                },
+                "specific_user": {
+                    "command": "sudo -u mysql ls /var/lib/mysql",
+                    "explanation": "Run command as mysql user"
+                },
+                "login": {
+                    "command": "sudo -i",
+                    "explanation": "Start root login shell"
+                },
+                "shell": {
+                    "command": "sudo -s",
+                    "explanation": "Start root shell"
+                },
+                "list": {
+                    "command": "sudo -l",
+                    "output": "Matching Defaults entries for john on server:\n    env_reset, mail_badpass, secure_path=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin\n\nUser john may run the following commands on server:\n    (ALL : ALL) ALL",
+                    "explanation": "Lists allowed sudo commands"
+                },
+                "validate": {
+                    "command": "sudo -v",
+                    "explanation": "Refreshes sudo timestamp without running command"
+                },
+                "background": {
+                    "command": "sudo -b long_running_command",
+                    "explanation": "Runs command in background"
+                },
+                "edit": {
+                    "command": "sudo -e /etc/hosts",
+                    "explanation": "Edit file with sudo privileges"
+                },
+                "preserve_env": {
+                    "command": "sudo -E COMMAND",
+                    "explanation": "Preserve user environment when running command"
+                }
+            }
+        },
+        {
+            "name": "passwd",
+            "description": "Change user password",
+            "category": "user_management",
+            "bookmarked": false,
+            "flags": {
+                "l": {
+                    "name": "lock",
+                    "description": "Lock the password of the named account",
+                    "syntax": "passwd -l USER"
+                },
+                "u": {
+                    "name": "unlock",
+                    "description": "Unlock the password of the named account",
+                    "syntax": "passwd -u USER"
+                },
+                "d": {
+                    "name": "delete",
+                    "description": "Delete the password for the named account",
+                    "syntax": "passwd -d USER"
+                },
+                "e": {
+                    "name": "expire",
+                    "description": "Immediately expire the password for the named account",
+                    "syntax": "passwd -e USER"
+                },
+                "S": {
+                    "name": "status",
+                    "description": "Display password status for the named account",
+                    "syntax": "passwd -S USER"
+                },
+                "a": {
+                    "name": "all",
+                    "description": "Display password status for all accounts",
+                    "syntax": "passwd -Sa"
+                },
+                "n": {
+                    "name": "minimum",
+                    "description": "Set minimum number of days before password can be changed",
+                    "syntax": "passwd -n DAYS USER"
+                },
+                "x": {
+                    "name": "maximum",
+                    "description": "Set maximum number of days password is valid",
+                    "syntax": "passwd -x DAYS USER"
+                },
+                "w": {
+                    "name": "warning",
+                    "description": "Set number of days of warning before password expires",
+                    "syntax": "passwd -w DAYS USER"
+                },
+                "i": {
+                    "name": "inactive",
+                    "description": "Set number of days after password expires until account is disabled",
+                    "syntax": "passwd -i DAYS USER"
+                }
+            },
+            "examples": {
+                "change_own": {
+                    "command": "passwd",
+                    "explanation": "Change current user's password"
+                },
+                "change_other": {
+                    "command": "sudo passwd john",
+                    "explanation": "Change another user's password (requires root)"
+                },
+                "lock": {
+                    "command": "sudo passwd -l john",
+                    "explanation": "Lock user account"
+                },
+                "unlock": {
+                    "command": "sudo passwd -u john",
+                    "explanation": "Unlock user account"
+                },
+                "status": {
+                    "command": "passwd -S",
+                    "output": "john P 01/01/2024 0 99999 7 -1",
+                    "explanation": "Shows password status (P=usable password, L=locked, NP=no password)"
+                },
+                "expire": {
+                    "command": "sudo passwd -e john",
+                    "explanation": "Force password change at next login"
+                },
+                "delete": {
+                    "command": "sudo passwd -d john",
+                    "explanation": "Delete password (allow passwordless login)"
+                },
+                "policy": {
+                    "command": "sudo passwd -n 7 -x 90 -w 7 john",
+                    "explanation": "Set password policy: min 7 days, max 90 days, warn 7 days before expiry"
+                }
+            }
+        },
+        {
+            "name": "useradd",
+            "description": "Create a new user or update default new user information",
+            "category": "user_management",
+            "bookmarked": false,
+            "flags": {
+                "m": {
+                    "name": "create-home",
+                    "description": "Create user's home directory",
+                    "syntax": "useradd -m USER"
+                },
+                "d": {
+                    "name": "home-dir",
+                    "description": "Home directory of the new account",
+                    "syntax": "useradd -d DIR USER"
+                },
+                "s": {
+                    "name": "shell",
+                    "description": "Login shell of the new account",
+                    "syntax": "useradd -s SHELL USER"
+                },
+                "c": {
+                    "name": "comment",
+                    "description": "GECOS field (comment) for new account",
+                    "syntax": "useradd -c COMMENT USER"
+                },
+                "g": {
+                    "name": "gid",
+                    "description": "Primary group ID or name for new account",
+                    "syntax": "useradd -g GROUP USER"
+                },
+                "G": {
+                    "name": "groups",
+                    "description": "List of supplementary groups",
+                    "syntax": "useradd -G GROUP1,GROUP2 USER"
+                },
+                "u": {
+                    "name": "uid",
+                    "description": "User ID of the new account",
+                    "syntax": "useradd -u UID USER"
+                },
+                "e": {
+                    "name": "expire",
+                    "description": "Expiration date for new account (YYYY-MM-DD)",
+                    "syntax": "useradd -e DATE USER"
+                },
+                "f": {
+                    "name": "inactive",
+                    "description": "Password inactivity period",
+                    "syntax": "useradd -f DAYS USER"
+                },
+                "p": {
+                    "name": "password",
+                    "description": "Encrypted password for new account",
+                    "syntax": "useradd -p ENCRYPTED_PASS USER"
+                },
+                "r": {
+                    "name": "system",
+                    "description": "Create system account",
+                    "syntax": "useradd -r USER"
+                },
+                "D": {
+                    "name": "defaults",
+                    "description": "Display or change default useradd configuration",
+                    "syntax": "useradd -D"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "sudo useradd john",
+                    "explanation": "Creates user john with default settings"
+                },
+                "with_home": {
+                    "command": "sudo useradd -m -d /home/john -s /bin/bash john",
+                    "explanation": "Creates user with home directory and bash shell"
+                },
+                "with_comment": {
+                    "command": "sudo useradd -c \"John Doe, Room 123\" john",
+                    "explanation": "Creates user with comment/GECOS field"
+                },
+                "specific_uid": {
+                    "command": "sudo useradd -u 1005 john",
+                    "explanation": "Creates user with specific UID"
+                },
+                "with_groups": {
+                    "command": "sudo useradd -g users -G sudo,www-data john",
+                    "explanation": "Creates user with primary group users, supplementary groups sudo and www-data"
+                },
+                "system": {
+                    "command": "sudo useradd -r -s /usr/sbin/nologin appuser",
+                    "explanation": "Creates system account without login shell"
+                },
+                "expire": {
+                    "command": "sudo useradd -e 2024-12-31 tempuser",
+                    "explanation": "Creates user with expiration date"
+                },
+                "defaults": {
+                    "command": "sudo useradd -D",
+                    "output": "GROUP=100\nHOME=/home\nINACTIVE=-1\nEXPIRE=\nSHELL=/bin/sh\nSKEL=/etc/skel\nCREATE_MAIL_SPOOL=yes",
+                    "explanation": "Shows default user creation settings"
+                },
+                "change_defaults": {
+                    "command": "sudo useradd -D -s /bin/bash",
+                    "explanation": "Changes default shell to bash"
+                }
+            }
+        },
+        {
+            "name": "adduser",
+            "description": "Friendlier frontend to useradd (Debian/Ubuntu specific)",
+            "category": "user_management",
+            "bookmarked": false,
+            "flags": {
+                "home": {
+                    "name": "home",
+                    "description": "Home directory for new account",
+                    "syntax": "adduser --home DIR USER"
+                },
+                "shell": {
+                    "name": "shell",
+                    "description": "Login shell for new account",
+                    "syntax": "adduser --shell SHELL USER"
+                },
+                "gecos": {
+                    "name": "gecos",
+                    "description": "GECOS field for new account",
+                    "syntax": "adduser --gecos COMMENT USER"
+                },
+                "disabled-login": {
+                    "name": "disabled-login",
+                    "description": "Disable password login for new account",
+                    "syntax": "adduser --disabled-login USER"
+                },
+                "disabled-password": {
+                    "name": "disabled-password",
+                    "description": "Disable password for new account",
+                    "syntax": "adduser --disabled-password USER"
+                },
+                "system": {
+                    "name": "system",
+                    "description": "Create system account",
+                    "syntax": "adduser --system USER"
+                },
+                "group": {
+                    "name": "group",
+                    "description": "Create group with same name as user",
+                    "syntax": "adduser --group USER"
+                },
+                "quiet": {
+                    "name": "quiet",
+                    "description": "Suppress informational messages",
+                    "syntax": "adduser --quiet USER"
+                },
+                "debug": {
+                    "name": "debug",
+                    "description": "Be verbose for debugging purposes",
+                    "syntax": "adduser --debug USER"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "sudo adduser john",
+                    "explanation": "Interactive user creation with prompts for details"
+                },
+                "non_interactive": {
+                    "command": "sudo adduser --gecos \"\" --disabled-password john",
+                    "explanation": "Non-interactive user creation without password"
+                },
+                "system": {
+                    "command": "sudo adduser --system --no-create-home --group appuser",
+                    "explanation": "Creates system account with group"
+                },
+                "specific_home": {
+                    "command": "sudo adduser --home /opt/john --shell /bin/bash john",
+                    "explanation": "Creates user with custom home directory and shell"
+                },
+                "no_password": {
+                    "command": "sudo adduser --disabled-password --gecos \"\" john",
+                    "explanation": "Creates user without password"
+                },
+                "with_group": {
+                    "command": "sudo adduser --ingroup sudo john",
+                    "explanation": "Creates user as member of sudo group"
+                },
+                "quiet": {
+                    "command": "sudo adduser --quiet --gecos \"\" john",
+                    "explanation": "Quiet user creation"
+                }
+            }
+        },
+        {
+            "name": "userdel",
+            "description": "Delete a user account and related files",
+            "category": "user_management",
+            "bookmarked": false,
+            "flags": {
+                "r": {
+                    "name": "remove",
+                    "description": "Remove home directory and mail spool",
+                    "syntax": "userdel -r USER"
+                },
+                "f": {
+                    "name": "force",
+                    "description": "Force removal of files, even if not owned by user",
+                    "syntax": "userdel -f USER"
+                },
+                "Z": {
+                    "name": "selinux",
+                    "description": "Remove any SELinux user mapping for the user",
+                    "syntax": "userdel -Z USER"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "sudo userdel john",
+                    "explanation": "Deletes user john but keeps home directory"
+                },
+                "remove_home": {
+                    "command": "sudo userdel -r john",
+                    "explanation": "Deletes user and removes home directory"
+                },
+                "force": {
+                    "command": "sudo userdel -f -r john",
+                    "explanation": "Forcefully deletes user and files"
+                },
+                "check": {
+                    "command": "id john",
+                    "output": "id: 'john': no such user",
+                    "explanation": "Verify user has been deleted"
+                },
+                "with_selinux": {
+                    "command": "sudo userdel -Z -r john",
+                    "explanation": "Deletes user with SELinux context cleanup"
+                }
+            }
+        },
+        {
+            "name": "shutdown",
+            "description": "Bring the system down",
+            "category": "system_control",
+            "bookmarked": false,
+            "flags": {
+                "h": {
+                    "name": "halt",
+                    "description": "Halt the machine",
+                    "syntax": "shutdown -h"
+                },
+                "r": {
+                    "name": "reboot",
+                    "description": "Reboot the machine",
+                    "syntax": "shutdown -r"
+                },
+                "c": {
+                    "name": "cancel",
+                    "description": "Cancel a pending shutdown",
+                    "syntax": "shutdown -c"
+                },
+                "k": {
+                    "name": "message",
+                    "description": "Only send warning messages, don't actually shutdown",
+                    "syntax": "shutdown -k"
+                },
+                "P": {
+                    "name": "poweroff",
+                    "description": "Power off the machine",
+                    "syntax": "shutdown -P"
+                },
+                "H": {
+                    "name": "halt",
+                    "description": "Equivalent to -h",
+                    "syntax": "shutdown -H"
+                },
+                "now": {
+                    "name": "immediate",
+                    "description": "Shutdown immediately",
+                    "syntax": "shutdown now"
+                },
+                "+m": {
+                    "name": "minutes",
+                    "description": "Shutdown in m minutes",
+                    "syntax": "shutdown +m"
+                },
+                "hh:mm": {
+                    "name": "time",
+                    "description": "Shutdown at specified time",
+                    "syntax": "shutdown hh:mm"
+                }
+            },
+            "examples": {
+                "immediate": {
+                    "command": "sudo shutdown now",
+                    "explanation": "Shuts down immediately"
+                },
+                "delayed": {
+                    "command": "sudo shutdown +5",
+                    "explanation": "Shuts down in 5 minutes"
+                },
+                "reboot": {
+                    "command": "sudo shutdown -r now",
+                    "explanation": "Reboots immediately"
+                },
+                "scheduled": {
+                    "command": "sudo shutdown 23:00",
+                    "explanation": "Shuts down at 11 PM"
+                },
+                "halt": {
+                    "command": "sudo shutdown -h now",
+                    "explanation": "Halts system immediately"
+                },
+                "poweroff": {
+                    "command": "sudo shutdown -P now",
+                    "explanation": "Powers off immediately"
+                },
+                "cancel": {
+                    "command": "sudo shutdown -c",
+                    "explanation": "Cancels pending shutdown"
+                },
+                "message": {
+                    "command": "sudo shutdown -k +10 \"System maintenance\"",
+                    "explanation": "Sends warning message without actually shutting down"
+                },
+                "custom_message": {
+                    "command": "sudo shutdown +10 \"System will reboot in 10 minutes\"",
+                    "explanation": "Schedules reboot with custom message"
+                }
+            }
+        },
+        {
+            "name": "reboot",
+            "description": "Reboot the system",
+            "category": "system_control",
+            "bookmarked": false,
+            "flags": {
+                "f": {
+                    "name": "force",
+                    "description": "Force immediate reboot",
+                    "syntax": "reboot -f"
+                },
+                "w": {
+                    "name": "wtmp-only",
+                    "description": "Write wtmp reboot entry but don't reboot",
+                    "syntax": "reboot -w"
+                },
+                "d": {
+                    "name": "no-wtmp",
+                    "description": "Don't write wtmp entry",
+                    "syntax": "reboot -d"
+                },
+                "i": {
+                    "name": "shut-network",
+                    "description": "Shut down network interfaces before reboot",
+                    "syntax": "reboot -i"
+                },
+                "n": {
+                    "name": "no-sync",
+                    "description": "Don't sync disks before reboot",
+                    "syntax": "reboot -n"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "sudo reboot",
+                    "explanation": "Reboots system normally"
+                },
+                "force": {
+                    "command": "sudo reboot -f",
+                    "explanation": "Force immediate reboot without proper shutdown"
+                },
+                "wtmp": {
+                    "command": "reboot -w",
+                    "explanation": "Writes reboot entry to wtmp without actually rebooting"
+                },
+                "no_sync": {
+                    "command": "sudo reboot -n",
+                    "explanation": "Reboots without syncing disks (dangerous)"
+                },
+                "network": {
+                    "command": "sudo reboot -i",
+                    "explanation": "Shuts down network before reboot"
+                }
+            }
+        },
+        {
+            "name": "halt",
+            "description": "Halt the system",
+            "category": "system_control",
+            "bookmarked": false,
+            "flags": {
+                "f": {
+                    "name": "force",
+                    "description": "Force immediate halt",
+                    "syntax": "halt -f"
+                },
+                "w": {
+                    "name": "wtmp-only",
+                    "description": "Write wtmp halt entry but don't halt",
+                    "syntax": "halt -w"
+                },
+                "d": {
+                    "name": "no-wtmp",
+                    "description": "Don't write wtmp entry",
+                    "syntax": "halt -d"
+                },
+                "i": {
+                    "name": "shut-network",
+                    "description": "Shut down network interfaces before halt",
+                    "syntax": "halt -i"
+                },
+                "n": {
+                    "name": "no-sync",
+                    "description": "Don't sync disks before halt",
+                    "syntax": "halt -n"
+                },
+                "p": {
+                    "name": "poweroff",
+                    "description": "Switch off the system (same as poweroff)",
+                    "syntax": "halt -p"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "sudo halt",
+                    "explanation": "Halts system"
+                },
+                "poweroff": {
+                    "command": "sudo halt -p",
+                    "explanation": "Powers off system"
+                },
+                "force": {
+                    "command": "sudo halt -f",
+                    "explanation": "Force immediate halt"
+                },
+                "no_sync": {
+                    "command": "sudo halt -n",
+                    "explanation": "Halts without syncing disks"
+                },
+                "wtmp": {
+                    "command": "halt -w",
+                    "explanation": "Writes halt entry without halting"
+                }
+            }
+        },
+        {
+            "name": "poweroff",
+            "description": "Power off the system",
+            "category": "system_control",
+            "bookmarked": false,
+            "flags": {
+                "f": {
+                    "name": "force",
+                    "description": "Force immediate poweroff",
+                    "syntax": "poweroff -f"
+                },
+                "w": {
+                    "name": "wtmp-only",
+                    "description": "Write wtmp poweroff entry but don't poweroff",
+                    "syntax": "poweroff -w"
+                },
+                "d": {
+                    "name": "no-wtmp",
+                    "description": "Don't write wtmp entry",
+                    "syntax": "poweroff -d"
+                },
+                "i": {
+                    "name": "shut-network",
+                    "description": "Shut down network interfaces before poweroff",
+                    "syntax": "poweroff -i"
+                },
+                "n": {
+                    "name": "no-sync",
+                    "description": "Don't sync disks before poweroff",
+                    "syntax": "poweroff -n"
+                },
+                "h": {
+                    "name": "halt",
+                    "description": "Halt the system (same as halt)",
+                    "syntax": "poweroff -h"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "sudo poweroff",
+                    "explanation": "Powers off system"
+                },
+                "force": {
+                    "command": "sudo poweroff -f",
+                    "explanation": "Force immediate poweroff"
+                },
+                "no_sync": {
+                    "command": "sudo poweroff -n",
+                    "explanation": "Powers off without syncing disks"
+                },
+                "wtmp": {
+                    "command": "poweroff -w",
+                    "explanation": "Writes poweroff entry without powering off"
+                },
+                "halt": {
+                    "command": "sudo poweroff -h",
+                    "explanation": "Halts system (same as halt)"
+                }
+            }
+        },
+        {
+            "name": "systemctl",
+            "description": "Control the systemd system and service manager",
+            "category": "system_control",
+            "bookmarked": false,
+            "flags": {
+                "start": {
+                    "name": "start",
+                    "description": "Start (activate) a unit",
+                    "syntax": "systemctl start UNIT"
+                },
+                "stop": {
+                    "name": "stop",
+                    "description": "Stop (deactivate) a unit",
+                    "syntax": "systemctl stop UNIT"
+                },
+                "restart": {
+                    "name": "restart",
+                    "description": "Restart a unit",
+                    "syntax": "systemctl restart UNIT"
+                },
+                "reload": {
+                    "name": "reload",
+                    "description": "Reload a unit's configuration",
+                    "syntax": "systemctl reload UNIT"
+                },
+                "status": {
+                    "name": "status",
+                    "description": "Show runtime status of a unit",
+                    "syntax": "systemctl status UNIT"
+                },
+                "enable": {
+                    "name": "enable",
+                    "description": "Enable a unit to be started at boot",
+                    "syntax": "systemctl enable UNIT"
+                },
+                "disable": {
+                    "name": "disable",
+                    "description": "Disable a unit from being started at boot",
+                    "syntax": "systemctl disable UNIT"
+                },
+                "is-active": {
+                    "name": "is-active",
+                    "description": "Check whether a unit is active",
+                    "syntax": "systemctl is-active UNIT"
+                },
+                "is-enabled": {
+                    "name": "is-enabled",
+                    "description": "Check whether a unit is enabled",
+                    "syntax": "systemctl is-enabled UNIT"
+                },
+                "list-units": {
+                    "name": "list-units",
+                    "description": "List units that systemd has loaded",
+                    "syntax": "systemctl list-units"
+                },
+                "list-unit-files": {
+                    "name": "list-unit-files",
+                    "description": "List unit files installed on system",
+                    "syntax": "systemctl list-unit-files"
+                },
+                "daemon-reload": {
+                    "name": "daemon-reload",
+                    "description": "Reload systemd manager configuration",
+                    "syntax": "systemctl daemon-reload"
+                },
+                "mask": {
+                    "name": "mask",
+                    "description": "Mask a unit to prevent activation",
+                    "syntax": "systemctl mask UNIT"
+                },
+                "unmask": {
+                    "name": "unmask",
+                    "description": "Unmask a unit",
+                    "syntax": "systemctl unmask UNIT"
+                },
+                "show": {
+                    "name": "show",
+                    "description": "Show properties of a unit",
+                    "syntax": "systemctl show UNIT"
+                },
+                "edit": {
+                    "name": "edit",
+                    "description": "Edit a unit file",
+                    "syntax": "systemctl edit UNIT"
+                },
+                "isolate": {
+                    "name": "isolate",
+                    "description": "Start a unit and stop all others",
+                    "syntax": "systemctl isolate UNIT"
+                }
+            },
+            "examples": {
+                "status": {
+                    "command": "systemctl status sshd",
+                    "output": "● ssh.service - OpenSSH SSH Daemon\n   Loaded: loaded (/usr/lib/systemd/system/ssh.service; enabled; vendor preset: enabled)\n   Active: active (running) since Mon 2024-01-01 12:00:00 UTC; 1h ago\n Main PID: 1234 (sshd)\n    Tasks: 1 (limit: 4915)\n   Memory: 5.2M\n   CGroup: /system.slice/ssh.service\n           └─1234 /usr/sbin/sshd -D",
+                    "explanation": "Shows detailed status of SSH service"
+                },
+                "start": {
+                    "command": "sudo systemctl start nginx",
+                    "explanation": "Starts nginx service"
+                },
+                "stop": {
+                    "command": "sudo systemctl stop apache2",
+                    "explanation": "Stops apache2 service"
+                },
+                "restart": {
+                    "command": "sudo systemctl restart sshd",
+                    "explanation": "Restarts SSH service"
+                },
+                "enable": {
+                    "command": "sudo systemctl enable docker",
+                    "explanation": "Enables docker to start at boot"
+                },
+                "disable": {
+                    "command": "sudo systemctl disable mysql",
+                    "explanation": "Disables mysql from starting at boot"
+                },
+                "reload": {
+                    "command": "sudo systemctl reload nginx",
+                    "explanation": "Reloads nginx configuration without dropping connections"
+                },
+                "list": {
+                    "command": "systemctl list-units --type=service",
+                    "explanation": "Lists all loaded services"
+                },
+                "failed": {
+                    "command": "systemctl --failed",
+                    "explanation": "Lists failed units"
+                },
+                "is_active": {
+                    "command": "systemctl is-active sshd",
+                    "output": "active",
+                    "explanation": "Returns active/inactive status"
+                },
+                "is_enabled": {
+                    "command": "systemctl is-enabled sshd",
+                    "output": "enabled",
+                    "explanation": "Returns enabled/disabled status"
+                },
+                "daemon_reload": {
+                    "command": "sudo systemctl daemon-reload",
+                    "explanation": "Reloads systemd after modifying service files"
+                },
+                "mask": {
+                    "command": "sudo systemctl mask apache2",
+                    "explanation": "Prevents apache2 from being started"
+                },
+                "journal": {
+                    "command": "sudo journalctl -u nginx",
+                    "explanation": "Shows logs for nginx service"
+                }
+            }
+        },
+        {
+            "name": "journalctl",
+            "description": "Query the systemd journal",
+            "category": "system_control",
+            "bookmarked": false,
+            "flags": {
+                "u": {
+                    "name": "unit",
+                    "description": "Show logs for specified unit",
+                    "syntax": "journalctl -u UNIT"
+                },
+                "f": {
+                    "name": "follow",
+                    "description": "Follow new messages",
+                    "syntax": "journalctl -f"
+                },
+                "n": {
+                    "name": "lines",
+                    "description": "Show most recent journal events",
+                    "syntax": "journalctl -n LINES"
+                },
+                "k": {
+                    "name": "kernel",
+                    "description": "Show kernel messages",
+                    "syntax": "journalctl -k"
+                },
+                "b": {
+                    "name": "boot",
+                    "description": "Show messages from current boot",
+                    "syntax": "journalctl -b"
+                },
+                "since": {
+                    "name": "since",
+                    "description": "Show messages since specified date",
+                    "syntax": "journalctl --since DATE"
+                },
+                "until": {
+                    "name": "until",
+                    "description": "Show messages until specified date",
+                    "syntax": "journalctl --until DATE"
+                },
+                "p": {
+                    "name": "priority",
+                    "description": "Filter by priority level",
+                    "syntax": "journalctl -p LEVEL"
+                },
+                "g": {
+                    "name": "grep",
+                    "description": "Filter by pattern",
+                    "syntax": "journalctl -g PATTERN"
+                },
+                "o": {
+                    "name": "output",
+                    "description": "Change journal output mode",
+                    "syntax": "journalctl -o FORMAT"
+                },
+                "list-boots": {
+                    "name": "list-boots",
+                    "description": "Show list of boot IDs and timestamps",
+                    "syntax": "journalctl --list-boots"
+                },
+                "disk-usage": {
+                    "name": "disk-usage",
+                    "description": "Show disk usage of journal files",
+                    "syntax": "journalctl --disk-usage"
+                },
+                "vacuum-size": {
+                    "name": "vacuum-size",
+                    "description": "Reduce journal size to specified size",
+                    "syntax": "journalctl --vacuum-size=SIZE"
+                },
+                "vacuum-time": {
+                    "name": "vacuum-time",
+                    "description": "Remove journal entries older than specified time",
+                    "syntax": "journalctl --vacuum-time=TIME"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "journalctl",
+                    "explanation": "Shows all journal entries from current boot"
+                },
+                "follow": {
+                    "command": "journalctl -f",
+                    "explanation": "Follows journal in real-time (like tail -f)"
+                },
+                "unit": {
+                    "command": "journalctl -u sshd",
+                    "explanation": "Shows logs for SSH service"
+                },
+                "lines": {
+                    "command": "journalctl -n 50",
+                    "explanation": "Shows last 50 lines"
+                },
+                "since": {
+                    "command": "journalctl --since \"2024-01-01 00:00:00\"",
+                    "explanation": "Shows logs since specified date"
+                },
+                "today": {
+                    "command": "journalctl --since today",
+                    "explanation": "Shows today's logs"
+                },
+                "priority": {
+                    "command": "journalctl -p err",
+                    "explanation": "Shows error messages and above"
+                },
+                "boot": {
+                    "command": "journalctl -b -1",
+                    "explanation": "Shows logs from previous boot"
+                },
+                "kernel": {
+                    "command": "journalctl -k",
+                    "explanation": "Shows kernel messages"
+                },
+                "grep": {
+                    "command": "journalctl -g \"error\"",
+                    "explanation": "Shows entries containing 'error'"
+                },
+                "json": {
+                    "command": "journalctl -o json",
+                    "explanation": "Outputs logs in JSON format"
+                },
+                "list_boots": {
+                    "command": "journalctl --list-boots",
+                    "output": "-2 abc123 2024-01-01 00:00:00\n-1 def456 2024-01-02 00:00:00\n 0 ghi789 2024-01-03 00:00:00",
+                    "explanation": "Lists available boot sessions"
+                },
+                "disk_usage": {
+                    "command": "journalctl --disk-usage",
+                    "output": "Archived and active journals take up 500.0M in the file system.",
+                    "explanation": "Shows journal disk usage"
+                },
+                "vacuum": {
+                    "command": "sudo journalctl --vacuum-size=200M",
+                    "explanation": "Reduces journal size to 200MB"
+                }
+            }
         }
     ]
 }
