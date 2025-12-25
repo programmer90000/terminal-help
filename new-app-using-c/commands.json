@@ -46,14 +46,259 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "ls",
+            "description": "List directory contents",
+            "category": "navigation",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "a": {
+                    "name": "all",
+                    "description": "List all entries, including entries starting with .",
+                    "syntax": "ls -a"
+                },
+                "A": {
+                    "name": "almost-all",
+                    "description": "List all entries, including entries starting with ., except for . and ..",
+                    "syntax": "ls -A"
+                },
+                "b": {
+                    "name": "escape",
+                    "description": "List entries. Print the \\ character for spaces, tabs and line breaks",
+                    "syntax": "ls -b"
+                },
+                "B": {
+                    "name": "ignore-backups",
+                    "description": "Do not list backup entries (entries ending with ~)",
+                    "syntax": "ls -B"
+                },
+                "c": {
+                    "name": "ctime",
+                    "description": "ls -c sorts files by ctime (change time), showing newest files first",
+                    "syntax": "ls -c"
+                },
+                "C": {
+                    "name": "format-column",
+                    "description": "List entries in columns (Note: This is the default behaviour in the terminal. However, when output is written to files, this command will change how the output is written)",
+                    "syntax": "ls -C"
+                },
+                "d": {
+                    "name": "directory",
+                    "description": "List the directory itself, not the contents of the directory",
+                    "syntax": "ls -d"
+                },
+                "f": {
+                    "name": "unsorted",
+                    "description": "Do not sort. It enables the -a flag and disables the -l, -o, -g flags",
+                    "syntax": "ls -f"
+                },
+                "F": {
+                    "name": "classify",
+                    "description": "Append indicator to entries\nNo character means regular file\n- means Directory\n* means Executable file\n@ means Symbolic link (shortcut to another file)\n= – Socket (special file for inter-process communication)\n| – Named pipe (FIFO)\n> – Door (Solaris-specific)",
+                    "syntax": "ls -F"
+                },
+                "g": {
+                    "name": "group-only",
+                    "description": "Use a long listing format. Display the permissions, number of links, group owner, file size, last modification date and time, file name",
+                    "syntax": "ls -g"
+                },
+                "h": {
+                    "name": "human-readable",
+                    "description": "Print human readable sizes (e.g., 1K 234M 2G)",
+                    "syntax": "ls -lh"
+                },
+                "H": {
+                    "name": "dereference-command-line",
+                    "description": "Go into a symlink directory and use this flag. It will list the contents in the directory it is linked to",
+                    "syntax": "ls -H"
+                },
+                "i": {
+                    "name": "inode",
+                    "description": "Print the index number of each item",
+                    "syntax": "ls -i"
+                },
+                "I": {
+                    "name": "ignore",
+                    "description": "Do not list entries whose names match given pattern",
+                    "syntax": "ls -I PATTERN"
+                },
+                "k": {
+                    "name": "kibibytes",
+                    "description": "Default to 1024-byte blocks (kilobytes) for disk usage",
+                    "syntax": "ls -k"
+                },
+                "l": {
+                    "name": "long",
+                    "description": "Use a long listing format. Display the permissions, number of links, user owner, group owner, file size, last modification date and time, file name",
+                    "syntax": "ls -l"
+                },
+                "L": {
+                    "name": "dereference",
+                    "description": "When showing file information for a symbolic link, show information for the file the link references rather than for the link itself",
+                    "syntax": "ls -L"
+                },
+                "m": {
+                    "name": "comma",
+                    "description": "Display entries as a comma separated list of entries",
+                    "syntax": "ls -m"
+                },
+                "n": {
+                    "name": "numeric-uid-gid",
+                    "description": "Use a long listing format. Display the permissions, number of links, numeric user owner, group owner ID, file size, last modification date and time, file name",
+                    "syntax": "ls -n"
+                },
+                "N": {
+                    "name": "literal",
+                    "description": "Print raw entry names (don't treat certain characters specially)",
+                    "syntax": "ls -N"
+                },
+                "o": {
+                    "name": "omit-group",
+                    "description": "Use a long listing format. Display the permissions, number of links, user owner, file size, last modification date and time, file name",
+                    "syntax": "ls -o"
+                },
+                "p": {
+                    "name": "file-type",
+                    "description": "Append / indicator to directories",
+                    "syntax": "ls -p"
+                },
+                "q": {
+                    "name": "hide-control-chars",
+                    "description": "Print ? for non-graphic characters",
+                    "syntax": "ls -q"
+                },
+                "Q": {
+                    "name": "quote-name",
+                    "description": "Enclose entry names in double quotes",
+                    "syntax": "ls -Q"
+                },
+                "r": {
+                    "name": "reverse",
+                    "description": "Reverse order while sorting",
+                    "syntax": "ls -r"
+                },
+                "R": {
+                    "name": "recursive",
+                    "description": "List subdirectories recursively",
+                    "syntax": "ls -R"
+                },
+                "s": {
+                    "name": "size",
+                    "description": "Print the allocated size of each file, in blocks",
+                    "syntax": "ls -s"
+                },
+                "S": {
+                    "name": "sort-size",
+                    "description": "Sort by file size, largest first",
+                    "syntax": "ls -S"
+                },
+                "t": {
+                    "name": "sort-time",
+                    "description": "Sort by modification time, newest first",
+                    "syntax": "ls -t"
+                },
+                "u": {
+                    "name": "atime",
+                    "description": "With -lt: sort by, and show, access time. With -l: show access time and sort by name",
+                    "syntax": "ls -ltu"
+                },
+                "U": {
+                    "name": "unsorted",
+                    "description": "Do not sort; list entries in directory order",
+                    "syntax": "ls -U"
+                },
+                "v": {
+                    "name": "sort-version",
+                    "description": "Natural sort of (version) numbers within text",
+                    "syntax": "ls -v"
+                },
+                "1": {
+                    "name": "single-column",
+                    "description": "List one file per line",
+                    "syntax": "ls -1"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about ls command usage and options",
+                    "syntax": "ls --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information and exit",
+                    "syntax": "ls --version"
+                },
+                "full-time": {
+                    "name": "full-time",
+                    "description": "Use a long listing format. Display the permissions, number of links, user owner, group owner, file size, last modification date and full time, file name",
+                    "syntax": "ls --full-time"
+                },
+                "si": {
+                    "name": "si",
+                    "description": "Print human readable sizes but use powers of 1000 instead of 1024",
+                    "syntax": "ls --si"
+                },
+                "sort": {
+                    "name": "sort",
+                    "description": "Specify sort order (none, size, time, version, extension)",
+                    "syntax": "ls --sort=WORD"
+                },
+                "time": {
+                    "name": "time",
+                    "description": "Specify which timestamp to use (atime, access, use, ctime, status)",
+                    "syntax": "ls --time=WORD"
+                },
+                "time-style": {
+                    "name": "time-style",
+                    "description": "Specify time/date format (full-iso, long-iso, iso, locale, etc.)",
+                    "syntax": "ls --time-style=STYLE"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic": {
+                    "command": "ls",
+                    "output": "file1.txt  file2.txt  directory1  directory2",
+                    "explanation": "Lists contents of current directory in simple format"
+                },
+                "with_flags": {
+                    "l": {
+                        "command": "ls -l",
+                        "output": "drwxr-xr-x 2 user group 4096 Jan 1 12:00 directory1\n-rw-r--r-- 1 user group  1024 Jan 1 12:00 file1.txt",
+                        "explanation": "Shows detailed information including permissions, owner, group, size, and modification time"
+                    },
+                    "a": {
+                        "command": "ls -a",
+                        "output": ".  ..  .hidden_file  file1.txt  directory1",
+                        "explanation": "Shows all files including hidden ones (starting with .)"
+                    },
+                    "la": {
+                        "command": "ls -la",
+                        "output": "drwxr-xr-x 5 user group 4096 Jan 1 12:00 .\ndrwxr-xr-x 3 user group 4096 Jan 1 11:00 ..\n-rw-r--r-- 1 user group    0 Jan 1 12:00 .hidden_file\n-rw-r--r-- 1 user group 1024 Jan 1 12:00 file1.txt",
+                        "explanation": "Combines long format with showing all files"
+                    },
+                    "lh": {
+                        "command": "ls -lh",
+                        "output": "drwxr-xr-x 2 user group 4.0K Jan 1 12:00 directory1\n-rw-r--r-- 1 user group 1.0K Jan 1 12:00 file1.txt",
+                        "explanation": "Shows human-readable sizes (KB, MB, etc.) in long format"
+                    },
+                    "R": {
+                        "command": "ls -R",
+                        "output": ".:\ndirectory1  file1.txt\n\n./directory1:\nsubdir  file2.txt\n\n./directory1/subdir:\nfile3.txt",
+                        "explanation": "Recursively lists all files in current directory and all subdirectories"
+                    },
+                    "t": {
+                        "command": "ls -t",
+                        "output": "file3.txt  file2.txt  file1.txt  directory1",
+                        "explanation": "Sorts files by modification time, newest first"
+                    },
+                    "S": {
+                        "command": "ls -lS",
+                        "output": "-rw-r--r-- 1 user group 2048 Jan 1 12:00 file2.txt\n-rw-r--r-- 1 user group 1024 Jan 1 12:00 file1.txt\ndrwxr-xr-x 2 user group 4096 Jan 1 12:00 directory1",
+                        "explanation": "Sorts files by size, largest first"
+                    },
+                    "help": {
+                        "command": "ls --help",
+                        "output": "INFORMATION ABOUT HOW TO USE LS"
+                    }
+                }
             }
         },
         {
