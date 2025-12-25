@@ -6132,20 +6132,6 @@ egrep
 eject
 elfedit
 enable
-
-
-
-
-
-
-
-
-
-
-
-
-
-Commands I need to add:
 env
 envsubst
 eval
