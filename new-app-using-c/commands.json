@@ -770,14 +770,95 @@
             }
         },
         {
-            "name": "",
-            "description": "",
-            "category": "",
+            "name": "touch",
+            "description": "Change file timestamps (access and modification times). Creates empty files if they don't exist.",
+            "category": "file_operations",
             "bookmarked": false,
-            "flags": {},
+            "flags": {
+                "a": {
+                    "name": "access-time",
+                    "description": "Change only the access time",
+                    "syntax": "touch -a"
+                },
+                "m": {
+                    "name": "modification-time",
+                    "description": "Change only the modification time",
+                    "syntax": "touch -m"
+                },
+                "c": {
+                    "name": "no-create",
+                    "description": "Do not create any files if they don't exist",
+                    "syntax": "touch -c"
+                },
+                "r": {
+                    "name": "reference",
+                    "description": "Use the timestamp of the reference file instead of current time",
+                    "syntax": "touch -r REFERENCE_FILE"
+                },
+                "t": {
+                    "name": "time",
+                    "description": "Use specified time instead of current time (format: [[CC]YY]MMDDhhmm[.ss])",
+                    "syntax": "touch -t TIMESTAMP"
+                },
+                "d": {
+                    "name": "date",
+                    "description": "Use specified date string instead of current time",
+                    "syntax": "touch -d DATE_STRING"
+                },
+                "help": {
+                    "name": "help",
+                    "description": "Display help information about touch command usage and options",
+                    "syntax": "touch --help"
+                },
+                "version": {
+                    "name": "version",
+                    "description": "Output version information and exit",
+                    "syntax": "touch --version"
+                }
+            },
             "examples": {
-                "basic": {},
-                "with_flags": {}
+                "basic_create": {
+                    "command": "touch newfile.txt",
+                    "output": "",
+                    "explanation": "Creates an empty file named newfile.txt if it doesn't exist, or updates its timestamp if it does"
+                },
+                "with_flags": {
+                    "multiple": {
+                        "command": "touch file1.txt file2.txt file3.txt",
+                        "output": "",
+                        "explanation": "Creates or updates timestamps for multiple files"
+                    },
+                    "c": {
+                        "command": "touch -c existing.txt",
+                        "output": "",
+                        "explanation": "Updates timestamp of existing.txt only if it exists (won't create it)"
+                    },
+                    "r": {
+                        "command": "touch -r source.txt target.txt",
+                        "output": "",
+                        "explanation": "Sets target.txt's timestamp to match source.txt's timestamp"
+                    },
+                    "t": {
+                        "command": "touch -t 202312251200.00 file.txt",
+                        "output": "",
+                        "explanation": "Sets file.txt's timestamp to December 25, 2023 at 12:00:00"
+                    },
+                    "d": {
+                        "command": "touch -d '2 days ago' file.txt",
+                        "output": "",
+                        "explanation": "Sets file.txt's timestamp to 2 days ago"
+                    },
+                    "a": {
+                        "command": "touch -a file.txt",
+                        "output": "",
+                        "explanation": "Updates only the access time of file.txt to current time"
+                    },
+                    "m": {
+                        "command": "touch -m file.txt",
+                        "output": "",
+                        "explanation": "Updates only the modification time of file.txt to current time"
+                    }
+                }
             }
         },
         {
