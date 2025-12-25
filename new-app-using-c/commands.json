@@ -2649,6 +2649,440 @@
                     "explanation": "Shows TCP sockets with port 22"
                 }
             }
+        },
+        {
+            "name": "curl",
+            "description": "Transfer data from or to a server using various protocols",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "o": {
+                    "name": "output",
+                    "description": "Write output to file instead of stdout",
+                    "syntax": "curl -o FILE URL"
+                },
+                "O": {
+                    "name": "remote-name",
+                    "description": "Write output to a file named as the remote file",
+                    "syntax": "curl -O URL"
+                },
+                "L": {
+                    "name": "location",
+                    "description": "Follow redirects",
+                    "syntax": "curl -L URL"
+                },
+                "H": {
+                    "name": "header",
+                    "description": "Pass custom header(s) to server",
+                    "syntax": "curl -H \"Header: value\" URL"
+                },
+                "X": {
+                    "name": "request",
+                    "description": "Specify request method to use",
+                    "syntax": "curl -X METHOD URL"
+                },
+                "d": {
+                    "name": "data",
+                    "description": "Send specified data in POST request",
+                    "syntax": "curl -d DATA URL"
+                },
+                "F": {
+                    "name": "form",
+                    "description": "Specify multipart MIME data",
+                    "syntax": "curl -F \"name=content\" URL"
+                },
+                "u": {
+                    "name": "user",
+                    "description": "Server user and password",
+                    "syntax": "curl -u USER:PASSWORD URL"
+                },
+                "k": {
+                    "name": "insecure",
+                    "description": "Allow insecure server connections when using SSL",
+                    "syntax": "curl -k URL"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Make the operation more talkative",
+                    "syntax": "curl -v URL"
+                },
+                "s": {
+                    "name": "silent",
+                    "description": "Silent mode (don't show progress meter or error messages)",
+                    "syntax": "curl -s URL"
+                },
+                "I": {
+                    "name": "head",
+                    "description": "Fetch headers only",
+                    "syntax": "curl -I URL"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "curl https://example.com",
+                    "explanation": "Fetches and displays webpage content"
+                },
+                "download": {
+                    "command": "curl -O https://example.com/file.zip",
+                    "explanation": "Downloads file.zip to current directory"
+                },
+                "with_output": {
+                    "command": "curl -o output.html https://example.com",
+                    "explanation": "Saves webpage to output.html"
+                },
+                "headers": {
+                    "command": "curl -I https://example.com",
+                    "output": "HTTP/2 200\nserver: nginx\ndate: Mon, 01 Jan 2024 12:00:00 GMT\ncontent-type: text/html; charset=utf-8",
+                    "explanation": "Shows only HTTP headers"
+                },
+                "post": {
+                    "command": "curl -X POST -d \"name=John&age=30\" https://api.example.com/users",
+                    "explanation": "Sends POST request with form data"
+                },
+                "auth": {
+                    "command": "curl -u username:password https://api.example.com",
+                    "explanation": "Accesses API with basic authentication"
+                },
+                "verbose": {
+                    "command": "curl -v https://example.com",
+                    "explanation": "Shows detailed request/response information"
+                },
+                "json": {
+                    "command": "curl -H \"Content-Type: application/json\" -d '{\"key\":\"value\"}' https://api.example.com",
+                    "explanation": "Sends JSON data in POST request"
+                }
+            }
+        },
+        {
+            "name": "wget",
+            "description": "Non-interactive network downloader",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "O": {
+                    "name": "output-document",
+                    "description": "Write documents to FILE",
+                    "syntax": "wget -O FILE URL"
+                },
+                "q": {
+                    "name": "quiet",
+                    "description": "Quiet mode (no output)",
+                    "syntax": "wget -q URL"
+                },
+                "c": {
+                    "name": "continue",
+                    "description": "Resume getting a partially-downloaded file",
+                    "syntax": "wget -c URL"
+                },
+                "r": {
+                    "name": "recursive",
+                    "description": "Enable recursive downloading",
+                    "syntax": "wget -r URL"
+                },
+                "np": {
+                    "name": "no-parent",
+                    "description": "Do not ascend to parent directory when recursing",
+                    "syntax": "wget -r -np URL"
+                },
+                "l": {
+                    "name": "level",
+                    "description": "Maximum recursion depth",
+                    "syntax": "wget -r -l DEPTH URL"
+                },
+                "p": {
+                    "name": "page-requisites",
+                    "description": "Get all images, etc. needed to display HTML page",
+                    "syntax": "wget -p URL"
+                },
+                "mirror": {
+                    "name": "mirror",
+                    "description": "Turn on options suitable for mirroring",
+                    "syntax": "wget --mirror URL"
+                },
+                "limit-rate": {
+                    "name": "limit-rate",
+                    "description": "Limit download rate",
+                    "syntax": "wget --limit-rate=RATE URL"
+                },
+                "user": {
+                    "name": "user",
+                    "description": "User for authentication",
+                    "syntax": "wget --user=USER --password=PASS URL"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "wget https://example.com/file.zip",
+                    "explanation": "Downloads file.zip to current directory"
+                },
+                "resume": {
+                    "command": "wget -c https://example.com/bigfile.iso",
+                    "explanation": "Resumes interrupted download"
+                },
+                "rename": {
+                    "command": "wget -O backup.tar.gz https://example.com/archive.tar",
+                    "explanation": "Downloads file and saves with different name"
+                },
+                "recursive": {
+                    "command": "wget -r -l 2 https://example.com/docs/",
+                    "explanation": "Recursively downloads up to 2 levels deep"
+                },
+                "mirror": {
+                    "command": "wget --mirror --convert-links --adjust-extension https://example.com",
+                    "explanation": "Creates mirror of website with local links"
+                },
+                "quiet": {
+                    "command": "wget -q https://example.com/file.txt",
+                    "explanation": "Downloads file quietly without output"
+                },
+                "rate_limit": {
+                    "command": "wget --limit-rate=100k https://example.com/largefile.iso",
+                    "explanation": "Limits download speed to 100KB/s"
+                },
+                "background": {
+                    "command": "wget -b https://example.com/file.iso",
+                    "explanation": "Downloads in background"
+                }
+            }
+        },
+        {
+            "name": "ssh",
+            "description": "OpenSSH SSH client (remote login program)",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "p": {
+                    "name": "port",
+                    "description": "Port to connect to on remote host",
+                    "syntax": "ssh -p PORT USER@HOST"
+                },
+                "i": {
+                    "name": "identity",
+                    "description": "Selects a file from which the identity key is read",
+                    "syntax": "ssh -i KEYFILE USER@HOST"
+                },
+                "X": {
+                    "name": "x11",
+                    "description": "Enables X11 forwarding",
+                    "syntax": "ssh -X USER@HOST"
+                },
+                "Y": {
+                    "name": "trusted-x11",
+                    "description": "Enables trusted X11 forwarding",
+                    "syntax": "ssh -Y USER@HOST"
+                },
+                "L": {
+                    "name": "local",
+                    "description": "Local port forwarding",
+                    "syntax": "ssh -L LOCAL_PORT:REMOTE_HOST:REMOTE_PORT USER@HOST"
+                },
+                "R": {
+                    "name": "remote",
+                    "description": "Remote port forwarding",
+                    "syntax": "ssh -R REMOTE_PORT:LOCAL_HOST:LOCAL_PORT USER@HOST"
+                },
+                "D": {
+                    "name": "dynamic",
+                    "description": "Dynamic port forwarding (SOCKS proxy)",
+                    "syntax": "ssh -D PORT USER@HOST"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Verbose mode (multiple -v increases verbosity)",
+                    "syntax": "ssh -v USER@HOST"
+                },
+                "q": {
+                    "name": "quiet",
+                    "description": "Quiet mode (suppresses most warnings and diagnostic messages)",
+                    "syntax": "ssh -q USER@HOST"
+                },
+                "t": {
+                    "name": "force-tty",
+                    "description": "Force pseudo-terminal allocation",
+                    "syntax": "ssh -t USER@HOST COMMAND"
+                },
+                "N": {
+                    "name": "no-command",
+                    "description": "Do not execute a remote command (useful for port forwarding)",
+                    "syntax": "ssh -N USER@HOST"
+                },
+                "f": {
+                    "name": "background",
+                    "description": "Requests ssh to go to background just before command execution",
+                    "syntax": "ssh -f USER@HOST COMMAND"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "ssh user@example.com",
+                    "explanation": "Connects to example.com as user"
+                },
+                "with_port": {
+                    "command": "ssh -p 2222 user@example.com",
+                    "explanation": "Connects using custom port 2222"
+                },
+                "key_auth": {
+                    "command": "ssh -i ~/.ssh/id_rsa user@example.com",
+                    "explanation": "Connects using specific SSH key"
+                },
+                "command": {
+                    "command": "ssh user@example.com \"ls -la\"",
+                    "explanation": "Executes command on remote host and exits"
+                },
+                "x11": {
+                    "command": "ssh -X user@example.com",
+                    "explanation": "Connects with X11 forwarding for GUI apps"
+                },
+                "port_forward": {
+                    "command": "ssh -L 8080:localhost:80 user@example.com",
+                    "explanation": "Forwards local port 8080 to remote port 80"
+                },
+                "socks": {
+                    "command": "ssh -D 1080 user@example.com",
+                    "explanation": "Creates SOCKS proxy on port 1080"
+                },
+                "tunnel": {
+                    "command": "ssh -N -L 3306:localhost:3306 user@dbserver",
+                    "explanation": "Creates MySQL tunnel in background"
+                },
+                "verbose": {
+                    "command": "ssh -vvv user@example.com",
+                    "explanation": "Connects with maximum verbosity for debugging"
+                }
+            }
+        },
+        {
+            "name": "scp",
+            "description": "Secure copy (remote file copy program)",
+            "category": "networking",
+            "bookmarked": false,
+            "flags": {
+                "r": {
+                    "name": "recursive",
+                    "description": "Copy directories recursively",
+                    "syntax": "scp -r SOURCE DEST"
+                },
+                "p": {
+                    "name": "preserve",
+                    "description": "Preserve modification times, access times, and modes",
+                    "syntax": "scp -p SOURCE DEST"
+                },
+                "P": {
+                    "name": "port",
+                    "description": "Specifies the port to connect to",
+                    "syntax": "scp -P PORT SOURCE DEST"
+                },
+                "i": {
+                    "name": "identity",
+                    "description": "Selects the file from which to read the identity key",
+                    "syntax": "scp -i KEYFILE SOURCE DEST"
+                },
+                "v": {
+                    "name": "verbose",
+                    "description": "Verbose mode (displays debugging messages)",
+                    "syntax": "scp -v SOURCE DEST"
+                },
+                "q": {
+                    "name": "quiet",
+                    "description": "Quiet mode (suppresses most warnings and diagnostic messages)",
+                    "syntax": "scp -q SOURCE DEST"
+                },
+                "C": {
+                    "name": "compression",
+                    "description": "Enable compression",
+                    "syntax": "scp -C SOURCE DEST"
+                },
+                "l": {
+                    "name": "limit",
+                    "description": "Limit bandwidth (in Kbit/s)",
+                    "syntax": "scp -l LIMIT SOURCE DEST"
+                }
+            },
+            "examples": {
+                "upload": {
+                    "command": "scp file.txt user@example.com:/home/user/",
+                    "explanation": "Copies file.txt to remote server"
+                },
+                "download": {
+                    "command": "scp user@example.com:/home/user/file.txt .",
+                    "explanation": "Downloads file.txt from remote server"
+                },
+                "recursive": {
+                    "command": "scp -r directory/ user@example.com:/backup/",
+                    "explanation": "Copies entire directory recursively to remote server"
+                },
+                "preserve": {
+                    "command": "scp -p file.txt user@example.com:/home/user/",
+                    "explanation": "Copies file preserving timestamps and permissions"
+                },
+                "port": {
+                    "command": "scp -P 2222 file.txt user@example.com:/home/user/",
+                    "explanation": "Copies file using custom SSH port"
+                },
+                "key": {
+                    "command": "scp -i ~/.ssh/id_rsa file.txt user@example.com:/home/user/",
+                    "explanation": "Uses specific SSH key for authentication"
+                },
+                "compress": {
+                    "command": "scp -C largefile.iso user@example.com:/backup/",
+                    "explanation": "Copies file with compression"
+                },
+                "between_servers": {
+                    "command": "scp user1@server1:/path/file user2@server2:/path/",
+                    "explanation": "Copies file directly between two remote servers"
+                }
+            }
+        },
+        {
+            "name": "kill",
+            "description": "Send a signal to a process",
+            "category": "process_management",
+            "bookmarked": false,
+            "flags": {
+                "l": {
+                    "name": "list",
+                    "description": "List all signal names",
+                    "syntax": "kill -l"
+                },
+                "s": {
+                    "name": "signal",
+                    "description": "Specify the signal to send",
+                    "syntax": "kill -s SIGNAL PID"
+                },
+                "9": {
+                    "name": "KILL",
+                    "description": "Send KILL signal (force termination)",
+                    "syntax": "kill -9 PID"
+                },
+                "15": {
+                    "name": "TERM",
+                    "description": "Send TERM signal (graceful termination - default)",
+                    "syntax": "kill -15 PID"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "kill 1234",
+                    "explanation": "Sends TERM signal (default) to process with PID 1234"
+                },
+                "force": {
+                    "command": "kill -9 1234",
+                    "explanation": "Forcefully kills process with PID 1234"
+                },
+                "signal_list": {
+                    "command": "kill -l",
+                    "output": "1) SIGHUP       2) SIGINT       3) SIGQUIT      4) SIGILL       5) SIGTRAP\n6) SIGABRT      7) SIGBUS       8) SIGFPE       9) SIGKILL     10) SIGUSR1\n...",
+                    "explanation": "Lists all available signals"
+                },
+                "specific_signal": {
+                    "command": "kill -s HUP 1234",
+                    "explanation": "Sends HUP signal (reload configuration) to process"
+                },
+                "kill_by_name": {
+                    "command": "kill $(pgrep firefox)",
+                    "explanation": "Kills all firefox processes"
+                }
+            }
         }
     ]
 }
