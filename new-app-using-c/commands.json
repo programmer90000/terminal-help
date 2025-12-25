@@ -6050,7 +6050,7 @@
     ]
 }
 
-Commands I need to add: 7z
+Commands I have already looked at and need to add to this file: 7z
 add-apt-repository
 addpart
 alias
@@ -6074,7 +6074,6 @@ bash
 batcat
 bc
 bg
-bind
 cat
 cd
 chacl
@@ -6123,7 +6122,6 @@ diff
 diffimg
 dir
 dirname
-discover-config
 disown
 dmesg
 du
@@ -6134,6 +6132,20 @@ egrep
 eject
 elfedit
 enable
+
+
+
+
+
+
+
+
+
+
+
+
+
+Commands I need to add:
 env
 envsubst
 eval
