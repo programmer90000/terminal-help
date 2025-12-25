@@ -5403,6 +5403,457 @@
                     "explanation": "Reduces journal size to 200MB"
                 }
             }
+        },
+        {
+            "name": "man",
+            "description": "Format and display manual pages",
+            "category": "documentation",
+            "bookmarked": false,
+            "flags": {
+                "k": {
+                    "name": "apropos",
+                    "description": "Search manual page names and descriptions",
+                    "syntax": "man -k KEYWORD"
+                },
+                "f": {
+                    "name": "whatis",
+                    "description": "Display one-line manual page descriptions",
+                    "syntax": "man -f COMMAND"
+                },
+                "a": {
+                    "name": "all",
+                    "description": "Display all matching manual pages",
+                    "syntax": "man -a COMMAND"
+                },
+                "w": {
+                    "name": "where",
+                    "description": "Print location of manual page",
+                    "syntax": "man -w COMMAND"
+                },
+                "K": {
+                    "name": "global-apropos",
+                    "description": "Search for text in all manual pages",
+                    "syntax": "man -K PATTERN"
+                },
+                "t": {
+                    "name": "troff",
+                    "description": "Format with troff/groff",
+                    "syntax": "man -t COMMAND"
+                },
+                "L": {
+                    "name": "locale",
+                    "description": "Specify locale",
+                    "syntax": "man -L LOCALE COMMAND"
+                },
+                "section": {
+                    "name": "section",
+                    "description": "Search specific manual section",
+                    "syntax": "man SECTION COMMAND"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "man ls",
+                    "explanation": "Displays manual page for ls command"
+                },
+                "search": {
+                    "command": "man -k \"copy file\"",
+                    "output": "cp (1)               - copy files and directories\nscp (1)              - secure copy (remote file copy program)\nrsync (1)            - faster, flexible replacement for rcp",
+                    "explanation": "Searches manual pages for 'copy file'"
+                },
+                "whatis": {
+                    "command": "man -f ls",
+                    "output": "ls (1)               - list directory contents",
+                    "explanation": "Shows one-line description of ls"
+                },
+                "section": {
+                    "command": "man 5 passwd",
+                    "explanation": "Shows passwd file format (section 5) instead of passwd command"
+                },
+                "all": {
+                    "command": "man -a printf",
+                    "explanation": "Shows all manual pages for printf (command and C function)"
+                },
+                "where": {
+                    "command": "man -w ssh",
+                    "output": "/usr/share/man/man1/ssh.1.gz",
+                    "explanation": "Shows location of ssh manual page"
+                },
+                "global_search": {
+                    "command": "man -K \"regular expression\"",
+                    "explanation": "Searches all manual pages for 'regular expression'"
+                },
+                "troff": {
+                    "command": "man -t ls > ls.ps",
+                    "explanation": "Creates PostScript file of ls manual page"
+                },
+                "pager": {
+                    "command": "man -P less ssh",
+                    "explanation": "Uses less pager instead of default"
+                }
+            }
+        },
+        {
+            "name": "apropos",
+            "description": "Search manual page names and descriptions",
+            "category": "documentation",
+            "bookmarked": false,
+            "flags": {
+                "w": {
+                    "name": "wildcard",
+                    "description": "Use wildcards in search pattern",
+                    "syntax": "apropos -w PATTERN"
+                },
+                "e": {
+                    "name": "exact",
+                    "description": "Search for exact match",
+                    "syntax": "apropos -e PATTERN"
+                },
+                "a": {
+                    "name": "and",
+                    "description": "Require all keywords to match",
+                    "syntax": "apropos -a KEYWORD1 KEYWORD2"
+                },
+                "r": {
+                    "name": "regex",
+                    "description": "Interpret each keyword as regex",
+                    "syntax": "apropos -r PATTERN"
+                },
+                "l": {
+                    "name": "long",
+                    "description": "Do not trim output to terminal width",
+                    "syntax": "apropos -l"
+                },
+                "s": {
+                    "name": "sections",
+                    "description": "Search only specified sections",
+                    "syntax": "apropos -s LIST PATTERN"
+                },
+                "C": {
+                    "name": "config-file",
+                    "description": "Use alternate config file",
+                    "syntax": "apropos -C FILE PATTERN"
+                },
+                "M": {
+                    "name": "manpath",
+                    "description": "Set search path for manual pages",
+                    "syntax": "apropos -M PATH PATTERN"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "apropos \"copy file\"",
+                    "output": "cp (1)               - copy files and directories\nscp (1)              - secure copy (remote file copy program)\nrsync (1)            - faster, flexible replacement for rcp",
+                    "explanation": "Same as man -k, searches manual pages"
+                },
+                "exact": {
+                    "command": "apropos -e \"passwd\"",
+                    "explanation": "Searches for exact match 'passwd'"
+                },
+                "wildcard": {
+                    "command": "apropos -w \"zip*\"",
+                    "explanation": "Searches for terms starting with 'zip'"
+                },
+                "multiple": {
+                    "command": "apropos -a \"list directory\"",
+                    "explanation": "Searches for pages containing both 'list' and 'directory'"
+                },
+                "regex": {
+                    "command": "apropos -r \"^zip\"",
+                    "explanation": "Searches for terms starting with 'zip' using regex"
+                },
+                "sections": {
+                    "command": "apropos -s 1,8 \"password\"",
+                    "explanation": "Searches only in sections 1 (commands) and 8 (administration)"
+                },
+                "long": {
+                    "command": "apropos -l \"network\"",
+                    "explanation": "Shows full lines without truncation"
+                }
+            }
+        },
+        {
+            "name": "whatis",
+            "description": "Display one-line manual page descriptions",
+            "category": "documentation",
+            "bookmarked": false,
+            "flags": {
+                "w": {
+                    "name": "wildcard",
+                    "description": "Use wildcards in search pattern",
+                    "syntax": "whatis -w PATTERN"
+                },
+                "r": {
+                    "name": "regex",
+                    "description": "Interpret each keyword as regex",
+                    "syntax": "whatis -r PATTERN"
+                },
+                "l": {
+                    "name": "long",
+                    "description": "Do not trim output to terminal width",
+                    "syntax": "whatis -l"
+                },
+                "s": {
+                    "name": "sections",
+                    "description": "Search only specified sections",
+                    "syntax": "whatis -s LIST PATTERN"
+                },
+                "C": {
+                    "name": "config-file",
+                    "description": "Use alternate config file",
+                    "syntax": "whatis -C FILE PATTERN"
+                },
+                "M": {
+                    "name": "manpath",
+                    "description": "Set search path for manual pages",
+                    "syntax": "whatis -M PATH PATTERN"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "whatis ls",
+                    "output": "ls (1)               - list directory contents",
+                    "explanation": "Same as man -f, shows brief description"
+                },
+                "multiple": {
+                    "command": "whatis ls cp mv",
+                    "explanation": "Shows descriptions for multiple commands"
+                },
+                "wildcard": {
+                    "command": "whatis -w \"zip*\"",
+                    "explanation": "Shows descriptions for commands starting with 'zip'"
+                },
+                "regex": {
+                    "command": "whatis -r \"^g\"",
+                    "explanation": "Shows descriptions for commands starting with 'g'"
+                },
+                "section": {
+                    "command": "whatis -s 5 passwd",
+                    "output": "passwd (5)           - password file",
+                    "explanation": "Shows description for passwd file format (section 5)"
+                },
+                "long": {
+                    "command": "whatis -l ssh",
+                    "explanation": "Shows full description without truncation"
+                },
+                "all": {
+                    "command": "whatis -a printf",
+                    "explanation": "Shows all descriptions for printf"
+                }
+            }
+        },
+        {
+            "name": "alias",
+            "description": "Create or list command aliases",
+            "category": "shell",
+            "bookmarked": false,
+            "flags": {
+                "p": {
+                    "name": "print",
+                    "description": "Print all defined aliases",
+                    "syntax": "alias -p"
+                }
+            },
+            "examples": {
+                "list": {
+                    "command": "alias",
+                    "output": "alias ll='ls -l'\nalias la='ls -la'\nalias grep='grep --color=auto'",
+                    "explanation": "Lists all defined aliases"
+                },
+                "create": {
+                    "command": "alias ll='ls -lh'",
+                    "explanation": "Creates alias ll for ls -lh"
+                },
+                "remove": {
+                    "command": "unalias ll",
+                    "explanation": "Removes alias ll"
+                },
+                "persistent": {
+                    "command": "echo \"alias ll='ls -lh'\" >> ~/.bashrc",
+                    "explanation": "Adds alias to bashrc for persistence"
+                },
+                "with_arguments": {
+                    "command": "alias rm='rm -i'",
+                    "explanation": "Makes rm interactive by default"
+                },
+                "complex": {
+                    "command": "alias update='sudo apt update && sudo apt upgrade'",
+                    "explanation": "Creates alias for update command"
+                },
+                "list_formatted": {
+                    "command": "alias -p",
+                    "explanation": "Lists aliases in reusable format"
+                },
+                "temporary": {
+                    "command": "alias",
+                    "explanation": "Aliases defined in current shell only, not in child shells"
+                }
+            }
+        },
+        {
+            "name": "history",
+            "description": "Display or manipulate the history list",
+            "category": "shell",
+            "bookmarked": false,
+            "flags": {
+                "c": {
+                    "name": "clear",
+                    "description": "Clear the history list",
+                    "syntax": "history -c"
+                },
+                "d": {
+                    "name": "delete",
+                    "description": "Delete history entry at OFFSET",
+                    "syntax": "history -d OFFSET"
+                },
+                "a": {
+                    "name": "append",
+                    "description": "Append new history lines to history file",
+                    "syntax": "history -a"
+                },
+                "n": {
+                    "name": "read-new",
+                    "description": "Read new history lines from history file",
+                    "syntax": "history -n"
+                },
+                "r": {
+                    "name": "read",
+                    "description": "Read history file and append contents to history list",
+                    "syntax": "history -r"
+                },
+                "w": {
+                    "name": "write",
+                    "description": "Write current history to history file",
+                    "syntax": "history -w"
+                },
+                "p": {
+                    "name": "print",
+                    "description": "Perform history expansion on args and display result",
+                    "syntax": "history -p ARGS"
+                },
+                "s": {
+                    "name": "store",
+                    "description": "Append ARGS to history list as a single entry",
+                    "syntax": "history -s ARGS"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "history",
+                    "output": "1  ls\n2  cd /var/log\n3  tail -f syslog\n...\n100  history",
+                    "explanation": "Shows command history with line numbers"
+                },
+                "limited": {
+                    "command": "history 10",
+                    "explanation": "Shows last 10 commands"
+                },
+                "clear": {
+                    "command": "history -c",
+                    "explanation": "Clears current session history"
+                },
+                "delete": {
+                    "command": "history -d 100",
+                    "explanation": "Deletes entry at line 100"
+                },
+                "append": {
+                    "command": "history -a",
+                    "explanation": "Appends current session history to history file"
+                },
+                "search": {
+                    "command": "history | grep \"ssh\"",
+                    "explanation": "Searches history for ssh commands"
+                },
+                "repeat": {
+                    "command": "!100",
+                    "explanation": "Re-executes command number 100"
+                },
+                "last": {
+                    "command": "!!",
+                    "explanation": "Repeats last command"
+                },
+                "last_arg": {
+                    "command": "!$",
+                    "explanation": "Refers to last argument of previous command"
+                },
+                "search_execute": {
+                    "command": "!ssh",
+                    "explanation": "Executes last command starting with 'ssh'"
+                },
+                "save": {
+                    "command": "history -w",
+                    "explanation": "Writes current history to file"
+                },
+                "load": {
+                    "command": "history -r",
+                    "explanation": "Reads history from file"
+                }
+            }
+        },
+        {
+            "name": "echo",
+            "description": "Display a line of text",
+            "category": "shell",
+            "bookmarked": false,
+            "flags": {
+                "n": {
+                    "name": "no-newline",
+                    "description": "Do not output the trailing newline",
+                    "syntax": "echo -n TEXT"
+                },
+                "e": {
+                    "name": "enable-escapes",
+                    "description": "Enable interpretation of backslash escapes",
+                    "syntax": "echo -e TEXT"
+                },
+                "E": {
+                    "name": "disable-escapes",
+                    "description": "Disable interpretation of backslash escapes (default)",
+                    "syntax": "echo -E TEXT"
+                }
+            },
+            "examples": {
+                "basic": {
+                    "command": "echo \"Hello World\"",
+                    "output": "Hello World",
+                    "explanation": "Prints text to stdout"
+                },
+                "variables": {
+                    "command": "echo \"User: $USER\"",
+                    "output": "User: john",
+                    "explanation": "Expands variables in text"
+                },
+                "no_newline": {
+                    "command": "echo -n \"Processing... \"",
+                    "output": "Processing... ",
+                    "explanation": "Prints without newline"
+                },
+                "escapes": {
+                    "command": "echo -e \"Line 1\\nLine 2\\tTab\"",
+                    "output": "Line 1\nLine 2    Tab",
+                    "explanation": "Interprets escape sequences"
+                },
+                "multiple": {
+                    "command": "echo apple banana cherry",
+                    "output": "apple banana cherry",
+                    "explanation": "Multiple arguments are separated by spaces"
+                },
+                "redirect": {
+                    "command": "echo \"text\" > file.txt",
+                    "explanation": "Redirects output to file"
+                },
+                "append": {
+                    "command": "echo \"more text\" >> file.txt",
+                    "explanation": "Appends to file"
+                },
+                "escape_chars": {
+                    "command": "echo -e \"Bell: \\a\\nBackspace: \\b\\nForm feed: \\f\"",
+                    "explanation": "Shows various escape characters"
+                },
+                "colors": {
+                    "command": "echo -e \"\\033[31mRed Text\\033[0m\"",
+                    "explanation": "Prints colored text"
+                }
+            }
         }
     ]
 }
