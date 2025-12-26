@@ -32,7 +32,7 @@ I want AI to make a JSON object with the following properties for a Bash command
     ]
 }
 
-I want to include a detailed description. I want to include ALL possible flags for that command. I want to write an example for ALL possible flags. Write this for the command COMMAND-NAME
+I want to include a detailed description. I want to include ALL possible flags for that command. I want to write an example for ALL possible flags. Do NOT write the outer object. Write only the text inside the commands object. Write this for the command COMMAND-NAME
 ```
 
 # Commands That Have Been Added
