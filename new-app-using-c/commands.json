@@ -2062,3 +2062,669 @@
         }
     ]
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+{
+    "name": "arch",
+    "description": "The arch command prints the machine's architecture type. It is equivalent to running 'uname -m'. This command is useful for determining whether the system is running on 32-bit or 64-bit hardware, or identifying specific processor architectures like ARM or x86. It is commonly used in scripts to conditionally execute architecture-specific operations or install correct binary packages.",
+    "category": "System Information",
+    "bookmarked": false,
+    "flags": {
+        "--help": {
+            "name": "Help",
+            "description": "Display a help message explaining the command's usage and available options, then exit.",
+            "syntax": "arch --help"
+        },
+        "--version": {
+            "name": "Version",
+            "description": "Output version information about the arch command and then exit.",
+            "syntax": "arch --version"
+        }
+    },
+    "examples": {
+        "no_flags": {
+            "command": "arch",
+            "output": "x86_64"
+        },
+        "with_flags": {
+            "--help": {
+                "command": "arch --help",
+                "output": "Standard help information for the command."
+            },
+            "--version": {
+                "command": "arch --version",
+                "output": "Standard version information for the command."
+            }
+        }
+    }
+}
+
+
+{
+    "name": "bash",
+    "description": "The Bourne Again SHell (bash) is a command processor that runs in a text window and allows users to interact with the operating system by typing commands. It's a sh-compatible shell that incorporates useful features from the Korn shell (ksh) and C shell (csh). Bash is the default shell on most Linux distributions and macOS.",
+    "category": "Shells/Interpreters",
+    "bookmarked": false,
+    "flags": {
+        "c": {
+            "name": "Read commands from string",
+            "description": "Reads and executes commands from the first non-option argument, then exits. Any remaining arguments are assigned to the positional parameters, starting with $0.",
+            "syntax": "-c string"
+        },
+        "i": {
+            "name": "Interactive shell",
+            "description": "Forces the shell to run interactively, even if input and output do not appear to be a terminal. Interactive shells read commands from standard input and enable job control by default.",
+            "syntax": "-i"
+        },
+        "l": {
+            "name": "Login shell",
+            "description": "Makes bash act as if it were invoked as a login shell. This means it will read and execute commands from system-wide and user-specific login shell startup files like /etc/profile and ~/.bash_profile.",
+            "syntax": "-l"
+        },
+        "r": {
+            "name": "Restricted shell",
+            "description": "Starts a restricted shell session, which restricts certain operations like changing directories, setting the PATH, or using commands containing slashes. This provides a more controlled environment.",
+            "syntax": "-r"
+        },
+        "s": {
+            "name": "Read commands from standard input",
+            "description": "Reads commands from standard input. If this option is used, any remaining arguments become positional parameters (starting with $0). This is the default behavior when no file arguments are provided and no -c option is given.",
+            "syntax": "-s"
+        },
+        "D": {
+            "name": "Print list of double-quoted strings",
+            "description": "Prints all '$"string"' style strings in the program that are subject to language translation (for internationalization). These are strings marked for translation.",
+            "syntax": "-D"
+        },
+        "O": {
+            "name": "Set shell option",
+            "description": "Enables the specified shell option (shopt option). The option name should be provided as an argument. Use '+O' to disable the option.",
+            "syntax": "-O option_name"
+        },
+        "O-": {
+            "name": "Disable shell option",
+            "description": "Disables the specified shell option (shopt option). The option name should be provided as an argument.",
+            "syntax": "+O option_name"
+        },
+        "version": {
+            "name": "Display version information",
+            "description": "Shows version information for this instance of bash and then exits.",
+            "syntax": "--version"
+        },
+        "debugger": {
+            "name": "Enable debugger",
+            "description": "Arranges for the debugger profile to be executed before the shell starts. Turns on extended debugging mode and shell function tracing.",
+            "syntax": "--debugger"
+        },
+        "dump-po-strings": {
+            "name": "Dump portable object strings",
+            "description": "Equivalent to -D, but outputs in GNU gettext portable object file format.",
+            "syntax": "--dump-po-strings"
+        },
+        "dump-strings": {
+            "name": "Dump strings",
+            "description": "Equivalent to -D.",
+            "syntax": "--dump-strings"
+        },
+        "help": {
+            "name": "Display help",
+            "description": "Shows a usage message summarizing command line options and then exits.",
+            "syntax": "--help"
+        },
+        "init-file": {
+            "name": "Specify initialization file",
+            "description": "Uses the specified file instead of the standard initialization files (~/.bashrc, etc.) as the shell startup file. Can be abbreviated as --rcfile.",
+            "syntax": "--init-file file or --rcfile file"
+        },
+        "login": {
+            "name": "Login shell",
+            "description": "Equivalent to -l, makes bash a login shell.",
+            "syntax": "--login"
+        },
+        "noediting": {
+            "name": "Disable command line editing",
+            "description": "Disables the use of the GNU Readline library for command line editing. Useful in scripts or when Readline causes issues.",
+            "syntax": "--noediting"
+        },
+        "noprofile": {
+            "name": "Skip profile files",
+            "description": "Prevents bash from reading the system-wide startup file (/etc/profile) and any personal initialization file (~/.bash_profile, ~/.bash_login, or ~/.profile).",
+            "syntax": "--noprofile"
+        },
+        "norc": {
+            "name": "Skip rc files",
+            "description": "Prevents bash from reading and executing the personal initialization file ~/.bashrc. This option is on by default if the shell is invoked as sh.",
+            "syntax": "--norc"
+        },
+        "posix": {
+            "name": "POSIX mode",
+            "description": "Changes bash behavior to follow the POSIX standard more closely, disabling bash-specific extensions.",
+            "syntax": "--posix"
+        },
+        "restricted": {
+            "name": "Restricted shell",
+            "description": "Equivalent to -r, starts a restricted shell.",
+            "syntax": "--restricted"
+        },
+        "verbose": {
+            "name": "Verbose mode",
+            "description": "Equivalent to setting the -v option, causes shell to print shell input lines as they are read. Useful for debugging.",
+            "syntax": "--verbose"
+        },
+        "wordexp": {
+            "name": "Test word expansion",
+            "description": "Disables command execution and instead performs word expansion only. Used for testing and debugging shell scripts.",
+            "syntax": "--wordexp"
+        }
+    },
+    "examples": {
+        "no_flags": {
+            "command": "bash",
+            "output": "Starts a new interactive bash shell session."
+        },
+        "with_flags": {
+            "c": {
+                "command": "bash -c 'echo Hello, $USER!'",
+                "output": "Hello, username!"
+            },
+            "i": {
+                "command": "bash -i script.sh",
+                "output": "Runs script.sh in an interactive shell context."
+            },
+            "l": {
+                "command": "bash -l",
+                "output": "Starts bash as a login shell, reading login-specific initialization files."
+            },
+            "r": {
+                "command": "bash -r",
+                "output": "Starts a restricted bash shell with limited capabilities."
+            },
+            "s": {
+                "command": "echo 'echo Hello from stdin' | bash -s",
+                "output": "Hello from stdin"
+            },
+            "D": {
+                "command": "bash -D /usr/bin/some_script",
+                "output": "List of internationalized strings in the script."
+            },
+            "O": {
+                "command": "bash -O extglob",
+                "output": "Starts bash with extended pattern matching (extglob) enabled."
+            },
+            "O-": {
+                "command": "bash +O histexpand",
+                "output": "Starts bash with history expansion disabled."
+            },
+            "version": {
+                "command": "bash --version",
+                "output": "Standard version information output."
+            },
+            "debugger": {
+                "command": "bash --debugger",
+                "output": "Starts bash with debugger profiling enabled."
+            },
+            "dump-po-strings": {
+                "command": "bash --dump-po-strings /usr/bin/some_script",
+                "output": "Portable object strings in GNU gettext format."
+            },
+            "dump-strings": {
+                "command": "bash --dump-strings /usr/bin/some_script",
+                "output": "List of internationalized strings in the script."
+            },
+            "help": {
+                "command": "bash --help",
+                "output": "Standard help information output."
+            },
+            "init-file": {
+                "command": "bash --init-file ~/custom_bashrc",
+                "output": "Starts bash using ~/custom_bashrc as the startup file instead of ~/.bashrc."
+            },
+            "login": {
+                "command": "bash --login",
+                "output": "Equivalent to bash -l, starts a login shell."
+            },
+            "noediting": {
+                "command": "bash --noediting",
+                "output": "Starts bash without Readline command line editing."
+            },
+            "noprofile": {
+                "command": "bash --noprofile",
+                "output": "Starts bash without reading system or user profile files."
+            },
+            "norc": {
+                "command": "bash --norc",
+                "output": "Starts bash without reading ~/.bashrc."
+            },
+            "posix": {
+                "command": "bash --posix",
+                "output": "Starts bash in POSIX-compatibility mode."
+            },
+            "restricted": {
+                "command": "bash --restricted",
+                "output": "Equivalent to bash -r, starts a restricted shell."
+            },
+            "verbose": {
+                "command": "bash --verbose -c 'echo one; echo two'",
+                "output": "Prints each command before execution."
+            },
+            "wordexp": {
+                "command": "bash --wordexp 'echo *'",
+                "output": "Performs word expansion on 'echo *' without executing the command."
+            }
+        }
+    }
+}
+
+
+
+
+{
+    "name": "basename",
+    "description": "The basename command strips directory and suffix from filenames. It removes any leading directory components from the given pathname and optionally removes a trailing suffix if specified. This is particularly useful in shell scripting to extract just the filename from a full path or to manipulate filenames programmatically.",
+    "category": "File and Pathname Utilities",
+    "bookmarked": false,
+    "flags": {
+        "-a, --multiple": {
+            "name": "Multiple",
+            "description": "Support multiple arguments and treat each as a NAME. The command will process all provided arguments, outputting each result on a separate line.",
+            "syntax": "basename -a NAME [NAME ...] [SUFFIX] OR basename --multiple NAME [NAME ...] [SUFFIX]"
+        },
+        "-s, --suffix": {
+            "name": "Suffix",
+            "description": "Remove a trailing SUFFIX from the NAME. This is the older, single-argument form of suffix removal. It removes the specified suffix string if it matches the end of the basename.",
+            "syntax": "basename -s SUFFIX NAME [NAME ...] OR basename --suffix=SUFFIX NAME [NAME ...]"
+        },
+        "-z, --zero": {
+            "name": "Zero",
+            "description": "Separate output with NUL characters instead of newlines. This is useful when processing filenames that may contain newlines or other whitespace, ensuring safe parsing.",
+            "syntax": "basename -z NAME [SUFFIX] OR basename --zero NAME [SUFFIX]"
+        },
+        "--help": {
+            "name": "Help",
+            "description": "Display a help message with usage information and a summary of available options, then exit successfully.",
+            "syntax": "basename --help"
+        },
+        "--version": {
+            "name": "Version",
+            "description": "Output version information about the command, then exit successfully.",
+            "syntax": "basename --version"
+        }
+    },
+    "examples": {
+        "no_flags": {
+            "command": "basename /home/user/documents/report.txt",
+            "output": "report.txt"
+        },
+        "with_flags": {
+            "-a, --multiple": {
+                "command": "basename -a /usr/bin/bash /etc/passwd",
+                "output": "bash\npasswd"
+            },
+            "-s, --suffix": {
+                "command": "basename -s .txt /home/user/file.txt",
+                "output": "file"
+            },
+            "-z, --zero": {
+                "command": "basename -z /tmp/logfile",
+                "output": "logfile<NUL>"
+            },
+            "--help": {
+                "command": "basename --help",
+                "output": "Standard help information for the command."
+            },
+            "--version": {
+                "command": "basename --version",
+                "output": "Standard version information for the command."
+            },
+            "Combined -a and -s": {
+                "command": "basename -a -s .sh script1.sh script2.sh /path/script3.sh",
+                "output": "script1\nscript2\nscript3"
+            },
+            "Combined -a and -z": {
+                "command": "basename -az /dir/file1 /dir/file2",
+                "output": "file1<NUL>file2<NUL>"
+            }
+        }
+    }
+}
+
+
+
+
+{
+    "name": "batcat",
+    "description": "A cat(1) clone with syntax highlighting and Git integration. It provides syntax highlighting for a large number of programming and markup languages, integrates with Git to show modifications, supports automatic paging, displays non-printable characters, and can concatenate multiple files. It is designed to be a drop-in replacement for cat but with greatly enhanced features for interactive use.",
+    "category": "File Viewing/Text Processing",
+    "bookmarked": false,
+    "flags": {
+        "--language": {
+            "name": "Explicit Language",
+            "description": "Explicitly set the language for syntax highlighting. Overrides automatic detection.",
+            "syntax": "--language <language> or -l <language>"
+        },
+        "--plain": {
+            "name": "Plain Mode",
+            "description": "Disable syntax highlighting. Alias for '--language=plain'.",
+            "syntax": "--plain or -p"
+        },
+        "--style": {
+            "name": "Output Style",
+            "description": "Configure the elements included in the output (e.g., line numbers, header, grid). Comma-separated list of 'auto', 'full', 'plain', 'changes', 'header', 'grid', 'numbers', 'rule', 'snip'.",
+            "syntax": "--style <style> or -s <style>"
+        },
+        "--theme": {
+            "name": "Color Theme",
+            "description": "Set the color theme for syntax highlighting. Use '--list-themes' to see available options.",
+            "syntax": "--theme <theme>"
+        },
+        "--list-themes": {
+            "name": "List Themes",
+            "description": "Display a list of all available syntax highlighting themes.",
+            "syntax": "--list-themes"
+        },
+        "--list-languages": {
+            "name": "List Languages",
+            "description": "Display a list of all supported languages for syntax highlighting.",
+            "syntax": "--list-languages"
+        },
+        "--show-all": {
+            "name": "Show Non-Printable",
+            "description": "Show non-printable characters (space, tab, newline, etc.) using special symbols.",
+            "syntax": "--show-all or -A"
+        },
+        "--number": {
+            "name": "Line Numbers",
+            "description": "Only show line numbers, no other margin elements.",
+            "syntax": "--number or -n"
+        },
+        "--color": {
+            "name": "When to Color",
+            "description": "Specify when to use colored output: 'auto', 'never', 'always'.",
+            "syntax": "--color <when>"
+        },
+        "--paging": {
+            "name": "Paging Mode",
+            "description": "Specify when to use the pager: 'auto', 'never', 'always'.",
+            "syntax": "--paging <mode> or -P <mode>"
+        },
+        "--pager": {
+            "name": "Custom Pager",
+            "description": "Specify a custom pager command (e.g., 'less -R').",
+            "syntax": "--pager <command>"
+        },
+        "--wrap": {
+            "name": "Line Wrapping",
+            "description": "Specify when to wrap lines: 'auto', 'never', 'character'.",
+            "syntax": "--wrap <mode>"
+        },
+        "--terminal-width": {
+            "name": "Terminal Width",
+            "description": "Explicitly set the terminal width. Prefix with '+' or '-' to offset from the actual width.",
+            "syntax": "--terminal-width <width>"
+        },
+        "--tabs": {
+            "name": "Tab Width",
+            "description": "Set the number of spaces to display for a tab character.",
+            "syntax": "--tabs <width>"
+        },
+        "--decorations": {
+            "name": "When to Decorate",
+            "description": "Specify when to show decorations (header, grid, line numbers): 'auto', 'never', 'always'.",
+            "syntax": "--decorations <when>"
+        },
+        "--file-name": {
+            "name": "File Name",
+            "description": "Display the file name as a header, even for a single file.",
+            "syntax": "--file-name or -f"
+        },
+        "--diff": {
+            "name": "Diff Mode",
+            "description": "Show line-level Git modifications by comparing against the index (green for added, red for removed).",
+            "syntax": "--diff or -d"
+        },
+        "--diff-context": {
+            "name": "Diff Context Lines",
+            "description": "Show N lines of context around changes in --diff mode.",
+            "syntax": "--diff-context <N>"
+        },
+        "--force-colorization": {
+            "name": "Force Color",
+            "description": "Alias for '--color=always'.",
+            "syntax": "--force-colorization or --force-colourization"
+        },
+        "--help": {
+            "name": "Help",
+            "description": "Show bat's help message.",
+            "syntax": "--help or -h"
+        },
+        "--version": {
+            "name": "Version",
+            "description": "Show bat's version information.",
+            "syntax": "--version or -V"
+        }
+    },
+    "examples": {
+        "no_flags": {
+            "command": "batcat file.txt",
+            "output": "Output is the syntax-highlighted contents of file.txt with a header, line numbers, and Git changes if applicable, paged through a pager (like less)."
+        },
+        "with_flags": {
+            "--language": {
+                "command": "batcat --language python script.py",
+                "output": "Output is script.py highlighted as Python code, even if the file extension is not .py or detection fails."
+            },
+            "--plain": {
+                "command": "batcat --plain file.json",
+                "output": "Output is the plain, un-highlighted contents of file.json (identical to standard cat)."
+            },
+            "--style": {
+                "command": "batcat --style numbers,header file.txt",
+                "output": "Output shows only line numbers and a file header, with no grid lines or rule."
+            },
+            "--theme": {
+                "command": "batcat --theme TwoDark file.py",
+                "output": "Output is file.py highlighted using the 'TwoDark' color theme."
+            },
+            "--list-themes": {
+                "command": "batcat --list-themes",
+                "output": "Output is a list of all available syntax highlighting themes."
+            },
+            "--list-languages": {
+                "command": "batcat --list-languages",
+                "output": "Output is a list of all supported programming/markup languages."
+            },
+            "--show-all": {
+                "command": "batcat --show-all config.yaml",
+                "output": "Output shows config.yaml with spaces, tabs, and line endings visualized as symbols (·, →, ¬)."
+            },
+            "--number": {
+                "command": "batcat --number notes.md",
+                "output": "Output shows notes.md with line numbers but no header, grid, or Git integration."
+            },
+            "--color": {
+                "command": "batcat --color=always log.txt",
+                "output": "Output forces colorized output of log.txt even when piping to another command."
+            },
+            "--paging": {
+                "command": "batcat --paging=never README",
+                "output": "Output prints the entire README file to the terminal at once, without using a pager."
+            },
+            "--pager": {
+                "command": "batcat --pager='less -F' large_file.log",
+                "output": "Output pages large_file.log using the command 'less -F'."
+            },
+            "--wrap": {
+                "command": "batcat --wrap=never wide_data.csv",
+                "output": "Output displays wide_data.csv without line wrapping, allowing horizontal scrolling."
+            },
+            "--terminal-width": {
+                "command": "batcat --terminal-width=80 report.md",
+                "output": "Output formats report.md as if the terminal is 80 columns wide."
+            },
+            "--tabs": {
+                "command": "batcat --tabs=2 source.go",
+                "output": "Output displays tab characters in source.go as 2 spaces wide."
+            },
+            "--decorations": {
+                "command": "batcat --decorations=never data.json | jq .",
+                "output": "Output sends plain, non-decorated JSON to jq for processing."
+            },
+            "--file-name": {
+                "command": "batcat --file-name --style=header intro.txt",
+                "output": "Output shows 'intro.txt' as a header, even though only one file is displayed."
+            },
+            "--diff": {
+                "command": "batcat --diff modified_file.rs",
+                "output": "Output highlights lines added (green) or removed (red) relative to the Git index."
+            },
+            "--diff-context": {
+                "command": "batcat --diff --diff-context=3 file.py",
+                "output": "Output shows Git changes in file.py with 3 lines of context around each change."
+            },
+            "--force-colorization": {
+                "command": "batcat --force-colorization file.rb | head -20",
+                "output": "Output forces color codes in the first 20 lines of file.rb when piped to head."
+            },
+            "--help": {
+                "command": "batcat --help",
+                "output": "Output is the help information for the batcat command."
+            },
+            "--version": {
+                "command": "batcat --version",
+                "output": "Output is the version information for batcat."
+            }
+        }
+    }
+}
+
+
+
+
+{
+    "name": "bc",
+    "description": "bc (basic calculator) is an arbitrary-precision numeric processing language and calculator that supports interactive execution of statements. It resembles the C programming language in syntax but provides unlimited precision arithmetic with as many digits as needed. bc can perform mathematical operations (+, -, *, /, %, ^), has built-in functions, supports conditional statements, loops, and user-defined functions. It's commonly used for precision calculations, financial computations, and complex mathematical scripting.",
+    "category": "Mathematics/Calculations",
+    "bookmarked": false,
+    "flags": {
+        "-h": {
+            "name": "Help",
+            "description": "Print a help message with usage information and exit.",
+            "syntax": "-h, --help"
+        },
+        "-i": {
+            "name": "Interactive",
+            "description": "Force interactive mode. Normally bc runs interactively if standard input is from a terminal.",
+            "syntax": "-i, --interactive"
+        },
+        "-l": {
+            "name": "Math Library",
+            "description": "Define the standard math library. This loads pre-defined mathematical functions (s, c, a for sin, cos, arctan; l for natural log; e for exponential; j for Bessel function). Also sets scale (decimal places) to 20.",
+            "syntax": "-l, --mathlib"
+        },
+        "-w": {
+            "name": "Warn",
+            "description": "Give warnings for extensions to POSIX bc. POSIX bc does not support certain features like the 'print' statement or 'if', 'for', 'while' constructs. This flag warns when these are used.",
+            "syntax": "-w, --warn"
+        },
+        "-s": {
+            "name": "Standard",
+            "description": "Process exactly the POSIX bc language. This disables extensions (like the 'print' statement) and forces strict POSIX compliance.",
+            "syntax": "-s, --standard"
+        },
+        "-q": {
+            "name": "Quiet",
+            "description": "Do not print the normal GNU bc welcome banner on startup.",
+            "syntax": "-q, --quiet"
+        },
+        "-v": {
+            "name": "Version",
+            "description": "Print the version number and copyright information, then exit.",
+            "syntax": "-v, --version"
+        },
+        "-e": {
+            "name": "Expression",
+            "description": "Evaluate the provided expression. Multiple -e options can be given; they are processed in order. If also using -f or a file argument, expressions from -e are processed first.",
+            "syntax": "-e EXPR, --expression=EXPR"
+        },
+        "-f": {
+            "name": "File",
+            "description": "Read and process code from the specified file. Multiple -f options can be given; they are processed in order. If a file argument is also provided on the command line (without -f), it is processed after -f files.",
+            "syntax": "-f FILE, --file=FILE"
+        }
+    },
+    "examples": {
+        "no_flags": {
+            "command": "echo '5 + 7 * 2' | bc",
+            "output": "19"
+        },
+        "with_flags": {
+            "-h": {
+                "command": "bc -h",
+                "output": "help information for the command"
+            },
+            "-i": {
+                "command": "bc -i",
+                "output": "Starts an interactive bc session. User can then input expressions like '5 * 20' and get output '100'."
+            },
+            "-l": {
+                "command": "echo 's(3.14159/2)' | bc -l",
+                "output": ".99999999992449728149"
+            },
+            "-w": {
+                "command": "echo 'print \"hello\\n\"' | bc -w",
+                "output": "Runtime warning (func=main, adr=3): POSIX does not allow `print' statement (will output 'hello' then the warning message)"
+            },
+            "-s": {
+                "command": "echo 'if (1) 5' | bc -s",
+                "output": "parse error (POSIX bc does not support 'if' statement)"
+            },
+            "-q": {
+                "command": "echo '2^10' | bc -q",
+                "output": "1024"
+            },
+            "-v": {
+                "command": "bc -v",
+                "output": "version information for the command"
+            },
+            "-e": {
+                "command": "bc -e 'scale=2; 10/3' -e '5^3'",
+                "output": "3.33\\n125"
+            },
+            "-f": {
+                "command": "echo 'scale=5; 22/7' > calc.bc && bc -f calc.bc",
+                "output": "3.14285"
+            },
+            "combined": {
+                "command": "bc -lq -e 'scale=30; a(1)*4'",
+                "output": "3.141592653589793238462643383279"
+            }
+        }
+    }
+}
