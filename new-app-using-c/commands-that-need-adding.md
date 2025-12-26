@@ -40,15 +40,15 @@ I want to include a detailed description. I want to include ALL possible flags f
 touch
 7z
 add-apt-repository
+addpart
+alias
+apt
+apt-cache
+apt-add-repository
 ```
 
 # Commands That Still Need Adding
 ```
-addpart
-alias
-apt
-apt-add-repository
-apt-cache
 apt-cdrom
 apt-config
 apt-extracttemplates
