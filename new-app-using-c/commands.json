@@ -272,6 +272,67 @@
                     }
                 }
             }
+        },
+        {
+            "name": "add-apt-repository",
+            "description": "The add-apt-repository command is used to add Personal Package Archives (PPA) repositories or other external repositories to the APT package management system's sources list. PPAs are software repositories hosted on Launchpad that allow developers to distribute software updates directly to Debian users. This command simplifies repository management by automatically fetching the GPG key, adding the repository to /etc/apt/sources.list.d/, and updating the package cache. It's commonly used to install software not available in official repositories or to get newer versions of packages.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "--remove": {
+                    "name": "Remove",
+                    "description": "Remove the specified repository from the system instead of adding it. This will delete the repository source file from /etc/apt/sources.list.d/ and update the package cache.",
+                    "syntax": "-r or --remove"
+                },
+                "--yes": {
+                    "name": "Automatic Yes",
+                    "description": "Automatically answer 'yes' to all prompts. This is useful for non-interactive scripts where user confirmation is not desired. It will automatically accept repository addition and GPG key import.",
+                    "syntax": "-y or --yes"
+                },
+                "--no-update": {
+                    "name": "No Update",
+                    "description": "Do not update the package cache after adding the repository. This prevents automatic 'apt-get update' execution, allowing you to manually update later.",
+                    "syntax": "-n or --no-update"
+                },
+                "--enable-source": {
+                    "name": "Enable Source",
+                    "description": "Also download the source repository for the specified PPA. This adds a 'deb-src' line to the sources, allowing source code downloading with 'apt-get source'.",
+                    "syntax": "-s or --enable-source"
+                },
+                "--help": {
+                    "name": "Help",
+                    "description": "Display help information about the command usage and available options.",
+                    "syntax": "-h or --help"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "add-apt-repository ppa:deadsnakes/ppa",
+                    "output": "Repository: 'deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu focal main' added to /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-focal.list. GPG key imported. Running 'apt update'..."
+                },
+                "with_flags": {
+                    "remove": {
+                        "command": "add-apt-repository --remove ppa:deadsnakes/ppa",
+                        "output": "Repository 'ppa:deadsnakes/ppa' removed from /etc/apt/sources.list.d/deadsnakes-ubuntu-ppa-focal.list. Package cache updated."
+                    },
+                    "yes": {
+                        "command": "add-apt-repository -y ppa:libreoffice/ppa",
+                        "output": "Repository added and GPG key imported automatically without prompts. Package cache updated."
+                    },
+                    "no-update": {
+                        "command": "add-apt-repository -n ppa:graphics-drivers/ppa",
+                        "output": "Repository added to sources list. Note: Package cache NOT updated (use -n flag)."
+                    },
+                    "enable-source": {
+                        "command": "add-apt-repository -s ppa:git-core/ppa",
+                        "output": "Added both binary and source repositories. deb http://ppa.launchpad.net/git-core/ppa/ubuntu focal main and deb-src http://ppa.launchpad.net/git-core/ppa/ubuntu focal main"
+                    },
+                    "help": {
+                        "command": "add-apt-repository --help",
+                        "output": "Usage: add-apt-repository [OPTIONS] REPOSITORY\n\nOptions:\n  -h, --help            show this help message and exit\n  -m, --massive-debug   Print a lot of debug information to the command line\n  -r, --remove          Remove the specified repository\n  -y, --yes             Assume yes to all queries\n  -n, --no-update       Do not update package cache after adding\n  -s, --enable-source   Allow downloading of the source packages from the repository\n  -c, --check           Check repository URL for validity before adding"
+                    }
+                }
+            }
         }
     ]
 }
