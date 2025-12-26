@@ -53,13 +53,13 @@ apt-get
 apt-key
 apt-listchanges
 apt-mark
+apt-sortpkgs
+ar
+arborist
 ```
 
 # Commands That Still Need Adding
 ```
-apt-sortpkgs
-ar
-arborist
 arch
 basename
 bash

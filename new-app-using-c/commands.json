@@ -1618,6 +1618,447 @@
                     }
                 }
             }
+        },
+        {
+            "name": "apt-sortpkgs",
+            "description": "A utility from the APT package management suite that sorts package index files (Packages, Sources, .diff/Index) in a uniform and reproducible way. It is primarily used internally by apt tools to ensure consistency and proper merging of package lists from different repositories. It reads from a source index file, sorts the entries, and writes to a destination file.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "-c": {
+                    "name": "config-file",
+                    "description": "Specify a configuration file to use. APT will read this configuration file instead of the default ones.",
+                    "syntax": "-c, --config-file=\"ConfigFile\""
+                },
+                "-o": {
+                    "name": "option",
+                    "description": "Set a configuration option directly. This overrides configuration file settings. Syntax is -o APT::SortPackages::Source=1 or -o Dir::State::status=/var/lib/dpkg/status.",
+                    "syntax": "-o, --option=\"Acquire::http::Proxy='http://yourproxy:3128'\""
+                },
+                "-s": {
+                    "name": "source",
+                    "description": "Sort a source index file (Sources), instead of a binary package index file (Packages). This is implied if the input filename contains 'Sources'.",
+                    "syntax": "-s, --source"
+                },
+                "-h": {
+                    "name": "help",
+                    "description": "Display a concise help message summarizing the command usage and options.",
+                    "syntax": "-h, --help"
+                },
+                "--version": {
+                    "name": "version",
+                    "description": "Display the version information of the apt-sortpkgs utility and exit.",
+                    "syntax": "--version"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "apt-sortpkgs /tmp/unsorted_Packages",
+                    "output": "The sorted contents are written to standard output. To save to a file, redirect the output: apt-sortpkgs /tmp/unsorted_Packages > /tmp/sorted_Packages"
+                },
+                "with_flags": {
+                    "-s": {
+                        "command": "apt-sortpkgs -s /tmp/unsorted_Sources",
+                        "output": "The source index file is sorted and the result is printed to standard output."
+                    },
+                    "-c": {
+                        "command": "apt-sortpkgs -c /etc/apt/apt.conf.custom /tmp/unsorted_Packages",
+                        "output": "Sorts the package file using the custom configuration specified in apt.conf.custom."
+                    },
+                    "-o": {
+                        "command": "apt-sortpkgs -o APT::SortPackages::Random=1 /tmp/unsorted_Packages",
+                        "output": "Sorts the package file using a custom, non-default sorting option (example: random). The output is the sorted list."
+                    },
+                    "-h": {
+                        "command": "apt-sortpkgs -h",
+                        "output": "The standard help information for the command."
+                    },
+                    "--version": {
+                        "command": "apt-sortpkgs --version",
+                        "output": "The version information for the command."
+                    }
+                }
+            }
+        },
+        {
+            "name": "ar",
+            "description": "The 'ar' (archive) command is used to create, modify, and extract from static library archives (files with the .a extension). It bundles multiple object files (.o) into a single archive file, which is primarily used by the linker during program compilation. 'ar' can create new archives, insert, delete, extract, or list members (object files) within an archive. It is a fundamental tool for managing static libraries in Unix-like systems.",
+            "category": "File & Archive Management",
+            "bookmarked": false,
+            "flags": {
+                "r": {
+                    "name": "Replace/Insert",
+                    "description": "Replace existing members or insert new members into the archive. If the member does not exist, it is appended. If used with 'u', only replaces members that are newer than the archive copy.",
+                    "syntax": "-r"
+                },
+                "c": {
+                    "name": "Create",
+                    "description": "Create the archive silently. Suppresses the warning message that is normally issued when 'ar' creates a new archive file.",
+                    "syntax": "-c"
+                },
+                "s": {
+                    "name": "Write Index",
+                    "description": "Create or update an index of the archive's contents. This index is used by the linker to speed up symbol lookup. Equivalent to running 'ranlib' on the archive.",
+                    "syntax": "-s"
+                },
+                "d": {
+                    "name": "Delete",
+                    "description": "Delete the specified member(s) from the archive. The archive is modified directly.",
+                    "syntax": "-d"
+                },
+                "q": {
+                    "name": "Quick Append",
+                    "description": "Quickly append files to the end of the archive without checking for duplicates or replacing existing members. This is faster but can create duplicate object files.",
+                    "syntax": "-q"
+                },
+                "t": {
+                    "name": "Table of Contents",
+                    "description": "Display a list (table) of the members (object files) contained in the archive. If members are specified, only list those.",
+                    "syntax": "-t"
+                },
+                "x": {
+                    "name": "Extract",
+                    "description": "Extract the specified member(s) from the archive into the current directory. If no members are given, all members are extracted.",
+                    "syntax": "-x"
+                },
+                "u": {
+                    "name": "Update",
+                    "description": "Update the archive. Only replace members that are newer than the archive copy. Must be used in conjunction with 'r'.",
+                    "syntax": "-u"
+                },
+                "v": {
+                    "name": "Verbose",
+                    "description": "Operate in verbose mode. Shows detailed information about the actions being performed (e.g., which files are being added, deleted, or extracted).",
+                    "syntax": "-v"
+                },
+                "m": {
+                    "name": "Move/Reorder",
+                    "description": "Move members within the archive. This allows reordering of existing members. Requires additional positioning arguments ('a', 'b', or 'i').",
+                    "syntax": "-m"
+                },
+                "p": {
+                    "name": "Print",
+                    "description": "Print the contents of the specified archive member(s) to standard output. If no members are given, prints all members.",
+                    "syntax": "-p"
+                },
+                "o": {
+                    "name": "Preserve Original Dates",
+                    "description": "Preserve the original modification timestamps of members when extracting them ('x' mode).",
+                    "syntax": "-o"
+                },
+                "i": {
+                    "name": "Insert Before",
+                    "description": "When inserting with 'r' or moving with 'm', place the new file before the specified member (requires a positional member name). Synonymous with 'b'.",
+                    "syntax": "-i"
+                },
+                "b": {
+                    "name": "Insert Before",
+                    "description": "Same as '-i'. Place the new file before the specified member when inserting or moving.",
+                    "syntax": "-b"
+                },
+                "a": {
+                    "name": "Insert After",
+                    "description": "When inserting with 'r' or moving with 'm', place the new file after the specified member (requires a positional member name).",
+                    "syntax": "-a"
+                },
+                "l": {
+                    "name": "Placeholder",
+                    "description": "Accepted for compatibility but has no effect in modern 'ar' implementations.",
+                    "syntax": "-l"
+                },
+                "N": {
+                    "name": "Use Count",
+                    "description": "Use the count parameter. When there are multiple members with the same name in the archive, select the nth instance (used with 'd', 'x', 't', etc.).",
+                    "syntax": "-N"
+                },
+                "S": {
+                    "name": "Do Not Build Symbol Table",
+                    "description": "Do not build an archive symbol table. This can speed up operations but makes the archive unusable by the linker without later 'ranlib'.",
+                    "syntax": "-S"
+                },
+                "T": {
+                    "name": "Thin Archive",
+                    "description": "Create or operate on a 'thin' archive. A thin archive contains only symbolic links to the original object files, not the actual file data, saving space. Requires 'r' or 'q' to create.",
+                    "syntax": "-T"
+                },
+                "h": {
+                    "name": "Help",
+                    "description": "Display a help message summarizing the command-line options and syntax.",
+                    "syntax": "--help or -h"
+                },
+                "V": {
+                    "name": "Version",
+                    "description": "Display version information for the 'ar' program.",
+                    "syntax": "--version"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "ar -t libmath.a",
+                    "output": "add.o\nsubtract.o\nmultiply.o\ndivide.o"
+                },
+                "with_flags": {
+                    "r": {
+                        "command": "ar -rcs libutils.a file1.o file2.o file3.o",
+                        "output": "(No output if successful, creates/updates libutils.a with index)"
+                    },
+                    "c": {
+                        "command": "ar -c -q libnew.a initial.o",
+                        "output": "(No warning, creates libnew.a if it doesn't exist)"
+                    },
+                    "s": {
+                        "command": "ar -s libexisting.a",
+                        "output": "(No output, updates the archive index)"
+                    },
+                    "d": {
+                        "command": "ar -d libold.a obsolete.o",
+                        "output": "(No output, removes obsolete.o)"
+                    },
+                    "q": {
+                        "command": "ar -q libbase.a newfile.o",
+                        "output": "(No output, appends newfile.o even if a duplicate exists)"
+                    },
+                    "t": {
+                        "command": "ar -tv libdisplay.a",
+                        "output": "rw-r--r-- 1000/1000   1240 Sep 15 10:30 2024 func1.o\nrw-r--r-- 1000/1000   2456 Sep 15 10:31 2024 func2.o"
+                    },
+                    "x": {
+                        "command": "ar -x mylib.a specific.o",
+                        "output": "(No output, extracts specific.o to current directory)"
+                    },
+                    "u": {
+                        "command": "ar -ru libupdated.a newer.o",
+                        "output": "(No output, replaces newer.o only if the file newer.o is newer than the copy in the archive)"
+                    },
+                    "v": {
+                        "command": "ar -rv libverbose.a added.o",
+                        "output": "a - added.o"
+                    },
+                    "m": {
+                        "command": "ar -m -a existing.o libmove.a moved.o",
+                        "output": "(No output, repositions moved.o after existing.o in the archive)"
+                    },
+                    "p": {
+                        "command": "ar -p libprint.a header.o | head -5",
+                        "output": "(First 5 lines of the binary/object file content)"
+                    },
+                    "o": {
+                        "command": "ar -xo libdates.a",
+                        "output": "(Extracts all members, keeping their original timestamps)"
+                    },
+                    "i": {
+                        "command": "ar -r -i target.o libinsert.a newmember.o",
+                        "output": "(No output, inserts newmember.o before target.o)"
+                    },
+                    "b": {
+                        "command": "ar -r -b target.o libinsert.a newmember.o",
+                        "output": "(No output, inserts newmember.o before target.o)"
+                    },
+                    "a": {
+                        "command": "ar -r -a target.o libinsert.a newmember.o",
+                        "output": "(No output, inserts newmember.o after target.o)"
+                    },
+                    "l": {
+                        "command": "ar -rl libcompat.a dummy.o",
+                        "output": "(No effect, accepted for compatibility)"
+                    },
+                    "N": {
+                        "command": "ar -xN 2 libduplicates.a common.o",
+                        "output": "(No output, extracts the second member named common.o)"
+                    },
+                    "S": {
+                        "command": "ar -rS libnosym.a file.o",
+                        "output": "(No output, adds file.o without updating symbol table)"
+                    },
+                    "T": {
+                        "command": "ar -rcT libthin.a ../src/*.o",
+                        "output": "(No output, creates a thin archive with relative links)"
+                    },
+                    "h": {
+                        "command": "ar --help",
+                        "output": "Standard help information for the command."
+                    },
+                    "V": {
+                        "command": "ar --version",
+                        "output": "Standard version information for the command."
+                    }
+                }
+            }
+        },
+        {
+            "name": "arborist",
+            "description": "The `arborist` command is part of the Node Package Manager (npm) ecosystem, specifically used for managing the node_modules directory tree and package installations. It is a low-level library/tool that npm uses internally for deterministic, reproducible, and efficient management of the dependency tree. It handles operations like reading package.json files, building dependency trees, calculating ideal tree layouts, and performing physical actions on the node_modules folder (extracting, moving, linking packages). It is designed to be more reliable and performant than the legacy npm installer, using a more sophisticated algorithm to resolve package placement conflicts and optimize the file system structure. It powers the `npm install` command in npm v7 and above.",
+            "category": "Package Management / Node.js Development",
+            "bookmarked": false,
+            "flags": {
+                "audit": {
+                    "name": "Audit",
+                    "description": "Perform a security audit on the project dependencies. This checks the installed packages against known vulnerabilities in the npm audit database and can produce a report or fix issues.",
+                    "syntax": "--audit [--audit-level=(low|moderate|high|critical|none)] [--fix]"
+                },
+                "audit-level": {
+                    "name": "Audit Level",
+                    "description": "Specify the minimum vulnerability level to cause the audit command to fail. Must be used with --audit.",
+                    "syntax": "--audit-level=(low|moderate|high|critical|none)"
+                },
+                "audit-fix": {
+                    "name": "Audit Fix",
+                    "description": "Attempt to automatically install compatible updates to vulnerable dependencies. Must be used with --audit.",
+                    "syntax": "--fix"
+                },
+                "dry-run": {
+                    "name": "Dry Run",
+                    "description": "Perform a simulation of the command without making any actual changes to the file system. It reports what would be done.",
+                    "syntax": "--dry-run"
+                },
+                "force": {
+                    "name": "Force",
+                    "description": "Force Arborist to proceed with operations it might otherwise skip or consider unsafe, such as removing potentially required packages or overwriting files.",
+                    "syntax": "--force"
+                },
+                "global": {
+                    "name": "Global",
+                    "description": "Operate in global mode. The package will be installed into the global node_modules folder instead of the local project's node_modules.",
+                    "syntax": "--global"
+                },
+                "ignore-scripts": {
+                    "name": "Ignore Scripts",
+                    "description": "Do not execute package lifecycle scripts (e.g., preinstall, install, postinstall) during the installation process.",
+                    "syntax": "--ignore-scripts"
+                },
+                "legacy-peer-deps": {
+                    "name": "Legacy Peer Dependencies",
+                    "description": "Ignore peerDependencies when installing, using the legacy npm v6-style behavior instead of the strict peer dependency resolution introduced in npm v7.",
+                    "syntax": "--legacy-peer-deps"
+                },
+                "omit": {
+                    "name": "Omit Dependency Types",
+                    "description": "Exclude certain types of dependencies from installation. Can be 'dev', 'optional', or 'peer'. Can be specified multiple times.",
+                    "syntax": "--omit=<dev|optional|peer>"
+                },
+                "package-lock-only": {
+                    "name": "Package Lock Only",
+                    "description": "Update only the package-lock.json file without touching the node_modules directory.",
+                    "syntax": "--package-lock-only"
+                },
+                "prefer-dedupe": {
+                    "name": "Prefer Dedupe",
+                    "description": "Prefer to deduplicate packages if possible, reducing duplication in the node_modules tree.",
+                    "syntax": "--prefer-dedupe"
+                },
+                "progress": {
+                    "name": "Progress",
+                    "description": "Show a progress bar during installation (when set to true). Disable with 'false'.",
+                    "syntax": "--progress=true|false"
+                },
+                "save": {
+                    "name": "Save",
+                    "description": "Update the project's package.json file to include the installed package as a dependency. This is the default behavior for `npm install <pkg>`.",
+                    "syntax": "--save"
+                },
+                "save-dev": {
+                    "name": "Save Dev",
+                    "description": "Update the project's package.json file to include the installed package as a development dependency (devDependencies).",
+                    "syntax": "--save-dev"
+                },
+                "save-optional": {
+                    "name": "Save Optional",
+                    "description": "Update the project's package.json file to include the installed package as an optional dependency (optionalDependencies).",
+                    "syntax": "--save-optional"
+                },
+                "save-peer": {
+                    "name": "Save Peer",
+                    "description": "Update the project's package.json file to include the installed package as a peer dependency (peerDependencies). Usually used with --save-dev.",
+                    "syntax": "--save-peer"
+                },
+                "strict-peer-deps": {
+                    "name": "Strict Peer Dependencies",
+                    "description": "Fail the installation if any unresolved peer dependencies are encountered, enforcing strict correctness.",
+                    "syntax": "--strict-peer-deps"
+                },
+                "workspace": {
+                    "name": "Workspace",
+                    "description": "Enable workspaces and operate on a specific workspace (or all workspaces if no argument is given). Used in monorepo setups.",
+                    "syntax": "--workspace=<workspace-name> [--workspace=<another-workspace>]"
+                },
+                "workspaces": {
+                    "name": "Workspaces",
+                    "description": "Enable workspaces and operate on all of them. Equivalent to `--workspace` with no arguments.",
+                    "syntax": "--workspaces"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "arborist",
+                    "output": "The arborist command is typically not invoked directly by end users. It is a library used programmatically by npm. Running it standalone with no arguments may result in an error or show internal usage information."
+                },
+                "with_flags": {
+                    "audit": {
+                        "command": "arborist --audit",
+                        "output": "Security audit report showing vulnerabilities in the current project's dependencies."
+                    },
+                    "audit-level": {
+                        "command": "arborist --audit --audit-level=high",
+                        "output": "Security audit that will exit with a failure code only if vulnerabilities of level 'high' or 'critical' are found."
+                    },
+                    "audit-fix": {
+                        "command": "arborist --audit --fix",
+                        "output": "Security audit that will automatically install semver-compatible updates to packages with vulnerabilities where possible."
+                    },
+                    "dry-run": {
+                        "command": "arborist --dry-run",
+                        "output": "A detailed simulation report of what packages would be installed, updated, or removed, without making changes."
+                    },
+                    "force": {
+                        "command": "arborist --force",
+                        "output": "Forces a complete reification (rebuild) of the node_modules tree, ignoring some safety checks."
+                    },
+                    "global": {
+                        "command": "arborist --global",
+                        "output": "Output is the standard installation process log for a global package."
+                    },
+                    "ignore-scripts": {
+                        "command": "arborist --ignore-scripts",
+                        "output": "Output is the standard installation process log, but no lifecycle scripts (like 'postinstall') are executed."
+                    },
+                    "legacy-peer-deps": {
+                        "command": "arborist --legacy-peer-deps",
+                        "output": "Output is the standard installation process log, using npm v6's more permissive peer dependency resolution."
+                    },
+                    "omit": {
+                        "command": "arborist --omit=dev",
+                        "output": "Output is the standard installation process log, but development dependencies (devDependencies) are not installed."
+                    },
+                    "package-lock-only": {
+                        "command": "arborist --package-lock-only",
+                        "output": "Only the package-lock.json file is updated. No node_modules changes occur."
+                    },
+                    "prefer-dedupe": {
+                        "command": "arborist --prefer-dedupe",
+                        "output": "Output is the standard installation process log, with the tree optimized to deduplicate packages more aggressively."
+                    },
+                    "progress": {
+                        "command": "arborist --progress=false",
+                        "output": "Output is the standard installation process log, but without the visual progress bar."
+                    },
+                    "save-dev": {
+                        "command": "arborist --save-dev lodash",
+                        "output": "Output is the standard installation process log for the 'lodash' package, which is added to devDependencies in package.json."
+                    },
+                    "save-optional": {
+                        "command": "arborist --save-optional eslint",
+                        "output": "Output is the standard installation process log for the 'eslint' package, which is added to optionalDependencies in package.json."
+                    },
+                    "strict-peer-deps": {
+                        "command": "arborist --strict-peer-deps",
+                        "output": "Installation will fail if there are any unmet or incorrectly versioned peer dependencies."
+                    },
+                    "workspaces": {
+                        "command": "arborist --workspaces",
+                        "output": "Output is the standard installation process log, but the operation is performed across all workspaces defined in the root package.json."
+                    }
+                }
+            }
         }
     ]
 }
