@@ -105,6 +105,173 @@
                     }
                 }
             }
+        },
+        {
+            "name": "7z",
+            "description": "7-Zip is a high-compression file archiver supporting multiple formats including, ZIP, GZIP, TAR, and more. It features LZMA and LZMA2 compression algorithms offering high compression ratios, strong AES-256 encryption, self-extracting archives, and multi-volume archive support. It's a command-line alternative to GUI archive managers with extensive options for compression, extraction, testing, and archive management.",
+            "category": "compression",
+            "bookmarked": false,
+            "flags": {
+                "a": {
+                    "name": "Add to archive",
+                    "description": "Add files to archive or create new archive. This is the primary command for creating or modifying archives.",
+                    "syntax": "7z a [options] archive_name files..."
+                },
+                "d": {
+                    "name": "Delete from archive",
+                    "description": "Delete files from archive. Removes specified files from an existing archive.",
+                    "syntax": "7z d [options] archive_name files..."
+                },
+                "e": {
+                    "name": "Extract",
+                    "description": "Extract files from archive (without directory structure). Files are extracted to current directory without preserving folder hierarchy.",
+                    "syntax": "7z e [options] archive_name [files...]"
+                },
+                "x": {
+                    "name": "Extract with full paths",
+                    "description": "Extract files from archive with full paths. Preserves the complete directory structure as stored in the archive.",
+                    "syntax": "7z x [options] archive_name [files...]"
+                },
+                "l": {
+                    "name": "List contents",
+                    "description": "List contents of archive. Shows detailed information about files in archive including size, compression ratio, date, and attributes.",
+                    "syntax": "7z l [options] archive_name"
+                },
+                "t": {
+                    "name": "Test archive",
+                    "description": "Test integrity of archive. Verifies that archive is not corrupted and all files can be extracted correctly.",
+                    "syntax": "7z t [options] archive_name"
+                },
+                "u": {
+                    "name": "Update archive",
+                    "description": "Update files to archive. Adds files that are newer or don't exist in the archive.",
+                    "syntax": "7z u [options] archive_name files..."
+                },
+                "b": {
+                    "name": "Benchmark",
+                    "description": "Benchmark CPU and memory. Tests compression/decompression speed and memory usage with various algorithms.",
+                    "syntax": "7z b [options]"
+                },
+                "i": {
+                    "name": "Show information",
+                    "description": "Show information about supported formats. Lists all archive formats and codecs that 7-Zip supports.",
+                    "syntax": "7z i"
+                },
+                "rn": {
+                    "name": "Rename files",
+                    "description": "Rename files in archive. Changes names of files within the archive without extracting.",
+                    "syntax": "7z rn [options] archive_name from_name to_name"
+                },
+                "-t{format}": {
+                    "name": "Archive type",
+                    "description": "Specify archive type. Determines the format of the archive to create or operate on.",
+                    "syntax": "-t{7z|zip|gzip|tar|bzip2|xz|...}"
+                },
+                "-m{method}": {
+                    "name": "Compression method",
+                    "description": "Set compression method. Controls the algorithm used for compression.",
+                    "syntax": "-m{method}[=parameters]"
+                },
+                "-mx{N}": {
+                    "name": "Compression level",
+                    "description": "Set compression level (0-9). Higher numbers give better compression but are slower.",
+                    "syntax": "-mx{0|1|3|5|7|9}"
+                },
+                "-mhe": {
+                    "name": "Header encryption",
+                    "description": "Enable archive header encryption (7z format only). Encrypts file names and metadata.",
+                    "syntax": "-mhe={on|off}"
+                },
+                "-p{password}": {
+                    "name": "Password",
+                    "description": "Set password for encryption/decryption. Secures archive with AES-256 encryption.",
+                    "syntax": "-p (will prompt for password)"
+                },
+                "-o{dir}": {
+                    "name": "Output directory",
+                    "description": "Set output directory for extraction. Specifies where extracted files should be placed.",
+                    "syntax": "-o {dir}"
+                },
+                "-y": {
+                    "name": "Yes",
+                    "description": "Automatically answers 'yes' to all prompts.",
+                    "syntax": "-y"
+                },
+                "-r": {
+                    "name": "Recurse subdirectories",
+                    "description": "Recurse subdirectories. Processes all files in specified directory and its subdirectories.",
+                    "syntax": "-r[-|0]"
+                },
+                "-sfx": {
+                    "name": "Create SFX archive",
+                    "description": "Create self-extracting archive. Generates an executable that can extract itself without 7-Zip installed.",
+                    "syntax": "-sfx"
+                },
+                "-v {size}": {
+                    "name": "Create volumes",
+                    "description": "Create multi-volume archive. Splits archive into multiple parts of specified size.",
+                    "syntax": "-v {size}[b|k|m|g]"
+                },
+                "-sdel": {
+                    "name": "Delete after compression",
+                    "description": "Delete files after adding to archive. Removes original files after successful compression.",
+                    "syntax": "-sdel"
+                },
+                "-snl": {
+                    "name": "Store symbolic links",
+                    "description": "Store symbolic links instead of following them. Preserves symlinks as links rather than copying target files.",
+                    "syntax": "-snl"
+                },
+                "-snh": {
+                    "name": "Store hard links",
+                    "description": "Store hard links instead of following them. Preserves hard links rather than storing duplicate files.",
+                    "syntax": "-snh"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "7z l archive.7z",
+                    "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive for archives:\n1 file, 1048576 bytes (1024 KiB)\n\nListing archive: archive.7z\n\n--\nPath = archive.7z\nType = 7z\nPhysical Size = 1048576\nHeaders Size = 184\nMethod = LZMA2:12\nSolid = +\nBlocks = 1\n\n   Date      Time    Attr         Size   Compressed  Name\n------------------- ----- ------------ ------------  ------------------------\n2023-10-01 12:00:00 ....A       524288       524292  file1.txt\n2023-10-01 12:00:00 ....A       524288       524100  file2.txt\n------------------- ----- ------------ ------------  ------------------------\n                              1048576      1048392  2 files"
+                },
+                "with_flags": {
+                    "a": {
+                        "command": "7z a -t7z -mx9 -psecure123 archive.7z documents/",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive:\n3 files, 1572864 bytes (1536 KiB)\n\nCreating archive: archive.7z\n\nItems to compress: 3\n\nFiles read from disk: 3\nArchive size: 524288 bytes (513 KiB)\nEverything is Ok"
+                    },
+                    "x": {
+                        "command": "7z x -psecure123 -o/tmp/extracted archive.7z",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive for archives:\n1 file, 524288 bytes (513 KiB)\n\nExtracting archive: archive.7z\n--\nPath = /tmp/extracted\nType = 7z\nPhysical Size = 524288\nHeaders Size = 184\nMethod = LZMA2:26\nSolid = +\nBlocks = 1\n\nEverything is Ok\n\nFiles: 3\nSize:       1572864\nCompressed: 524288"
+                    },
+                    "d": {
+                        "command": "7z d archive.7z oldfile.txt",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive for archives:\n1 file, 524288 bytes (513 KiB)\n\nUpdating archive: archive.7z\n\nDelete:\noldfile.txt\n\nItems to delete: 1\n\nArchive size: 393216 bytes (385 KiB)\nEverything is Ok"
+                    },
+                    "t": {
+                        "command": "7z t archive.7z",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive for archives:\n1 file, 524288 bytes (513 KiB)\n\nTesting archive: archive.7z\n--\nPath = archive.7z\nType = 7z\nPhysical Size = 524288\nHeaders Size = 184\nMethod = LZMA2:26\nSolid = +\nBlocks = 1\n\nEverything is Ok\n\nFiles: 3\nSize:       1572864\nCompressed: 524288"
+                    },
+                    "u": {
+                        "command": "7z u -r archive.7z updated_files/",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive:\n2 files, 1048576 bytes (1024 KiB)\n\nUpdating archive: archive.7z\n\nItems to update: 2\n\nFiles read from disk: 2\nArchive size: 786432 bytes (769 KiB)\nEverything is Ok"
+                    },
+                    "b": {
+                        "command": "7z b",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\n7-Zip [64] 21.07 : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\np7zip Version 21.07 (locale=en_US.UTF-8,Utf16=on,HugeFiles=on,64 bits,16 CPUs x64)\n\nBenchmark\n  Compressing  |  Decompressing\nDict     Speed Usage    R/U Rating  |      Speed Usage    R/U Rating\n         KiB/s     %   MIPS   MIPS  |      KiB/s     %   MIPS   MIPS\n22:       2000   100   3500   3500  |     135000   100   4800   4800\n23:       1950   100   3550   3550  |     134500   100   4850   4850\n...\nTot:           (moving 500 MiB)\nAvr:             100   3525   3525                100   4825   4825"
+                    },
+                    "-v100m": {
+                        "command": "7z a -v100m split_archive.7z large_file.iso",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive:\n1 file, 1048576000 bytes (1000 MiB)\n\nCreating archive: split_archive.7z\n\nItems to compress: 1\n\nFiles read from disk: 1\n\nCreate volumes: 100 MB\nVolume 1: split_archive.7z.001\nVolume 2: split_archive.7z.002\n...\nVolume 10: split_archive.7z.010\n\nArchive size: 1048576000 bytes (1000 MiB)\nEverything is Ok"
+                    },
+                    "-sfx": {
+                        "command": "7z a -sfx installer.exe program_files/",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive:\n15 files, 52428800 bytes (50 MiB)\n\nCreating archive: installer.exe\n\nItems to compress: 15\n\nFiles read from disk: 15\nArchive size: 26214400 bytes (25 MiB)\nEverything is Ok"
+                    },
+                    "-mhe": {
+                        "command": "7z a -mhe=on -psecret encrypted.7z sensitive_data/",
+                        "output": "\n7-Zip 21.07 (x64) : Copyright (c) 1999-2021 Igor Pavlov : 2021-12-26\n\nScanning the drive:\n5 files, 15728640 bytes (15 MiB)\n\nCreating archive: encrypted.7z\n\nItems to compress: 5\n\nFiles read from disk: 5\nArchive size: 7864320 bytes (7.5 MiB)\nEverything is Ok\n\nWARNING: The encrypted archive is created with header encryption.\n         It cannot be opened or listed without the password."
+                    }
+                }
+            }
         }
     ]
 }
