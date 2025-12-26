@@ -385,6 +385,419 @@
                     }
                 }
             }
+        },
+        {
+            "name": "alias",
+            "description": "The alias command creates or lists temporary command aliases in the current shell session. An alias is a shortcut that maps a custom name to a longer command or command sequence, including arguments and options. Aliases created with this command are shell-specific and only persist for the duration of the current terminal session. To make aliases permanent, they must be added to shell startup files like ~/.bashrc, ~/.bash_aliases, or ~/.zshrc. Aliases are expanded before execution, and shell functions or scripts with the same name take precedence. The command can display existing aliases and their definitions when used without arguments or with the -p flag.",
+            "category": "Shell Builtins",
+            "bookmarked": false,
+            "flags": {
+                "-p": {
+                    "name": "Print Aliases",
+                    "description": "Prints all currently defined aliases in a format that can be reused as input. The output displays each alias in the format 'alias NAME=VALUE', making it suitable for saving to a configuration file.",
+                    "syntax": "alias -p"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "alias",
+                    "output": "Lists all currently defined aliases in the shell session"
+                },
+                "with_flags": {
+                    "-p": {
+                        "command": "alias -p",
+                        "output": "alias ll='ls -alF'\nalias grep='grep --color=auto'\nalias cls='clear'"
+                    }
+                }
+            }
+        },
+        [
+            {
+                "name": "apt",
+                "description": "Advanced Package Tool (APT) is a package management system for Debian-based Linux distributions. It provides commands for installing, updating, upgrading, removing, and searching for software packages, as well as managing package repositories. APT handles dependencies automatically, fetching and installing all required packages.",
+                "category": "Package Management",
+                "bookmarked": false,
+                "flags": {
+                    "install": {
+                        "name": "Install packages",
+                        "description": "Installs one or more packages. The package names should be specified after the command. APT will automatically resolve and install dependencies.",
+                        "syntax": "apt install <package_name1> [package_name2 ...]"
+                    },
+                    "remove": {
+                        "name": "Remove packages",
+                        "description": "Removes one or more installed packages while leaving configuration files on the system.",
+                        "syntax": "apt remove <package_name1> [package_name2 ...]"
+                    },
+                    "purge": {
+                        "name": "Purge packages",
+                        "description": "Completely removes one or more packages, including configuration files and other data associated with the package.",
+                        "syntax": "apt purge <package_name1> [package_name2 ...]"
+                    },
+                    "update": {
+                        "name": "Update package lists",
+                        "description": "Downloads the latest package information from all configured repositories. This command does not install or upgrade any packages; it only updates APT's database of available packages.",
+                        "syntax": "apt update"
+                    },
+                    "upgrade": {
+                        "name": "Upgrade packages",
+                        "description": "Upgrades all installed packages to their latest available versions, based on the package lists last updated with 'apt update'. It does not remove packages or install new ones that weren't already installed.",
+                        "syntax": "apt upgrade"
+                    },
+                    "full-upgrade": {
+                        "name": "Full upgrade (dist-upgrade)",
+                        "description": "Upgrades all installed packages, and may remove obsolete packages or install new dependencies as needed to complete the upgrade. This is more aggressive than 'upgrade' and is used for distribution upgrades.",
+                        "syntax": "apt full-upgrade"
+                    },
+                    "autoremove": {
+                        "name": "Auto remove",
+                        "description": "Removes packages that were automatically installed to satisfy dependencies for other packages and are no longer needed.",
+                        "syntax": "apt autoremove"
+                    },
+                    "search": {
+                        "name": "Search packages",
+                        "description": "Searches the list of available packages for the given keyword in package names and descriptions.",
+                        "syntax": "apt search <keyword>"
+                    },
+                    "show": {
+                        "name": "Show package information",
+                        "description": "Displays detailed information about a specific package, including version, dependencies, size, and description.",
+                        "syntax": "apt show <package_name>"
+                    },
+                    "list": {
+                        "name": "List packages",
+                        "description": "Lists packages based on criteria. Without options, lists all available packages. Can be used with --installed or --upgradable.",
+                        "syntax": "apt list [--installed|--upgradable|--all-versions]"
+                    },
+                    "edit-sources": {
+                        "name": "Edit sources list",
+                        "description": "Opens the sources.list file and associated files in the default text editor for manual editing of repository configurations.",
+                        "syntax": "apt edit-sources"
+                    },
+                    "clean": {
+                        "name": "Clean package cache",
+                        "description": "Clears the local repository of retrieved package files, removing everything from the package cache (/var/cache/apt/archives).",
+                        "syntax": "apt clean"
+                    },
+                    "autoclean": {
+                        "name": "Auto clean package cache",
+                        "description": "Removes package files from the cache that can no longer be downloaded (obsolete packages).",
+                        "syntax": "apt autoclean"
+                    },
+                    "help": {
+                        "name": "Display help",
+                        "description": "Displays a brief help message with common APT commands.",
+                        "syntax": "apt help"
+                    }
+                },
+                "examples": {
+                    "no_flags": {
+                        "command": "apt",
+                        "output": "help information for the command"
+                    },
+                    "with_flags": {
+                        "install": {
+                            "command": "apt install htop",
+                            "output": "(Standard installation output showing package downloads and installation progress)"
+                        },
+                        "remove": {
+                            "command": "apt remove htop",
+                            "output": "(Standard removal output showing package removal progress)"
+                        },
+                        "purge": {
+                            "command": "apt purge htop",
+                            "output": "(Standard purge output showing complete removal including config files)"
+                        },
+                        "update": {
+                            "command": "apt update",
+                            "output": "(Standard output showing repository updates and package list downloads)"
+                        },
+                        "upgrade": {
+                            "command": "apt upgrade",
+                            "output": "(Standard output showing packages to be upgraded and upgrade progress)"
+                        },
+                        "full-upgrade": {
+                            "command": "apt full-upgrade",
+                            "output": "(Standard output showing packages to be upgraded/removed/installed)"
+                        },
+                        "autoremove": {
+                            "command": "apt autoremove",
+                            "output": "(Standard output showing obsolete packages to be removed)"
+                        },
+                        "search": {
+                            "command": "apt search texteditor",
+                            "output": "(List of packages matching 'texteditor' in name or description)"
+                        },
+                        "show": {
+                            "command": "apt show vim",
+                            "output": "Detailed information for the vim package"
+                        },
+                        "list": {
+                            "command": "apt list --installed | grep python",
+                            "output": "(List of installed packages containing 'python' in their name)"
+                        },
+                        "edit-sources": {
+                            "command": "apt edit-sources",
+                            "output": "Opens the default editor with the sources list file"
+                        },
+                        "clean": {
+                            "command": "apt clean",
+                            "output": "(No output on success, cache directory is emptied)"
+                        },
+                        "autoclean": {
+                            "command": "apt autoclean",
+                            "output": "(Output showing obsolete package files being removed)"
+                        },
+                        "help": {
+                            "command": "apt help",
+                            "output": "help information for the command"
+                        }
+                    }
+                }
+            }
+        ],
+        {
+            "name": "apt-cache",
+            "description": "apt-cache is a low-level command-line tool for querying information from APT's binary cache files. APT (Advanced Package Tool) is the package management system used by Debian, Ubuntu, and related Linux distributions. The cache contains metadata about available packages, their versions, dependencies, and descriptions, gathered from sources listed in `/etc/apt/sources.list` and files in `/etc/apt/sources.list.d/`. apt-cache does not install, remove, or modify packages; it is purely for querying information. It is essential for searching for packages, investigating dependencies, and checking package details before installation.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "search": {
+                    "name": "search",
+                    "description": "Searches the list of available package names for the given regular expression pattern. It performs a substring search on package names and their descriptions, returning a list of matches. The search is case-insensitive.",
+                    "syntax": "apt-cache search <pattern>"
+                },
+                "show": {
+                    "name": "show",
+                    "description": "Displays detailed information about a specific package (or packages). This includes the package name, version, architecture, dependencies, size, maintainer, homepage, and a full description. If multiple package names are given, it shows info for each.",
+                    "syntax": "apt-cache show <package_name> [<package_name2> ...]"
+                },
+                "showpkg": {
+                    "name": "showpkg",
+                    "description": "Shows raw information about a package, focusing on its relationships. This includes a list of forward dependencies (what this package depends on), reverse dependencies (which packages depend on this one), and a list of available versions from the repository. It presents data in a more technical, dependency-focused format than `show`.",
+                    "syntax": "apt-cache showpkg <package_name>"
+                },
+                "stats": {
+                    "name": "stats",
+                    "description": "Displays statistics about the APT cache. This includes the total number of package names, total number of package versions, total number of dependencies, total number of virtual packages, and the total size of the cache data.",
+                    "syntax": "apt-cache stats"
+                },
+                "policy": {
+                    "name": "policy",
+                    "description": "Displays the source priority configuration (pin preferences) for each package, or for a specified package. It shows which version would be installed from which repository based on priority, including candidate, installed, and version table. Crucial for understanding version pinning.",
+                    "syntax": "apt-cache policy [<package_name>]"
+                },
+                "depends": {
+                    "name": "depends",
+                    "description": "Lists every package that the specified package depends on (its dependencies), recursively. It shows a tree of dependencies, including alternatives (e.g., `libc6 | libc6.1`). The output shows the dependency chain and which packages would satisfy each requirement.",
+                    "syntax": "apt-cache depends <package_name>"
+                },
+                "rdepends": {
+                    "name": "rdepends",
+                    "description": "Lists every package that depends on the specified package (its reverse dependencies). It can be run recursively to show the full tree of packages that require the given package, either directly or indirectly.",
+                    "syntax": "apt-cache rdepends <package_name>"
+                },
+                "pkgnames": {
+                    "name": "pkgnames",
+                    "description": "Lists the names of all packages in the system, or only those starting with a given prefix. This command is useful for scripting or getting a quick list of available packages. Without a prefix, it outputs a very long list.",
+                    "syntax": "apt-cache pkgnames [<prefix>]"
+                },
+                "dotty": {
+                    "name": "dotty",
+                    "description": "Generates a DOT-formatted graph of the dependency relationships between a set of packages. The output can be piped to a tool like `graphviz` to create a visual diagram. It requires one or more package names as arguments.",
+                    "syntax": "apt-cache dotty <package_name> [<package_name2> ...]"
+                },
+                "xvfb": {
+                    "name": "xvfb",
+                    "description": "An internal helper for `dotty`. It runs the `dotty` command in a virtual X server environment (Xvfb) to generate a PostScript file automatically. Rarely used directly by end-users.",
+                    "syntax": "apt-cache xvfb <package_name> [<package_name2> ...]"
+                },
+                "dump": {
+                    "name": "dump",
+                    "description": "Dumps the entire contents of the cache as a raw, machine-readable list. It outputs a very large amount of data, showing every record in the cache. Used primarily for debugging.",
+                    "syntax": "apt-cache dump"
+                },
+                "dumpavail": {
+                    "name": "dumpavail",
+                    "description": "Dumps a list of all available packages from the cache in a format similar to the `dpkg` status file. This output can be parsed by other tools or used to check the universe of installable packages.",
+                    "syntax": "apt-cache dumpavail"
+                },
+                "unmet": {
+                    "name": "unmet",
+                    "description": "Shows a summary of unmet dependencies in the system. This lists dependencies that are required by installed or available packages but are not currently satisfiable by any installable package. Useful for diagnosing broken package states.",
+                    "syntax": "apt-cache unmet"
+                },
+                "showauto": {
+                    "name": "showauto",
+                    "description": "Lists packages that were automatically installed as dependencies of other packages (i.e., marked as 'auto'). This can be run with `grep` to check if a specific package is auto-installed.",
+                    "syntax": "apt-cache showauto [<pattern>]"
+                },
+                "showsrc": {
+                    "name": "showsrc",
+                    "description": "Shows information about source packages. This is similar to `apt-cache show` but for source packages, listing details like the source package name, version, maintainer, and binary packages it builds.",
+                    "syntax": "apt-cache showsrc <source_package_name>"
+                },
+                "gencaches": {
+                    "name": "gencaches",
+                    "description": "Creates the APT package cache. This is equivalent to running `apt-get update`, as it fetches the latest package lists from repositories and builds the local cache. Requires superuser privileges.",
+                    "syntax": "apt-cache gencaches"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "apt-cache",
+                    "output": "Standard help information for the command."
+                },
+                "with_flags": {
+                    "search": {
+                        "command": "apt-cache search 'web server'",
+                        "output": "apache2 - Apache HTTP Server\nnginx - small, powerful, scalable web/proxy server\nlighttpd - fast, secure web server"
+                    },
+                    "show": {
+                        "command": "apt-cache show nginx",
+                        "output": "Package: nginx\nVersion: 1.18.0-0ubuntu1\nArchitecture: amd64\nMaintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com> ... (full package details)"
+                    },
+                    "showpkg": {
+                        "command": "apt-cache showpkg nginx",
+                        "output": "Package: nginx\nVersions:\n1.18.0-0ubuntu1 (/var/lib/apt/lists/archive.ubuntu.com_ubuntu_dists_focal_universe_binary-amd64_Packages) ... (dependency lists)"
+                    },
+                    "stats": {
+                        "command": "apt-cache stats",
+                        "output": "Total package names: 65042\nTotal packages: 268831\nTotal dependencies: 1456825 ..."
+                    },
+                    "policy": {
+                        "command": "apt-cache policy nginx",
+                        "output": "nginx:\n  Installed: (none)\n  Candidate: 1.18.0-0ubuntu1\n  Version table:\n     1.18.0-0ubuntu1 500\n        500 http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages"
+                    },
+                    "depends": {
+                        "command": "apt-cache depends nginx",
+                        "output": "nginx\n  Depends: nginx-core\n  Depends: nginx-full\n  Depends: nginx-light\n  Depends: nginx-extras\n |Recommends: nginx-doc"
+                    },
+                    "rdepends": {
+                        "command": "apt-cache rdepends libc6",
+                        "output": "The output is a very long, recursive list of all packages that depend on libc6, either directly or indirectly."
+                    },
+                    "pkgnames": {
+                        "command": "apt-cache pkgnames firefox",
+                        "output": "firefox\nfirefox-dbg\nfirefox-dev\nfirefox-locale-af\nfirefox-locale-am ..."
+                    },
+                    "dotty": {
+                        "command": "apt-cache dotty apache2 | dot -Tpng > deps.png",
+                        "output": "The command generates a PNG image file named 'deps.png' containing a dependency graph. No text output to terminal."
+                    },
+                    "xvfb": {
+                        "command": "apt-cache xvfb apache2",
+                        "output": "The command runs internally to generate a PostScript file in a virtual X environment. Output is a file, not terminal text."
+                    },
+                    "dump": {
+                        "command": "apt-cache dump | head -20",
+                        "output": "The output is an extremely long, raw dump of the entire cache. The example shows only the first 20 lines."
+                    },
+                    "dumpavail": {
+                        "command": "apt-cache dumpavail | grep '^Package: bash'",
+                        "output": "Package: bash\nPackage: bash-completion\nPackage: bash-doc"
+                    },
+                    "unmet": {
+                        "command": "apt-cache unmet",
+                        "output": "If no unmet dependencies exist, the command produces no output."
+                    },
+                    "showauto": {
+                        "command": "apt-cache showauto | grep '^libicu'",
+                        "output": "libicu66\nlibicu66:i386"
+                    },
+                    "showsrc": {
+                        "command": "apt-cache showsrc nginx",
+                        "output": "Package: nginx\nBinary: nginx, nginx-doc, nginx-common, nginx-full, nginx-light ... (source package details)"
+                    },
+                    "gencaches": {
+                        "command": "sudo apt-cache gencaches",
+                        "output": "Standard output from updating the package lists (similar to apt-get update)."
+                    }
+                }
+            }
+        },
+        {
+            "name": "apt-add-repository",
+            "description": "Adds external APT repository definitions to the system's software sources. This command manages repository entries in files under /etc/apt/sources.list.d/ and /etc/apt/sources.list, allowing users to install software from third-party repositories not included in the default Ubuntu/Debian archives. It can handle both PPA (Personal Package Archive) shortcuts (like 'ppa:user/repo') and full deb line repository URLs. After adding a repository, it typically updates the package cache automatically.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "help": {
+                    "name": "Help",
+                    "description": "Displays a help message with usage information and available options.",
+                    "syntax": "-h, --help"
+                },
+                "remove": {
+                    "name": "Remove Repository",
+                    "description": "Removes the specified repository from the system's software sources instead of adding it.",
+                    "syntax": "-r, --remove"
+                },
+                "update": {
+                    "name": "Update Package Cache",
+                    "description": "Runs 'apt-get update' after adding or removing the repository to refresh the package list. This is the default behavior.",
+                    "syntax": "-y, --update"
+                },
+                "no_update": {
+                    "name": "Do Not Update",
+                    "description": "Prevents automatic running of 'apt-get update' after the operation. The repository is added or removed, but the package cache is not refreshed.",
+                    "syntax": "-n, --no-update"
+                },
+                "enable_source": {
+                    "name": "Enable Source Packages",
+                    "description": "Also downloads the source packages for the repository by adding a 'deb-src' line in addition to the standard 'deb' line.",
+                    "syntax": "-s, --enable-source"
+                },
+                "component": {
+                    "name": "Override Component",
+                    "description": "Overrides the default component (often 'main') used when expanding a PPA shortcut. The component is specified as an extra argument after the repository.",
+                    "syntax": "-c COMPONENT, --component COMPONENT"
+                },
+                "keyserver": {
+                    "name": "Specify Keyserver",
+                    "description": "Specifies a custom keyserver URL to use for retrieving the GPG key associated with the repository, instead of the default keyserver.",
+                    "syntax": "-k URL, --keyserver URL"
+                },
+                "dry_run": {
+                    "name": "Dry Run",
+                    "description": "Performs a simulation of the actions without actually making any changes to the system. Useful for testing.",
+                    "syntax": "--dry-run"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "sudo apt-add-repository ppa:deadsnakes/ppa",
+                    "output": "Output is standard repository addition confirmation and apt-get update output."
+                },
+                "with_flags": {
+                    "help": {
+                        "command": "apt-add-repository --help",
+                        "output": "Help information for the command."
+                    },
+                    "remove": {
+                        "command": "sudo apt-add-repository --remove ppa:deadsnakes/ppa",
+                        "output": "Output is standard repository removal confirmation and apt-get update output."
+                    },
+                    "no_update": {
+                        "command": "sudo apt-add-repository -n 'deb http://archive.example.com/debian stable main'",
+                        "output": "Repository is added but package cache is not updated."
+                    },
+                    "enable_source": {
+                        "command": "sudo apt-add-repository -s 'deb http://archive.example.com/debian stable main'",
+                        "output": "Adds both 'deb' and 'deb-src' lines for the repository."
+                    },
+                    "component": {
+                        "command": "sudo apt-add-repository -c contrib 'deb http://archive.example.com/debian stable main contrib'",
+                        "output": "Adds the repository with the 'contrib' component explicitly set."
+                    },
+                    "keyserver": {
+                        "command": "sudo apt-add-repository --keyserver hkp://keyserver.ubuntu.com:80 'deb http://packages.example.com/repo stable main'",
+                        "output": "Adds repository, fetching GPG key from the specified keyserver."
+                    },
+                    "dry_run": {
+                        "command": "sudo apt-add-repository --dry-run ppa:someuser/somerepo",
+                        "output": "Simulation output showing what would be done without making changes."
+                    }
+                }
+            }
         }
     ]
 }
