@@ -333,6 +333,58 @@
                     }
                 }
             }
+        },
+        {
+            "name": "addpart",
+            "description": "addpart is a utility for informing the Linux kernel about the existence of a new partition on a block device. It does not modify the partition table on disk; it only tells the running kernel about the partition's existence. This is useful after creating a partition with tools that do not automatically inform the kernel, or when partitions are created on a device while the system is not running (e.g., on another system). The command is part of the util-linux package.",
+            "category": "System Administration / Disk Management",
+            "bookmarked": false,
+            "flags": {
+                "-h": {
+                    "name": "Help",
+                    "description": "Display a help message and exit.",
+                    "syntax": "addpart [device] [partition] [start] [length]"
+                },
+                "-V": {
+                    "name": "Version",
+                    "description": "Display version information and exit.",
+                    "syntax": "-V"
+                },
+                "--help": {
+                    "name": "Help (long form)",
+                    "description": "Display a help message and exit.",
+                    "syntax": "--help"
+                },
+                "--version": {
+                    "name": "Version (long form)",
+                    "description": "Display version information and exit.",
+                    "syntax": "--version"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "sudo addpart /dev/sdb 1 2048 1048576",
+                    "output": "No output on success. Informs the kernel that partition 1 exists on /dev/sdb, starting at sector 2048 with a length of 1048576 sectors."
+                },
+                "with_flags": {
+                    "-h": {
+                        "command": "addpart -h",
+                        "output": "Help information for the command."
+                    },
+                    "-V": {
+                        "command": "addpart -V",
+                        "output": "Version information for the command."
+                    },
+                    "--help": {
+                        "command": "addpart --help",
+                        "output": "Help information for the command."
+                    },
+                    "--version": {
+                        "command": "addpart --version",
+                        "output": "Version information for the command."
+                    }
+                }
+            }
         }
     ]
 }
