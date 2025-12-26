@@ -2728,3 +2728,48 @@
         }
     }
 }
+
+
+{
+    "name": "cd",
+    "description": "The 'cd' (change directory) command is used to change the current working directory in a Linux shell. It is one of the most fundamental and frequently used commands, allowing users to navigate the filesystem. The command affects the shell's environment and can be used with absolute paths (starting from root '/'), relative paths (relative to the current directory), or special symbols like '~' for the home directory or '-' for the previous directory.",
+    "category": "Shell Built-in / Navigation",
+    "bookmarked": false,
+    "flags": {
+        "-L": {
+            "name": "Follow Symbolic Links",
+            "description": "Forces 'cd' to follow symbolic links. This is the default behavior in most shells. If a directory path contains a symbolic link, the command will resolve it and change to the target directory.",
+            "syntax": "cd -L /path/with/symlink"
+        },
+        "-P": {
+            "name": "Physical Directory",
+            "description": "Forces 'cd' to use the physical directory structure without following symbolic links. This means it will change to the actual directory location, not the target of a symbolic link.",
+            "syntax": "cd -P /path/with/symlink"
+        },
+        "--help": {
+            "name": "Display Help",
+            "description": "Displays help information for the 'cd' command. Note: As 'cd' is typically a shell built-in, this flag's availability and output may vary depending on the shell (e.g., bash, zsh).",
+            "syntax": "cd --help"
+        }
+    },
+    "examples": {
+        "no_flags": {
+            "command": "cd /usr/local/bin",
+            "output": "Changes the current directory to '/usr/local/bin'. No visual output on success."
+        },
+        "with_flags": {
+            "-L": {
+                "command": "cd -L /usr/local/bin",
+                "output": "Changes to '/usr/local/bin', following any symbolic links in the path. Identical to 'cd /usr/local/bin' since '-L' is default."
+            },
+            "-P": {
+                "command": "cd -P /var/mail",
+                "output": "If '/var/mail' is a symlink (often to '/var/spool/mail'), this changes to the physical directory '/var/spool/mail' instead of the symlink location."
+            },
+            "--help": {
+                "command": "help cd",
+                "output": "Note: For shell built-ins like 'cd', use the shell's 'help' command. This outputs the built-in help text describing usage and flags."
+            }
+        }
+    }
+}
