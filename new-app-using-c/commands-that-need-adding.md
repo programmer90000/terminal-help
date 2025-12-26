@@ -45,10 +45,6 @@ alias
 apt
 apt-cache
 apt-add-repository
-```
-
-# Commands That Still Need Adding
-```
 apt-cdrom
 apt-config
 apt-extracttemplates
@@ -57,6 +53,10 @@ apt-get
 apt-key
 apt-listchanges
 apt-mark
+```
+
+# Commands That Still Need Adding
+```
 apt-sortpkgs
 ar
 arborist

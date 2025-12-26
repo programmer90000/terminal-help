@@ -798,6 +798,826 @@
                     }
                 }
             }
+        },
+        {
+            "name": "apt-cdrom",
+            "description": "apt-cdrom is a command-line tool used to manage CD-ROM/DVD-ROM entries in the APT (Advanced Package Tool) sources list file (/etc/apt/sources.list). Its primary purpose is to add a new CD-ROM or DVD-ROM as an installation source for Debian-based systems like Ubuntu, allowing users to install packages from physical media when internet access is unavailable. The command can identify the disc, mount it, read its package information, and add an appropriate entry to the sources list. It also supports features like scanning for multiple discs in a set and adding them with volume identifiers.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "-a": {
+                    "name": "Add a CD-ROM",
+                    "description": "Prompts the user to mount the CD-ROM/DVD-ROM and then adds it to the system's APT sources list. It identifies the disc and configures APT to use it as a package source.",
+                    "syntax": "apt-cdrom add"
+                },
+                "-d": {
+                    "name": "CD-ROM Mount Point",
+                    "description": "Specifies an alternative mount point for the CD-ROM/DVD-ROM, overriding the default location. Must be followed by a path (e.g., -d /mnt/cdrom).",
+                    "syntax": "apt-cdrom -d <mount-point> [command]"
+                },
+                "-r": {
+                    "name": "Rename",
+                    "description": "Renames a recognized CD-ROM/DVD-ROM volume identifier. Useful for labeling discs with custom names in the APT sources list.",
+                    "syntax": "apt-cdrom -r <new-name> [command]"
+                },
+                "-m": {
+                    "name": "No Mounting",
+                    "description": "Assumes the CD-ROM/DVD-ROM is already mounted and skips the mounting step. Use this if you have manually mounted the disc before running apt-cdrom.",
+                    "syntax": "apt-cdrom -m [command]"
+                },
+                "-f": {
+                    "name": "Fast Copy",
+                    "description": "Forces a fast copy of the CD-ROM/DVD-ROM database, bypassing some file checks. This speeds up the process but may skip validation.",
+                    "syntax": "apt-cdrom -f [command]"
+                },
+                "-h": {
+                    "name": "Help",
+                    "description": "Displays a brief help message summarizing the available command-line options and usage.",
+                    "syntax": "apt-cdrom -h"
+                },
+                "--no-auto-detect": {
+                    "name": "Disable Auto-Detect",
+                    "description": "Disables the automatic detection of CD-ROM/DVD-ROM drive paths. Use this if auto-detection fails or to specify a custom drive.",
+                    "syntax": "apt-cdrom --no-auto-detect [command]"
+                },
+                "--no-mount": {
+                    "name": "No Mounting (Long Form)",
+                    "description": "Same as -m; assumes the CD-ROM/DVD-ROM is already mounted and skips the mounting step.",
+                    "syntax": "apt-cdrom --no-mount [command]"
+                },
+                "--cdrom": {
+                    "name": "Specify Device",
+                    "description": "Explicitly specifies the CD-ROM/DVD-ROM device file (e.g., /dev/cdrom). Useful if the device is not at the standard location.",
+                    "syntax": "apt-cdrom --cdrom <device-path> [command]"
+                },
+                "--no-act": {
+                    "name": "Dry Run",
+                    "description": "Performs a simulation of the actions without actually making any changes to the system. Shows what would be done.",
+                    "syntax": "apt-cdrom --no-act [command]"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "sudo apt-cdrom add",
+                    "output": "Standard interactive prompts to insert a disc, mount it, and add it to the sources list."
+                },
+                "with_flags": {
+                    "-a": {
+                        "command": "sudo apt-cdrom -a",
+                        "output": "Same as 'apt-cdrom add'; interactive prompts to add a CD-ROM."
+                    },
+                    "-d": {
+                        "command": "sudo apt-cdrom -d /media/custom add",
+                        "output": "Uses /media/custom as the mount point to add the CD-ROM source."
+                    },
+                    "-r": {
+                        "command": "sudo apt-cdrom -r \"MyDebianDisc\" add",
+                        "output": "Adds the CD-ROM and renames its volume identifier to \"MyDebianDisc\" in the sources list."
+                    },
+                    "-m": {
+                        "command": "sudo mount /dev/sr0 /mnt/cdrom && sudo apt-cdrom -m add",
+                        "output": "Adds a CD-ROM that is already manually mounted at /mnt/cdrom."
+                    },
+                    "-f": {
+                        "command": "sudo apt-cdrom -f add",
+                        "output": "Adds a CD-ROM with fast copying of the package database."
+                    },
+                    "-h": {
+                        "command": "apt-cdrom -h",
+                        "output": "Help information for the command."
+                    },
+                    "--no-auto-detect": {
+                        "command": "sudo apt-cdrom --no-auto-detect -d /mnt/dvd add",
+                        "output": "Adds a DVD-ROM from /mnt/dvd without attempting to auto-detect the drive path."
+                    },
+                    "--no-mount": {
+                        "command": "sudo apt-cdrom --no-mount add",
+                        "output": "Same as -m; adds a CD-ROM without mounting (assumes already mounted)."
+                    },
+                    "--cdrom": {
+                        "command": "sudo apt-cdrom --cdrom /dev/dvd add",
+                        "output": "Specifies /dev/dvd as the device to use for adding the CD-ROM/DVD-ROM."
+                    },
+                    "--no-act": {
+                        "command": "sudo apt-cdrom --no-act add",
+                        "output": "Simulates the process of adding a CD-ROM without making actual changes."
+                    }
+                }
+            }
+        },
+        {
+            "name": "apt-config",
+            "description": "A utility for querying and managing the APT (Advanced Package Tool) configuration. It reads the configuration from various sources (/etc/apt/apt.conf, /etc/apt/apt.conf.d/, environment variables) and provides an interface to retrieve configuration values, dump the entire configuration, or manipulate configuration options. It is a key tool for understanding how APT will behave and for debugging configuration issues.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "--dump": {
+                    "name": "Dump Configuration",
+                    "description": "Prints a list of all configuration options grouped by the source file they were read from. This is useful for seeing the complete, effective configuration.",
+                    "syntax": "apt-config dump [--empty] [pattern]"
+                },
+                "dump --empty": {
+                    "name": "Include Empty Values",
+                    "description": "When used with `dump`, includes configuration options that have no value set (i.e., are empty). By default, empty values are omitted.",
+                    "syntax": "apt-config dump --empty"
+                },
+                "--shell": {
+                    "name": "Shell Format",
+                    "description": "Outputs the configuration in a shell-sourceable format. Each line is a shell variable assignment (e.g., APT::Architecture=\"amd64\"), making it easy to use APT config values in scripts.",
+                    "syntax": "apt-config --shell shell [pattern]"
+                },
+                "shell -v": {
+                    "name": "Shell Format with Variable Names",
+                    "description": "When used with `--shell`, this flag (or the short `-v`) modifies the output to use proper shell variable names, converting colons and other special characters to underscores (e.g., APT_Architecture=\"amd64\").",
+                    "syntax": "apt-config --shell -v shell [pattern]"
+                },
+                "-c, --config-file": {
+                    "name": "Specify Config File",
+                    "description": "Specifies a configuration file to read *in addition to* the default APT configuration files. Can be used multiple times. This is crucial for testing configuration changes without modifying system files.",
+                    "syntax": "apt-config -c /path/to/file.conf [command]"
+                },
+                "-o, --option": {
+                    "name": "Set Configuration Option",
+                    "description": "Sets an arbitrary configuration option directly on the command line. The syntax is `-o 'Group::Option=Value'`. This overrides settings from any configuration file and is useful for one-time command behavior changes.",
+                    "syntax": "apt-config -o 'APT::Get::Purge=true' [command]"
+                },
+                "-h, --help": {
+                    "name": "Help",
+                    "description": "Displays a concise help message summarizing the command usage and available options.",
+                    "syntax": "apt-config -h"
+                },
+                "-v, --version": {
+                    "name": "Version",
+                    "description": "Displays the version information of the apt-config program and the APT library it uses.",
+                    "syntax": "apt-config -v"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "apt-config shell APT::Architecture",
+                    "output": "APT::Architecture=\"amd64\""
+                },
+                "with_flags": {
+                    "--dump": {
+                        "command": "apt-config dump",
+                        "output": "APT {\n  Architecture \"amd64\";\n  Get {\n    Assume-Yes \"false\";\n    Purge \"false\";\n  };\n};\n... (many more lines)"
+                    },
+                    "dump --empty": {
+                        "command": "apt-config dump --empty APT::Get::Clean-Installed",
+                        "output": "APT::Get::Clean-Installed \"\";"
+                    },
+                    "--shell": {
+                        "command": "apt-config --shell APT::Architecture APT::Get::Assume-Yes",
+                        "output": "APT::Architecture=\"amd64\";\nAPT::Get::Assume-Yes=\"false\";"
+                    },
+                    "shell -v": {
+                        "command": "apt-config --shell -v APT::Architecture",
+                        "output": "APT_Architecture=\"amd64\";"
+                    },
+                    "-c, --config-file": {
+                        "command": "apt-config -c ./test.conf dump APT::Get",
+                        "output": "# Output will reflect settings from both default configs and ./test.conf"
+                    },
+                    "-o, --option": {
+                        "command": "apt-config -o 'APT::Get::Assume-Yes=true' shell APT::Get::Assume-Yes",
+                        "output": "APT::Get::Assume-Yes=\"true\";"
+                    },
+                    "-h, --help": {
+                        "command": "apt-config --help",
+                        "output": "apt 2.9.2 (amd64)\nUsage: apt-config [options] shell [pattern]\n       apt-config [options] dump [pattern]\n... (help text continues)"
+                    },
+                    "-v, --version": {
+                        "command": "apt-config --version",
+                        "output": "apt 2.9.2 (amd64)\nSupported modules:\n*Ver... (version details)"
+                    }
+                }
+            }
+        },
+        {
+            "name": "apt-extracttemplates",
+            "description": "A utility from the apt package suite that extracts template files from Debian packages. It is primarily used by package maintainers and system administrators to generate configuration files and other templated data from .deb packages before installation. The tool reads the package's template configuration files, processes them, and can produce outputs for user interaction or automated configuration. It's typically invoked by higher-level tools like 'debconf' during package installation and configuration.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "--help": {
+                    "name": "Help",
+                    "description": "Display a brief help message explaining the command's purpose and basic usage syntax.",
+                    "syntax": "--help"
+                },
+                "-h": {
+                    "name": "Help (Short)",
+                    "description": "Short form for displaying help information.",
+                    "syntax": "-h"
+                },
+                "--version": {
+                    "name": "Version",
+                    "description": "Display the version information of the apt-extracttemplates utility and exit.",
+                    "syntax": "--version"
+                },
+                "-t": {
+                    "name": "Templates Directory",
+                    "description": "Specify a non-default directory where the extracted template files should be written. The default is usually a temporary directory.",
+                    "syntax": "-t <directory> or --temp-dir=<directory>"
+                },
+                "--temp-dir": {
+                    "name": "Templates Directory (Long)",
+                    "description": "Long form for specifying the output directory for extracted templates.",
+                    "syntax": "--temp-dir=<directory>"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "apt-extracttemplates /var/cache/apt/archives/nginx_1.18.0-1_amd64.deb",
+                    "output": "Extracts templates from the specified nginx .deb package to the default temporary directory. Outputs lines like: 'nginx: templates <list_of_files>' to stdout."
+                },
+                "with_flags": {
+                    "--help": {
+                        "command": "apt-extracttemplates --help",
+                        "output": "Usage: apt-extracttemplates [options] package-file [package-file ...]\n\nExtract configuration scripts and templates from Debian packages.\n\nOptions:\n  -h, --help            Show this help message and exit.\n  --version             Show program's version number and exit.\n  -t, --temp-dir=<dir>  Write extracted templates to <dir>.\n\nReport bugs to <aptitude-devel@lists.alioth.debian.org>."
+                    },
+                    "--version": {
+                        "command": "apt-extracttemplates --version",
+                        "output": "apt-extracttemplates 2.3.10 (amd64)"
+                    },
+                    "-t": {
+                        "command": "apt-extracttemplates -t /tmp/my_templates /var/cache/apt/archives/openssh-server_8.4p1-1_amd64.deb",
+                        "output": "Extracts configuration templates from the openssh-server package and writes them directly to the '/tmp/my_templates' directory instead of a system-managed temp location."
+                    },
+                    "--temp-dir": {
+                        "command": "apt-extracttemplates --temp-dir=/root/pkg-templates some-package_1.0.deb another-package_2.0.deb",
+                        "output": "Processes multiple package files ('some-package_1.0.deb' and 'another-package_2.0.deb') and deposits all extracted template files into the '/root/pkg-templates' directory."
+                    }
+                }
+            }
+        },
+        {
+            "name": "apt-ftparchive",
+            "description": "A powerful utility for generating APT repository metadata files (Packages, Sources, Contents, Release) from a directory tree of Debian packages. It's used to create and manage APT repositories, generating the necessary index files that APT clients use to discover available packages, their versions, dependencies, and other metadata. It can process binary packages (.deb), source packages (.dsc), and create compressed indexes. This tool is essential for maintaining custom Debian/Ubuntu repositories.",
+            "category": "Package Management / Repository Management",
+            "bookmarked": false,
+            "flags": {
+                "-s, --source": {
+                    "name": "Source Configuration",
+                    "description": "Specifies a configuration file that defines the source (package origin) sections for generating the Sources index file for source packages.",
+                    "syntax": "apt-ftparchive [command] -s <config-file>"
+                },
+                "-c, --config-file": {
+                    "name": "Configuration File",
+                    "description": "Specifies the main configuration file. This file contains sections like 'Tree', 'Directory', 'BinOverride', etc., defining how to process the package archive and generate indices.",
+                    "syntax": "apt-ftparchive [command] -c <config-file>"
+                },
+                "-d, --db": {
+                    "name": "Use Binary Cache DB",
+                    "description": "Uses a binary caching database instead of reading all .deb files directly. This can significantly speed up index generation on subsequent runs by caching package metadata.",
+                    "syntax": "apt-ftparchive [command] -d"
+                },
+                "--contents": {
+                    "name": "Generate Contents Index",
+                    "description": "Forces the generation of a 'Contents' index file (e.g., Contents-amd64.gz), which maps files to the packages that contain them. This is a resource-intensive operation.",
+                    "syntax": "apt-ftparchive [command] --contents"
+                },
+                "--read-only": {
+                    "name": "Read-Only DB",
+                    "description": "Opens the binary caching database in read-only mode. Useful when you want to ensure the database is not modified during the index generation process.",
+                    "syntax": "apt-ftparchive [command] --read-only"
+                },
+                "-q, --quiet": {
+                    "name": "Quiet Mode",
+                    "description": "Suppresses progress information and other non-critical output, producing only error messages.",
+                    "syntax": "apt-ftparchive [command] -q"
+                },
+                "--delink": {
+                    "name": "Delink Mode",
+                    "description": "Operates in 'delink' mode, which is used to prune symlinks from the repository, often used with the 'clean' command to remove outdated package files.",
+                    "syntax": "apt-ftparchive [command] --delink"
+                },
+                "-a, --arch": {
+                    "name": "Architecture",
+                    "description": "Limits processing to packages of the specified architecture (e.g., amd64, arm64, all).",
+                    "syntax": "apt-ftparchive [command] -a <architecture>"
+                },
+                "-h, --help": {
+                    "name": "Help",
+                    "description": "Displays a summary of the available command-line options and commands.",
+                    "syntax": "apt-ftparchive -h"
+                },
+                "--version": {
+                    "name": "Version",
+                    "description": "Displays the program's version information and exits.",
+                    "syntax": "apt-ftparchive --version"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "cd /path/to/repo && apt-ftparchive packages . > Packages",
+                    "output": "# Creates a basic, uncompressed Packages file listing all .deb packages in the current directory. This is the simplest use case for a small, local repository."
+                },
+                "with_flags": {
+                    "-c, --config-file": {
+                        "command": "apt-ftparchive generate -c /etc/apt/my-repo.conf",
+                        "output": "# Generates all repository indices (Packages, Sources, Release) as defined in the comprehensive configuration file 'my-repo.conf'. This is the standard way to generate a full repository."
+                    },
+                    "-s, --source": {
+                        "command": "apt-ftparchive sources -c bin.conf -s src.conf . > Sources",
+                        "output": "# Generates a Sources index file for source packages using source definitions from 'src.conf', while potentially referencing binary configuration from 'bin.conf'."
+                    },
+                    "-d, --db": {
+                        "command": "apt-ftparchive generate -c repo.conf -d",
+                        "output": "# Generates indices using a binary cache database for faster processing. The first run creates the DB; subsequent runs are much faster."
+                    },
+                    "--contents": {
+                        "command": "apt-ftparchive generate -c repo.conf --contents",
+                        "output": "# Generates the standard indices AND the large 'Contents-amd64.gz' file, which lists all files inside all packages. This can take a long time and use significant disk space."
+                    },
+                    "-a, --arch": {
+                        "command": "apt-ftparchive packages -a amd64 . > Packages-amd64",
+                        "output": "# Creates a Packages file containing only packages for the 'amd64' architecture, ignoring packages for 'i386' or 'all'."
+                    },
+                    "--delink": {
+                        "command": "apt-ftparchive clean -c repo.conf --delink",
+                        "output": "# Cleans the repository, removing obsolete package files and pruning symlinks as part of the cleanup process."
+                    },
+                    "-q, --quiet": {
+                        "command": "apt-ftparchive generate -c repo.conf -q",
+                        "output": "# Runs the repository generation silently. No progress output is shown, only errors (if any). Useful for cron jobs or scripts."
+                    }
+                }
+            }
+        },
+        {
+            "name": "apt-key",
+            "description": "apt-key is a command-line utility for managing the list of keys used by apt to authenticate packages. It handles the APT keyrings, which store GPG public keys of package repositories to verify that packages are from trusted sources. This command was commonly used in Debian and Ubuntu systems before the deprecation in favor of more secure methods like signed repository metadata. Note: apt-key is deprecated as of APT 2.4 and later, and its use is discouraged in favor of placing keys directly in /etc/apt/trusted.gpg.d/ or using signed repository metadata.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "add": {
+                    "name": "Add key",
+                    "description": "Add a new key to the trusted keyring. Reads the key from a file or standard input.",
+                    "syntax": "apt-key add <keyfile>"
+                },
+                "del": {
+                    "name": "Delete key",
+                    "description": "Remove a key from the trusted keyring by its key ID.",
+                    "syntax": "apt-key del <keyid>"
+                },
+                "export": {
+                    "name": "Export key",
+                    "description": "Export keys from the trusted keyring. Without arguments, exports all keys. With a key ID, exports only that key.",
+                    "syntax": "apt-key export <keyid>"
+                },
+                "exportall": {
+                    "name": "Export all keys",
+                    "description": "Export all keys from the trusted keyring to standard output.",
+                    "syntax": "apt-key exportall"
+                },
+                "fingerprint": {
+                    "name": "List fingerprints",
+                    "description": "List fingerprints of all keys in the trusted keyring, or only the specified key.",
+                    "syntax": "apt-key fingerprint <keyid>"
+                },
+                "adv": {
+                    "name": "Advanced GPG operations",
+                    "description": "Pass advanced options to GPG. This allows using GPG commands directly on the keyring.",
+                    "syntax": "apt-key adv [gpg-options]"
+                },
+                "list": {
+                    "name": "List keys",
+                    "description": "List all keys in the trusted keyring with their details (equivalent to apt-key finger).",
+                    "syntax": "apt-key list"
+                },
+                "update": {
+                    "name": "Update keyring",
+                    "description": "Update the keyring by fetching missing keys from keyservers (deprecated and often non-functional).",
+                    "syntax": "apt-key update"
+                },
+                "net-update": {
+                    "name": "Network update",
+                    "description": "Update the keyring from keyservers, similar to 'update' but with network operations.",
+                    "syntax": "apt-key net-update"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "apt-key list",
+                    "output": "pub   rsa2048 2018-04-18 [SC]\n      1234 5678 9ABC DEF0 1234  5678 9ABC DEF0 1234 5678\nuid           [ unknown] Example Repository Key <repo@example.com>\nsub   rsa2048 2018-04-18 [E]"
+                },
+                "with_flags": {
+                    "add": {
+                        "command": "apt-key add /tmp/myrepo-key.asc",
+                        "output": "OK"
+                    },
+                    "del": {
+                        "command": "apt-key del 9ABCDEF0",
+                        "output": "OK"
+                    },
+                    "export": {
+                        "command": "apt-key export 9ABCDEF0 | gpg --import",
+                        "output": ""
+                    },
+                    "exportall": {
+                        "command": "apt-key exportall > all-keys.gpg",
+                        "output": ""
+                    },
+                    "fingerprint": {
+                        "command": "apt-key fingerprint 9ABCDEF0",
+                        "output": "pub   rsa2048 2018-04-18 [SC]\n      1234 5678 9ABC DEF0 1234  5678 9ABC DEF0 1234 5678\nuid           [ unknown] Example Repository Key <repo@example.com>"
+                    },
+                    "adv": {
+                        "command": "apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 9ABCDEF0",
+                        "output": "gpg: key 9ABCDEF0: public key \"Example Repository Key <repo@example.com>\" imported\ngpg: Total number processed: 1\ngpg:               imported: 1"
+                    },
+                    "list": {
+                        "command": "apt-key list",
+                        "output": "pub   rsa2048 2018-04-18 [SC]\n      1234 5678 9ABC DEF0 1234  5678 9ABC DEF0 1234 5678\nuid           [ unknown] Example Repository Key <repo@example.com>"
+                    },
+                    "update": {
+                        "command": "apt-key update",
+                        "output": "gpg: keyring `/etc/apt/trusted.gpg' created\ngpg: /etc/apt/trusted.gpg: trustdb created"
+                    },
+                    "net-update": {
+                        "command": "apt-key net-update",
+                        "output": "gpg: refreshing 1 key from hkps://keyserver.ubuntu.com\ngpg: key 9ABCDEF0: \"Example Repository Key <repo@example.com>\" 1 new signature"
+                    }
+                }
+            }
+        },
+        {
+            "name": "apt-get",
+            "description": "The apt-get command is a high-level command-line tool for managing Debian and Ubuntu packages. It is used to install, remove, update, upgrade, and manage APT (Advanced Package Tool) packages and their dependencies from configured repositories. It works with a local database of packages (the APT cache) which is updated via 'apt-get update'. It is the primary tool for package management in terminal environments.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "update": {
+                    "name": "Update",
+                    "description": "Downloads the latest package lists from the configured repositories (defined in /etc/apt/sources.list and /etc/apt/sources.list.d/). This command does not install or upgrade any packages; it only refreshes the local APT cache with the latest version and dependency information. It must be run before performing a system upgrade or installing new packages to ensure apt-get knows about the latest available versions.",
+                    "syntax": "apt-get update"
+                },
+                "upgrade": {
+                    "name": "Upgrade",
+                    "description": "Installs the newest versions of all currently installed packages. It will not remove packages or install new ones that weren't already installed. If a package upgrade requires a new dependency, that package will NOT be upgraded. Use 'dist-upgrade' for a more comprehensive upgrade. This command respects 'held' packages.",
+                    "syntax": "apt-get upgrade"
+                },
+                "dist-upgrade": {
+                    "name": "Distribution Upgrade",
+                    "description": "A more intelligent upgrade handler than 'upgrade'. It performs dependency resolution and can install new packages to satisfy dependencies, and remove obsolete packages if necessary. This is the command used for major distribution version upgrades (e.g., from Ubuntu 20.04 to 22.04). It may remove packages in some cases.",
+                    "syntax": "apt-get dist-upgrade"
+                },
+                "install": {
+                    "name": "Install",
+                    "description": "Installs one or more packages specified by name. It automatically retrieves and installs the packages and all required dependencies from the configured repositories. Multiple package names can be provided separated by spaces.",
+                    "syntax": "apt-get install <package_name1> [package_name2 ...]"
+                },
+                "remove": {
+                    "name": "Remove",
+                    "description": "Removes one or more installed packages, but leaves configuration files on the system. This is useful if you plan to reinstall the package later and keep its settings. It does not remove dependencies that were automatically installed and are no longer needed (see 'autoremove').",
+                    "syntax": "apt-get remove <package_name1> [package_name2 ...]"
+                },
+                "purge": {
+                    "name": "Purge",
+                    "description": "Completely removes one or more packages along with their configuration files. This is more thorough than 'remove' and ensures all traces of the package are deleted from the system.",
+                    "syntax": "apt-get purge <package_name1> [package_name2 ...]"
+                },
+                "autoremove": {
+                    "name": "Auto Remove",
+                    "description": "Removes packages that were automatically installed to satisfy dependencies for other packages and are no longer needed. This helps clean up the system after packages are removed. It's good practice to run this periodically.",
+                    "syntax": "apt-get autoremove"
+                },
+                "clean": {
+                    "name": "Clean",
+                    "description": "Clears the local repository of retrieved package files (the cache in /var/cache/apt/archives/). It removes all .deb files, freeing up disk space. Useful if you need to reclaim space, but running 'install' or 'upgrade' afterwards will re-download packages.",
+                    "syntax": "apt-get clean"
+                },
+                "autoclean": {
+                    "name": "Auto Clean",
+                    "description": "Clears the local repository of retrieved package files, but only removes package files that can no longer be downloaded (they are obsolete and have been replaced by newer versions in the repository). It is a safer way to free up space than 'clean'.",
+                    "syntax": "apt-get autoclean"
+                },
+                "check": {
+                    "name": "Check",
+                    "description": "Updates the package cache and checks for broken dependencies. It's a diagnostic tool to verify the consistency of the package management system.",
+                    "syntax": "apt-get check"
+                },
+                "-y": {
+                    "name": "Assume Yes",
+                    "description": "Automatically answers 'yes' to all prompts, assuming 'yes' as the answer to all confirmation dialogs. This is useful for non-interactive scripts but should be used with caution.",
+                    "syntax": "apt-get -y <command>"
+                },
+                "--dry-run": {
+                    "name": "Dry Run",
+                    "description": "Simulates the actions that would be performed (like install, upgrade, remove) without actually making any changes to the system. It shows what would be done, which is excellent for testing and verification.",
+                    "syntax": "apt-get --dry-run <command>"
+                },
+                "-s": {
+                    "name": "Simulate (Synonym for --dry-run)",
+                    "description": "Same as --dry-run. Performs a simulation of events.",
+                    "syntax": "apt-get -s <command>"
+                },
+                "-q": {
+                    "name": "Quiet",
+                    "description": "Produces less output, running in a quieter mode. Useful for scripting.",
+                    "syntax": "apt-get -q <command>"
+                },
+                "--no-install-recommends": {
+                    "name": "No Install Recommends",
+                    "description": "Do not install recommended packages, only install dependencies. This can result in a more minimal installation.",
+                    "syntax": "apt-get --no-install-recommends install <package_name>"
+                },
+                "--install-suggests": {
+                    "name": "Install Suggests",
+                    "description": "Consider suggested packages as dependencies to install. This installs more packages than the default.",
+                    "syntax": "apt-get --install-suggests install <package_name>"
+                },
+                "-f": {
+                    "name": "Fix Broken",
+                    "description": "Attempts to correct a system with broken dependencies in place. This is often used after a failed package operation.",
+                    "syntax": "apt-get -f install"
+                },
+                "--reinstall": {
+                    "name": "Reinstall",
+                    "description": "Reinstall the specified package(s). Useful if package files are corrupted but configuration should be preserved.",
+                    "syntax": "apt-get install --reinstall <package_name>"
+                },
+                "--download-only": {
+                    "name": "Download Only",
+                    "description": "Downloads the specified packages to the cache (/var/cache/apt/archives/) but does not unpack or install them. Installation can be performed later when offline.",
+                    "syntax": "apt-get --download-only install <package_name>"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "apt-get",
+                    "output": "help information for the command"
+                },
+                "with_flags": {
+                    "update": {
+                        "command": "sudo apt-get update",
+                        "output": "Standard repository index update output listing hits, gets, and ignores."
+                    },
+                    "upgrade": {
+                        "command": "sudo apt-get upgrade",
+                        "output": "Standard output listing packages to be upgraded, asking for confirmation, and showing installation progress."
+                    },
+                    "dist-upgrade": {
+                        "command": "sudo apt-get dist-upgrade",
+                        "output": "Standard output showing packages to be upgraded, newly installed, or removed."
+                    },
+                    "install": {
+                        "command": "sudo apt-get install vim",
+                        "output": "Standard output showing package retrieval, dependency resolution, and installation progress for 'vim'."
+                    },
+                    "remove": {
+                        "command": "sudo apt-get remove vim",
+                        "output": "Standard output showing package removal but retaining configuration files."
+                    },
+                    "purge": {
+                        "command": "sudo apt-get purge vim",
+                        "output": "Standard output showing complete removal of the 'vim' package and its configs."
+                    },
+                    "autoremove": {
+                        "command": "sudo apt-get autoremove",
+                        "output": "Standard output listing automatically installed, unused packages to be removed."
+                    },
+                    "clean": {
+                        "command": "sudo apt-get clean",
+                        "output": "No output on success; clears the package cache directory."
+                    },
+                    "autoclean": {
+                        "command": "sudo apt-get autoclean",
+                        "output": "Standard output listing obsolete .deb files being deleted."
+                    },
+                    "check": {
+                        "command": "sudo apt-get check",
+                        "output": "Standard dependency check output."
+                    },
+                    "-y": {
+                        "command": "sudo apt-get -y install curl",
+                        "output": "Standard installation output for 'curl' without asking for confirmation."
+                    },
+                    "--dry-run": {
+                        "command": "sudo apt-get --dry-run remove nano",
+                        "output": "Simulated output showing what would happen if 'nano' were removed."
+                    },
+                    "-s": {
+                        "command": "sudo apt-get -s upgrade",
+                        "output": "Simulated output of an upgrade operation."
+                    },
+                    "-q": {
+                        "command": "sudo apt-get -q update",
+                        "output": "Quieter update output."
+                    },
+                    "--no-install-recommends": {
+                        "command": "sudo apt-get --no-install-recommends install apache2",
+                        "output": "Standard installation output for 'apache2' without its recommended packages."
+                    },
+                    "--install-suggests": {
+                        "command": "sudo apt-get --install-suggests install wireshark",
+                        "output": "Standard installation output for 'wireshark' including suggested packages."
+                    },
+                    "-f": {
+                        "command": "sudo apt-get -f install",
+                        "output": "Standard output attempting to fix broken dependencies."
+                    },
+                    "--reinstall": {
+                        "command": "sudo apt-get install --reinstall bash",
+                        "output": "Standard output reinstalling the 'bash' package."
+                    },
+                    "--download-only": {
+                        "command": "sudo apt-get --download-only install git",
+                        "output": "Standard output downloading the 'git' package to cache without installing it."
+                    }
+                }
+            }
+        },
+        {
+            "name": "apt-listchanges",
+            "description": "A tool for Debian and Ubuntu systems that displays changelogs and news between the currently installed version and a new version of a package when upgrading via APT. It can be integrated into APT's workflow (via apt.conf hooks) or run manually. It helps users understand what changes (bug fixes, new features, security patches) will be introduced by an update before it is applied.",
+            "category": "Package Management",
+            "bookmarked": false,
+            "flags": {
+                "--apt": {
+                    "name": "APT Mode",
+                    "description": "Simulate APT behavior. Expects package files (.deb) or .changes files on stdin or as arguments, similar to how APT hooks invoke the tool. This is the default mode when invoked from APT hooks.",
+                    "syntax": "--apt"
+                },
+                "--config=FILE": {
+                    "name": "Configuration File",
+                    "description": "Use the specified configuration file instead of the default /etc/apt-listchanges.conf or user-specific configs.",
+                    "syntax": "--config /path/to/config"
+                },
+                "--debug": {
+                    "name": "Debug Mode",
+                    "description": "Enable verbose debugging output to stderr.",
+                    "syntax": "--debug"
+                },
+                "--email": {
+                    "name": "Email Output",
+                    "description": "Send the output via email instead of displaying it on the terminal. Requires mail transport agent (like sendmail) to be configured.",
+                    "syntax": "--email"
+                },
+                "--email-address=ADDRESS": {
+                    "name": "Email Address",
+                    "description": "Specify the recipient email address when using --email. Overrides the 'email_address' configuration option.",
+                    "syntax": "--email-address user@example.com"
+                },
+                "--from=ADDRESS": {
+                    "name": "From Address",
+                    "description": "Specify the sender email address when using --email. Overrides the 'from' configuration option.",
+                    "syntax": "--from apt@hostname"
+                },
+                "--frontend=TYPE": {
+                    "name": "Frontend",
+                    "description": "Choose the user interface. Valid types are: 'pager' (uses $PAGER, default in terminals), 'browser' (uses text-based browser), 'xdg' (uses xdg-open), 'text' (plain text to stdout), 'mail' (for email), 'none' (no output, just exit code).",
+                    "syntax": "--frontend=pager"
+                },
+                "--headers": {
+                    "name": "Include Headers",
+                    "description": "Include archive and package headers in the output. This is the default for non-APT mode.",
+                    "syntax": "--headers"
+                },
+                "--help": {
+                    "name": "Help",
+                    "description": "Display a brief help message and exit.",
+                    "syntax": "--help"
+                },
+                "--history=FILE": {
+                    "name": "History File",
+                    "description": "Use a specific history file to track which changelog entries have already been seen.",
+                    "syntax": "--history /path/to/history.db"
+                },
+                "--no-headers": {
+                    "name": "Suppress Headers",
+                    "description": "Do not include archive and package headers in the output. This is the default for APT mode.",
+                    "syntax": "--no-headers"
+                },
+                "--profile=NAME": {
+                    "name": "Configuration Profile",
+                    "description": "Use a specific profile defined in the configuration file. Profiles allow different settings (e.g., frontend, email) for different contexts.",
+                    "syntax": "--profile=security"
+                },
+                "--save-seen": {
+                    "name": "Save Seen State",
+                    "description": "Update the history database to mark displayed items as 'seen', so they won't be shown again in future runs.",
+                    "syntax": "--save-seen"
+                },
+                "--smtp-host=HOST": {
+                    "name": "SMTP Host",
+                    "description": "Specify the SMTP server host for direct email sending (when not using sendmail).",
+                    "syntax": "--smtp-host smtp.example.com"
+                },
+                "--smtp-password=PASS": {
+                    "name": "SMTP Password",
+                    "description": "Specify the password for SMTP authentication.",
+                    "syntax": "--smtp-password secret"
+                },
+                "--smtp-port=PORT": {
+                    "name": "SMTP Port",
+                    "description": "Specify the SMTP server port.",
+                    "syntax": "--smtp-port 587"
+                },
+                "--smtp-username=USER": {
+                    "name": "SMTP Username",
+                    "description": "Specify the username for SMTP authentication.",
+                    "syntax": "--smtp-username user"
+                },
+                "--which=WHICH": {
+                    "name": "Content Selection",
+                    "description": "Select which information to display: 'news' (only Debian NEWS), 'changelogs' (only changelogs), or 'both' (default).",
+                    "syntax": "--which=news"
+                },
+                "--version": {
+                    "name": "Version",
+                    "description": "Display version information and exit.",
+                    "syntax": "--version"
+                },
+                "-c FILE": {
+                    "name": "Configuration File (short)",
+                    "description": "Short form of --config.",
+                    "syntax": "-c ~/.apt-listchanges.conf"
+                },
+                "-f TYPE": {
+                    "name": "Frontend (short)",
+                    "description": "Short form of --frontend.",
+                    "syntax": "-f text"
+                },
+                "-h": {
+                    "name": "Help (short)",
+                    "description": "Short form of --help.",
+                    "syntax": "-h"
+                },
+                "-a": {
+                    "name": "APT Mode (short)",
+                    "description": "Short form of --apt.",
+                    "syntax": "-a"
+                }
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "apt-listchanges /path/to/package.deb",
+                    "output": "# Displays changelog and news entries for the given .deb file using default frontend (usually a pager)."
+                },
+                "with_flags": {
+                    "--apt": {
+                        "command": "echo /path/to/package.deb | apt-listchanges --apt",
+                        "output": "# Processes the package file as if invoked by APT, typically suppressing headers."
+                    },
+                    "--config=FILE": {
+                        "command": "apt-listchanges --config /etc/apt/apt-listchanges.conf /path/to/package.deb",
+                        "output": "# Runs with a custom global configuration file."
+                    },
+                    "--debug": {
+                        "command": "apt-listchanges --debug /path/to/package.deb 2>&1 | head -5",
+                        "output": "# Shows debug information mixed with normal output on stderr."
+                    },
+                    "--email": {
+                        "command": "apt-listchanges --email --email-address admin@example.com /path/to/package.deb",
+                        "output": "# Emails the changelog output to the specified address instead of displaying it."
+                    },
+                    "--frontend=TYPE": {
+                        "command": "apt-listchanges --frontend=text /path/to/package.deb",
+                        "output": "# Prints the changelog as plain text directly to the terminal without a pager."
+                    },
+                    "--headers / --no-headers": {
+                        "command": "apt-listchanges --headers /path/to/package.deb | head -20",
+                        "output": "# Includes the 'Archive: ...' and 'Package: ...' headers in the output, which are sometimes omitted by default."
+                    },
+                    "--help": {
+                        "command": "apt-listchanges --help",
+                        "output": "# Displays the usage summary and available options."
+                    },
+                    "--profile=NAME": {
+                        "command": "apt-listchanges --profile=urgent /path/to/package.deb",
+                        "output": "# Uses settings from the 'urgent' profile defined in the configuration file."
+                    },
+                    "--save-seen": {
+                        "command": "apt-listchanges --save-seen /path/to/package.deb",
+                        "output": "# Marks the displayed changelog entries as 'seen' in the history database."
+                    },
+                    "--which=WHICH": {
+                        "command": "apt-listchanges --which=news /path/to/package.deb",
+                        "output": "# Displays only Debian NEWS entries, not the detailed changelog."
+                    },
+                    "--version": {
+                        "command": "apt-listchanges --version",
+                        "output": "apt-listchanges 3.24 (Fri 14 Feb 2020 02:52:15 PM UTC)"
+                    },
+                    "-c FILE": {
+                        "command": "apt-listchanges -c ~/.config/apt-listchanges.cfg /path/to/package.deb",
+                        "output": "# Same as --config using the short form."
+                    },
+                    "-f TYPE": {
+                        "command": "apt-listchanges -f browser /path/to/package.deb",
+                        "output": "# Opens the output in a text-based web browser (like lynx or w3m)."
+                    },
+                    "-h": {
+                        "command": "apt-listchanges -h",
+                        "output": "# Displays brief help (same as --help)."
+                    },
+                    "-a": {
+                        "command": "apt-listchanges -a /path/to/package.deb",
+                        "output": "# Same as --apt using the short form."
+                    }
+                }
+            }
         }
     ]
 }
