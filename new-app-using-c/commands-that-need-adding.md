@@ -3,28 +3,33 @@
 ```
 I want AI to make a JSON object with the following properties for a Bash command for Linux:
 {
-"name": "Command 1",
-"description": "Detailed command 1 description",
-"category": "Command 1 category",
-bookmarked: false,
-flags: {
-  "flag1": {
-    "name": "Flag name"
-    "description": "Flag description",
-    "syntax": "Flag syntax"
-  }
-},
-"examples": {
-  "no_flags": {
-    "command": "Command",
-    "output": "Output"
-  },
-  "with_flags": {
-    "flag1": {
-      "command": "Command",
-      "output": "Output"
-    }
-  }
+    "commands": [
+        {
+            "name": "Command 1",
+            "description": "Detailed command 1 description",
+            "category": "Command 1 category",
+            "bookmarked": false,
+            "flags": {
+                "flag1": {
+                    "name": "Flag Name",
+                    "description": "Flag Description",
+                    "syntax": "Flag Syntax"
+                },
+            },
+            "examples": {
+                "no_flags": {
+                    "command": "Command",
+                    "output": "Output"
+                },
+                "with_flags": {
+                    "flag1": {
+                        "command": "Command",
+                        "output": "Output"
+                    },
+                }
+            }
+        },
+    ]
 }
 
 I want to include a detailed description. I want to include ALL possible flags for that command. I want to write an example for ALL possible flags. Write this for the command COMMAND-NAME
