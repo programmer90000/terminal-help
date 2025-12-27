@@ -347,17 +347,6 @@ pwdx
 qdbus
 qdbusviewer
 qdirstat
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
-check-disk-space.sh
-check-if-process-running.sh
-check-internet-connection.sh
-network-ping.sh
-replace_text_in_file
 reset
 resize
 resizecons
@@ -369,6 +358,17 @@ rfcomm
 rg
 rgrep
 rimraf
+```
+
+# Commands That Still Need Adding
+```
+chat-handler.sh
+chat-status.sh
+check-disk-space.sh
+check-if-process-running.sh
+check-internet-connection.sh
+network-ping.sh
+replace_text_in_file
 rm
 rmdir
 run-commands.sh
