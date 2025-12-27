@@ -37,8 +37,11 @@ I want to include a detailed description. I want to include ALL possible flags f
 
 # Commands That Have Been Added
 ```
-touch
 7z
+```
+
+# Commands That Still Need Adding
+```
 add-apt-repository
 addpart
 alias
@@ -61,10 +64,6 @@ basename
 bash
 batcat
 bc
-```
-
-# Commands That Still Need Adding
-```
 bg
 cat
 cd
@@ -440,6 +439,7 @@ tcpdump
 tee
 termcommands
 tesseract
+touch
 top
 tree
 truncate

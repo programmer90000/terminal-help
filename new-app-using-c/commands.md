@@ -1,4 +1,6 @@
-# Man 7z
+# 7z
+
+## Man 7z
 7z(1)                                     General Commands Manual                                     7z(1)
 
 NAME
@@ -230,7 +232,7 @@ AUTHOR
 
 7-Zip                                         March 6th, 2016                                         7z(1)
 
-# tldr 7z
+## tldr 7z
 7z
 
 [0m[0mFile archiver with a high compression ratio.
