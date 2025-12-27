@@ -169,6 +169,10 @@ ipcrm
 ipcs
 ippfind
 ipptool
+ischroot
+jobs
+join
+journalctl
 ```
 
 # Commands That Still Need Adding
@@ -178,10 +182,6 @@ chat-status.sh
 check-disk-space.sh
 check-if-process-running.sh
 check-internet-connection.sh
-ischroot
-jobs
-join
-journalctl
 kbdinfo
 kbxutil
 kill
