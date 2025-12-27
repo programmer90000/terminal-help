@@ -181,15 +181,6 @@ kinfo
 kmod
 kshell5
 kvm
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
-check-disk-space.sh
-check-if-process-running.sh
-check-internet-connection.sh
 last
 lastb
 lastlog
@@ -244,6 +235,15 @@ lsof
 lspci
 lspgpot
 lsusb
+```
+
+# Commands That Still Need Adding
+```
+chat-handler.sh
+chat-status.sh
+check-disk-space.sh
+check-if-process-running.sh
+check-internet-connection.sh
 make
 makeconv
 make-first-existing-target
