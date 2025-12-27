@@ -9682,3 +9682,131 @@ More information: https://www.gnu.org/software/bash/manual/bash.html#index-bg.
  - [0m[32;23;22;24;25mResume a specific job and run it in the background (run jobs to find the job number):
    [33;23;22;24;25mbg %[0mjob_number
 [0m[0m
+
+# cat
+
+## man cat
+CAT(1)                                         User Commands                                         CAT(1)
+
+NAME
+       cat - concatenate files and print on the standard output
+
+SYNOPSIS
+       cat [OPTION]... [FILE]...
+
+DESCRIPTION
+       Concatenate FILE(s) to standard output.
+
+       With no FILE, or when FILE is -, read standard input.
+
+       -A, --show-all
+              equivalent to -vET
+
+       -b, --number-nonblank
+              number nonempty output lines, overrides -n
+
+       -e     equivalent to -vE
+
+       -E, --show-ends
+              display $ at end of each line
+
+       -n, --number
+              number all output lines
+
+       -s, --squeeze-blank
+              suppress repeated empty output lines
+
+       -t     equivalent to -vT
+
+       -T, --show-tabs
+              display TAB characters as ^I
+
+       -u     (ignored)
+
+       -v, --show-nonprinting
+              use ^ and M- notation, except for LFD and TAB
+
+       --help display this help and exit
+
+       --version
+              output version information and exit
+
+EXAMPLES
+       cat f - g
+              Output f's contents, then standard input, then g's contents.
+
+       cat    Copy standard input to standard output.
+
+AUTHOR
+       Written by Torbjorn Granlund and Richard M. Stallman.
+
+REPORTING BUGS
+       GNU coreutils online help: <https://www.gnu.org/software/coreutils/>
+       Report any translation bugs to <https://translationproject.org/team/>
+
+COPYRIGHT
+       Copyright  ©  2022  Free  Software  Foundation,  Inc.   License  GPLv3+:  GNU GPL version 3 or later
+       <https://gnu.org/licenses/gpl.html>.
+       This is free software: you are free to change and redistribute it.  There is NO WARRANTY, to the ex‐
+       tent permitted by law.
+
+SEE ALSO
+       tac(1)
+
+       Full documentation <https://www.gnu.org/software/coreutils/cat>
+       or available locally via: info '(coreutils) cat invocation'
+
+GNU coreutils 9.1                              September 2022                                        CAT(1)
+
+## tldr cat
+cat
+
+[0m[0mPrint and concatenate files.
+More information: https://manned.org/cat.1posix.
+
+ - [0m[32;23;22;24;25mPrint the contents of a file to stdout:
+   [33;23;22;24;25mcat [0mpath/to/file
+[0m
+ - [0m[32;23;22;24;25mConcatenate several files into an output file:
+   [33;23;22;24;25mcat [0mpath/to/file1 path/to/file2 ...[33;23;22;24;25m > [0mpath/to/output_file
+[0m
+ - [0m[32;23;22;24;25mAppend several files to an output file:
+   [33;23;22;24;25mcat [0mpath/to/file1 path/to/file2 ...[33;23;22;24;25m >> [0mpath/to/output_file
+[0m
+ - [0m[32;23;22;24;25mCopy the contents of a file into an output file without buffering:
+   [33;23;22;24;25mcat -u [0m/dev/tty12[33;23;22;24;25m > [0m/dev/tty13
+[0m
+ - [0m[32;23;22;24;25mWrite stdin to a file:
+   [33;23;22;24;25mcat - > [0mpath/to/file
+[0m[0m
+
+# cd
+
+## man cd
+NO INFORMATION
+
+## tldr cd
+cd
+
+[0m[0mChange the current working directory.
+More information: https://www.gnu.org/software/bash/manual/bash.html#index-cd.
+
+ - [0m[32;23;22;24;25mGo to the specified directory:
+   [33;23;22;24;25mcd [0mpath/to/directory
+[0m
+ - [0m[32;23;22;24;25mGo up to the parent of the current directory:
+   [33;23;22;24;25mcd ..[0m
+[0m
+ - [0m[32;23;22;24;25mGo to the home directory of the current user:
+   [33;23;22;24;25mcd[0m
+[0m
+ - [0m[32;23;22;24;25mGo to the home directory of the specified user:
+   [33;23;22;24;25mcd ~[0musername
+[0m
+ - [0m[32;23;22;24;25mGo to the previously chosen directory:
+   [33;23;22;24;25mcd -[0m
+[0m
+ - [0m[32;23;22;24;25mGo to the root directory:
+   [33;23;22;24;25mcd /[0m
+[0m[0m
+

@@ -61,12 +61,12 @@ bash
 batcat
 bc
 bg
+cat
+cd
 ```
 
 # Commands That Still Need Adding
 ```
-cat
-cd
 chacl
 chage
 chardet
