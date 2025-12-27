@@ -85,15 +85,6 @@ comm
 command
 configure-printer
 gdbus
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
-check-disk-space.sh
-check-if-process-running.sh
-check-internet-connection.sh
 gemini
 git
 grep
@@ -112,6 +103,15 @@ dir
 dirname
 disown
 dmesg
+```
+
+# Commands That Still Need Adding
+```
+chat-handler.sh
+chat-status.sh
+check-disk-space.sh
+check-if-process-running.sh
+check-internet-connection.sh
 du
 duf
 docker
