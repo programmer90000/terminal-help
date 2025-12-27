@@ -56,15 +56,15 @@ apt-sortpkgs
 ar
 arborist
 arch
-```
-
-# Commands That Still Need Adding
-```
 basename
 bash
 batcat
 bc
 bg
+```
+
+# Commands That Still Need Adding
+```
 cat
 cd
 chacl
