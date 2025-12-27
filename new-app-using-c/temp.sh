@@ -1,72 +1,16 @@
+#!/bin/bash
 
-# How to ask AI
-```
-I want AI to make a JSON object with the following properties for a Bash command for Linux:
-{
-    "commands": [
-        {
-            "name": "Command 1",
-            "description": "Detailed command 1 description",
-            "category": "Command 1 category",
-            "bookmarked": false,
-            "flags": {
-                "flag1": {
-                    "name": "Flag Name",
-                    "description": "Flag Description",
-                    "syntax": "Flag Syntax"
-                },
-            },
-            "examples": {
-                "no_flags": {
-                    "command": "Command",
-                    "output": "Output"
-                },
-                "with_flags": {
-                    "flag1": {
-                        "command": "Command",
-                        "output": "Output"
-                    },
-                }
-            }
-        },
-    ]
-}
-
-I want to include a detailed description. I want to include ALL possible flags for that command. I want to write an example for ALL possible flags. Do NOT write the outer object. Write only the text inside the commands object. If the output is something which is long and standard, do not write the output. Only write that the output is the thing it is, such as help information for the command. Write this for the command COMMAND-NAME
-```
-
-# Commands That Have Been Added
-```
-7z
-add-apt-repository
-addpart
-alias
-apt
-apt-cache
-apt-add-repository
-apt-cdrom
-apt-config
-apt-extracttemplates
-apt-ftparchive
-apt-get
-apt-key
-apt-listchanges
-apt-mark
-apt-sortpkgs
-ar
-arborist
-arch
-basename
-bash
-batcat
-bc
-bg
-cat
-cd
+# List of commands to process
+commands=(
 chacl
 chage
 chardet
 chardetect
+chat-handler.sh
+chat-status.sh
+check-disk-space.sh
+check-if-process-running.sh
+check-internet-connection.sh
 chfn
 chgrp
 chmod
@@ -74,6 +18,9 @@ choom
 chown
 chrt
 chsh
+chvt
+clambc
+clamconf
 clamdscan
 clamdtop
 clamscan
@@ -85,15 +32,6 @@ comm
 command
 configure-printer
 gdbus
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
-check-disk-space.sh
-check-if-process-running.sh
-check-internet-connection.sh
 gemini
 git
 grep
@@ -523,4 +461,38 @@ zstdcat
 zstdgrep
 zstdless
 zstdmt
-```
+)
+
+# Loop through each command
+for cmd in "${commands[@]}"; do
+    # Write new line and command header
+    echo "" >> commands.md
+    echo "# $cmd" >> commands.md
+    echo "" >> commands.md
+    echo "## man $cmd" >> commands.md
+    echo "" >> commands.md
+    
+    # Try to get man page, capture output and append to file
+    if man_output=$(man "$cmd" 2>/dev/null | col -bx); then
+        echo "$man_output" >> commands.md
+    else
+        echo "No man page available for $cmd" >> commands.md
+    fi
+    
+    # Write tldr header
+    echo "" >> commands.md
+    echo "## tldr $cmd" >> commands.md
+    echo "" >> commands.md
+    
+    # Try to get tldr page, capture output and append to file
+    if tldr_output=$(tldr "$cmd" 2>/dev/null); then
+        echo "$tldr_output" >> commands.md
+    else
+        echo "No tldr page available for $cmd" >> commands.md
+    fi
+    
+    echo "" >> commands.md
+    echo "Processed: $cmd"
+done
+
+echo "Documentation has been appended to commands.md"
