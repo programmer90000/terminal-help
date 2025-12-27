@@ -103,15 +103,6 @@ dir
 dirname
 disown
 dmesg
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
-check-disk-space.sh
-check-if-process-running.sh
-check-internet-connection.sh
 du
 duf
 docker
@@ -164,6 +155,16 @@ hostid
 hostname
 hostnamectl
 hstr
+ibus
+```
+
+# Commands That Still Need Adding
+```
+chat-handler.sh
+chat-status.sh
+check-disk-space.sh
+check-if-process-running.sh
+check-internet-connection.sh
 ibus
 ibus-daemon
 ibus-setup
