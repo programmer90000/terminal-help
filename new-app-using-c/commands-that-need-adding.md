@@ -40,11 +40,11 @@ I want to include a detailed description. I want to include ALL possible flags f
 7z
 add-apt-repository
 addpart
+alias
 ```
 
 # Commands That Still Need Adding
 ```
-alias
 apt
 apt-cache
 apt-add-repository

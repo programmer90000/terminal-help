@@ -535,3 +535,35 @@ More information: https://manned.org/addpart.
  - [0m[32;23;22;24;25mTell the kernel about the existence of the specified partition:
    [33;23;22;24;25maddpart [0mdevice[33;23;22;24;25m [0mpartition[33;23;22;24;25m [0mstart[33;23;22;24;25m [0mlength
 [0m[0m
+
+# alias
+
+## man alias
+NO INFO
+
+## tldr alias
+alias
+
+[0m[0mCreate aliases - words that are replaced by a command string.
+Aliases expire with the current shell session unless defined in the shell's configuration file, e.g. ~/.bashrc for Bash or ~/.zshrc for Zsh.
+See also: unalias.
+More information: https://www.gnu.org/software/bash/manual/bash.html#index-alias.
+
+ - [0m[32;23;22;24;25mList all aliases:
+   [33;23;22;24;25malias[0m
+[0m
+ - [0m[32;23;22;24;25mCreate a generic alias:
+   [33;23;22;24;25malias [0mword[33;23;22;24;25m="[0mcommand[33;23;22;24;25m"[0m
+[0m
+ - [0m[32;23;22;24;25mView the command associated to a given alias:
+   [33;23;22;24;25malias [0mword
+[0m
+ - [0m[32;23;22;24;25mRemove an aliased command:
+   [33;23;22;24;25munalias [0mword
+[0m
+ - [0m[32;23;22;24;25mTurn rm into an interactive command:
+   [33;23;22;24;25malias [0mrm[33;23;22;24;25m="[0mrm --interactive[33;23;22;24;25m"[0m
+[0m
+ - [0m[32;23;22;24;25mCreate la as a shortcut for ls --all:
+   [33;23;22;24;25malias [0mla[33;23;22;24;25m="[0mls --all[33;23;22;24;25m"[0m
+[0m[0m
