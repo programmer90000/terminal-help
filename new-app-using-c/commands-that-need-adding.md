@@ -173,6 +173,14 @@ ischroot
 jobs
 join
 journalctl
+kbdinfo
+kbxutil
+kill
+killall
+kinfo
+kmod
+kshell5
+kvm
 ```
 
 # Commands That Still Need Adding
@@ -182,14 +190,6 @@ chat-status.sh
 check-disk-space.sh
 check-if-process-running.sh
 check-internet-connection.sh
-kbdinfo
-kbxutil
-kill
-killall
-kinfo
-kmod
-kshell5
-kvm
 last
 lastb
 lastlog
