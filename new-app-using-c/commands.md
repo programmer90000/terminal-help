@@ -477,3 +477,61 @@ More information: https://manned.org/add-apt-repository.
  - [0m[32;23;22;24;25mAllow source packages to be downloaded from the repository:
    [33;23;22;24;25madd-apt-repository [0m[-s|--enable-source][33;23;22;24;25m [0mrepository_spec
 [0m[0m
+
+# addpart
+
+## man addpart
+ADDPART(8)                                 System Administration                                 ADDPART(8)
+
+NAME
+       addpart - tell the kernel about the existence of a partition
+
+SYNOPSIS
+       addpart device partition start length
+
+DESCRIPTION
+       addpart tells the Linux kernel about the existence of the specified partition. The command is a
+       simple wrapper around the "add partition" ioctl.
+
+       This command doesn’t manipulate partitions on a block device.
+
+PARAMETERS
+       device
+           The disk device.
+
+       partition
+           The partition number.
+
+       start
+           The beginning of the partition (in 512-byte sectors).
+
+       length
+           The length of the partition (in 512-byte sectors).
+
+       -h, --help
+           Display help text and exit.
+
+       -V, --version
+           Print version and exit.
+
+SEE ALSO
+       delpart(8), fdisk(8), parted(8), partprobe(8), partx(8)
+
+REPORTING BUGS
+       For bug reports, use the issue tracker at https://github.com/util-linux/util-linux/issues.
+
+AVAILABILITY
+       The addpart command is part of the util-linux package which can be downloaded from Linux Kernel
+       Archive <https://www.kernel.org/pub/linux/utils/util-linux/>.
+
+util-linux 2.38.1                                2022-05-11                                      ADDPART(8)
+
+## tldr addpart
+
+[0m[0mTell the Linux kernel about the existence of the specified partition.
+A simple wrapper around the add partition ioctl.
+More information: https://manned.org/addpart.
+
+ - [0m[32;23;22;24;25mTell the kernel about the existence of the specified partition:
+   [33;23;22;24;25maddpart [0mdevice[33;23;22;24;25m [0mpartition[33;23;22;24;25m [0mstart[33;23;22;24;25m [0mlength
+[0m[0m

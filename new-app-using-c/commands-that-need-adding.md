@@ -38,12 +38,12 @@ I want to include a detailed description. I want to include ALL possible flags f
 # Commands That Have Been Added
 ```
 7z
+add-apt-repository
+addpart
 ```
 
 # Commands That Still Need Adding
 ```
-add-apt-repository
-addpart
 alias
 apt
 apt-cache
