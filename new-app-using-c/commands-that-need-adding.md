@@ -156,16 +156,6 @@ hostname
 hostnamectl
 hstr
 ibus
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
-check-disk-space.sh
-check-if-process-running.sh
-check-internet-connection.sh
-ibus
 ibus-daemon
 ibus-setup
 id
@@ -179,6 +169,15 @@ ipcrm
 ipcs
 ippfind
 ipptool
+```
+
+# Commands That Still Need Adding
+```
+chat-handler.sh
+chat-status.sh
+check-disk-space.sh
+check-if-process-running.sh
+check-internet-connection.sh
 ischroot
 jobs
 join
