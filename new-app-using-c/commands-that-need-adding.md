@@ -358,23 +358,9 @@ rfcomm
 rg
 rgrep
 rimraf
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
-check-disk-space.sh
-check-if-process-running.sh
-check-internet-connection.sh
-network-ping.sh
-replace_text_in_file
 rm
 rmdir
-run-commands.sh
 sdiff
-search_for_text_in_files
-send-chat.sh
 sensors
 sensors-conf-convert
 seq
@@ -387,6 +373,20 @@ sftp
 sleep
 sort
 ssh
+```
+
+# Commands That Still Need Adding
+```
+chat-handler.sh
+chat-status.sh
+check-disk-space.sh
+check-if-process-running.sh
+check-internet-connection.sh
+network-ping.sh
+replace_text_in_file
+run-commands.sh
+search_for_text_in_files
+send-chat.sh
 ssh-add
 ssh-agent
 ssh-argv0
