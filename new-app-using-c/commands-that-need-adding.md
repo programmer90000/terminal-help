@@ -235,15 +235,6 @@ lsof
 lspci
 lspgpot
 lsusb
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
-check-disk-space.sh
-check-if-process-running.sh
-check-internet-connection.sh
 make
 makeconv
 make-first-existing-target
@@ -273,6 +264,15 @@ mysql
 mysql_install_db
 mysql_upgrade
 namei
+```
+
+# Commands That Still Need Adding
+```
+chat-handler.sh
+chat-status.sh
+check-disk-space.sh
+check-if-process-running.sh
+check-internet-connection.sh
 nano
 nanoid
 nawk
