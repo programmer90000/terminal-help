@@ -53,13 +53,13 @@ apt-key
 apt-listchanges
 apt-mark
 apt-sortpkgs
+ar
+arborist
+arch
 ```
 
 # Commands That Still Need Adding
 ```
-ar
-arborist
-arch
 basename
 bash
 batcat
