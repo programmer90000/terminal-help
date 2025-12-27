@@ -41,10 +41,6 @@ I want to include a detailed description. I want to include ALL possible flags f
 add-apt-repository
 addpart
 alias
-```
-
-# Commands That Still Need Adding
-```
 apt
 apt-cache
 apt-add-repository
@@ -57,6 +53,10 @@ apt-key
 apt-listchanges
 apt-mark
 apt-sortpkgs
+```
+
+# Commands That Still Need Adding
+```
 ar
 arborist
 arch
