@@ -475,18 +475,12 @@ zstdcat
 zstdgrep
 zstdless
 zstdmt
-```
-
-# Commands That Still Need Adding
-```
-chat-handler.sh
-chat-status.sh
 check-disk-space.sh
 check-if-process-running.sh
 check-internet-connection.sh
 network-ping.sh
-replace_text_in_file
-run-commands.sh
-search_for_text_in_files
-send-chat.sh
+```
+
+# Commands That Still Need Adding
+```
 ```
