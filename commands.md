@@ -107443,53 +107443,10 @@ zstdmt
 [0m[0m
 
 # System Monitoring Scripts Documentation
-
-## Overview
-This documentation covers four Bash scripts designed for system monitoring and network diagnostics. Each script serves a specific purpose in checking disk usage, process status, internet connectivity, and network host discovery.
-
----
-
-## Script 1: Disk Usage Monitor (`check_disk_usage.sh`)
+## check_disk_usage.sh
 
 ### Purpose
 Monitors disk partitions and alerts when usage exceeds a predefined threshold.
-
-### Script Content
-```bash
-#!/bin/bash
-
-THRESHOLD=50 # Set the threshold percentage for disk usage
-
-echo "----- Disk usage report at $(date) -----"
-df -h
-
-echo ""
-echo "Checking for partitions over $THRESHOLD% usage..."
-df -h | grep -vE '^Filesystem|tmpfs|cdrom' | while read -r line; do
-    usage=$(echo $line | awk '{print $5}' | sed 's/%//')
-    partition=$(echo $line | awk '{print $6}')
-    if [ "$usage" -ge "$THRESHOLD" ]; then
-        echo -e "\e[31mWARNING: Partition $partition is ${usage}% full.\e[0m"
-    fi
-done
-```
-
-### Prerequisites
-- Bash shell (available on Linux, macOS, and Windows WSL)
-- Standard Unix utilities: `df`, `grep`, `awk`, `sed`
-
-### Installation & Setup
-1. **Create the script file:**
-   ```bash
-   nano check_disk_usage.sh
-   ```
-
-2. **Copy and paste the script content into the file**
-
-3. **Make the script executable:**
-   ```bash
-   chmod +x check_disk_usage.sh
-   ```
 
 ### Configuration
 - **Modify the threshold:** Edit line 3 to change the warning threshold (default: 50%)
@@ -107520,71 +107477,15 @@ done
   WARNING: Partition / is 80% full.
   ```
 
-### Automation (Cron Job)
-To run daily at 9 AM:
-```bash
-crontab -e
-```
-Add:
-```bash
-0 9 * * * /path/to/check_disk_usage.sh >> /var/log/disk_usage.log 2>&1
-```
-
----
-
-## Script 2: Process Status Checker (`check_process.sh`)
+## check_process.sh
 
 ### Purpose
 Checks if a specific process is currently running on the system.
 
-### Script Content
-```bash
-#!/bin/bash
-
-# Prompt user for a process name
-read -rp "Enter process name to check (exact match): " PROCESS
-
-# Exit if input is empty
-if [ -z "$PROCESS" ]; then
-    echo "No process name entered. Exiting."
-    exit 1
-fi
-
-# Check if process is running
-if pgrep -x "$PROCESS" > /dev/null; then
-    echo "Process '$PROCESS' is running."
-    exit 0
-else
-    echo "Process '$PROCESS' is NOT running."
-    exit 1
-fi
-```
-
-### Prerequisites
-- Bash shell
-- `pgrep` command (part of `procps` package on most systems)
-
-### Installation & Setup
-1. **Create the script file:**
-   ```bash
-   nano check_process.sh
-   ```
-
-2. **Copy and paste the script content**
-
-3. **Make executable:**
-   ```bash
-   chmod +x check_process.sh
-   ```
 
 ### Important Notes
 - **Exact match required:** The script checks for exact process name matches
 - **Case sensitivity:** Process names are case-sensitive
-- **Common process names:**
-  - `nginx`, `apache2`, `httpd` (web servers)
-  - `mysqld`, `postgres` (databases)
-  - `sshd` (SSH daemon)
-  - `docker` (Docker daemon)
 
 ### Execution
 1. **Interactive mode:**
@@ -107604,62 +107505,10 @@ fi
 - **Exit code 0:** Process is running
 - **Exit code 1:** Process is not running OR no input provided
 
-### Automation Example
-Check if Nginx is running every 5 minutes:
-```bash
-*/5 * * * * /path/to/check_process.sh nginx && echo "Nginx OK" || systemctl restart nginx
-```
-
----
-
-## Script 3: Internet Connectivity Tester (`check_internet.sh`)
+## check_internet.sh
 
 ### Purpose
 Tests internet connectivity by pinging a specified target (IP or domain).
-
-### Script Content
-```bash
-#!/bin/bash
-
-# Usage: ./check_internet.sh
-# Usage: Enter target (e.g. 8.8.8.8 or google.com)
-
-# Prompt user for target
-read -rp "Enter ping target (e.g. 8.8.8.8 or google.com): " PING_TARGET
-
-# Exit if input is empty
-if [ -z "$PING_TARGET" ]; then
-    echo "No target entered. Exiting."
-    exit 1
-fi
-
-# Check if target is reachable
-if ping -c 1 -W 2 "$PING_TARGET" > /dev/null; then
-    echo "Internet is up (reachable: $PING_TARGET)."
-    exit 0
-else
-    echo "Internet is DOWN (unreachable: $PING_TARGET)."
-    exit 1
-fi
-```
-
-### Prerequisites
-- Bash shell
-- `ping` command
-- Network connectivity (for testing)
-
-### Installation & Setup
-1. **Create the script file:**
-   ```bash
-   nano check_internet.sh
-   ```
-
-2. **Copy and paste the script content**
-
-3. **Make executable:**
-   ```bash
-   chmod +x check_internet.sh
-   ```
 
 ### Configuration Options
 **Common ping targets:**
@@ -107691,78 +107540,11 @@ fi
 - **Exit code 0:** Target is reachable
 - **Exit code 1:** Target is unreachable OR no input provided
 
-### Non-interactive Usage
-Modify the script for automatic checks:
-```bash
-#!/bin/bash
-PING_TARGET="8.8.8.8"
-if ping -c 1 -W 2 "$PING_TARGET" > /dev/null; then
-    echo "Internet is up."
-    exit 0
-else
-    echo "Internet is DOWN."
-    exit 1
-fi
-```
-
----
-
 ## Script 4: Network Scanner (`network_scanner.sh`)
 
 ### Purpose
 Scans a local subnet for active hosts by pinging all possible IP addresses in the range.
 
-### Script Content
-```bash
-#!/bin/bash
-
-# Prompt user for a network prefix (e.g. 192.168.1)
-read -rp "Enter network prefix (e.g. 192.168.1): " NETWORK
-
-# Validate input format
-if ! [[ "$NETWORK" =~ ^([0-9]{1,3}\.){2}[0-9]{1,3}$ ]]; then
-    echo "Invalid network prefix format. Expected format like: 192.168.1"
-    exit 1
-fi
-
-# Scan the subnet
-for i in {1..254}; do
-    IP="$NETWORK.$i"
-    ping -c 1 -W 1 "$IP" &>/dev/null && echo "Host $IP is up" &
-done
-
-wait
-```
-
-### Prerequisites
-- Bash shell
-- `ping` command
-- Network access to the subnet being scanned
-- **Note:** May require sudo privileges on some systems
-
-### Installation & Setup
-1. **Create the script file:**
-   ```bash
-   nano network_scanner.sh
-   ```
-
-2. **Copy and paste the script content**
-
-3. **Make executable:**
-   ```bash
-   chmod +x network_scanner.sh
-   ```
-
-### Understanding Network Prefixes
-A network prefix like `192.168.1` represents:
-- First three octets of an IPv4 address
-- The script will scan `192.168.1.1` through `192.168.1.254`
-
-**Common private network prefixes:**
-- `192.168.0` - Home routers default
-- `192.168.1` - Common home/office
-- `10.0.0` - Large corporate networks
-- `172.16.0` - Enterprise networks
 
 ### Execution
 1. **Interactive mode:**
@@ -107785,166 +107567,3 @@ A network prefix like `192.168.1` represents:
    ```bash
    sudo ./network_scanner.sh
    ```
-
-### Technical Details
-- **Concurrent scanning:** Uses `&` to run pings in parallel for speed
-- **Range:** Scans 1-254 (standard for most /24 subnets)
-- **Timeout:** 1 second per host (`-W 1`)
-- **Validation:** Regex ensures proper IP format
-
-### Limitations and Considerations
-1. **Firewalls:** Hosts with ICMP blocked won't appear
-2. **Speed:** Scanning 254 hosts takes ~1 minute (due to 1-second timeouts)
-3. **Network impact:** High concurrency may affect network performance
-4. **Permissions:** May need root privileges
-5. **Exclusions:** Does not scan `.0` (network) or `.255` (broadcast) addresses
-
-### Safety and Ethics
-**Only scan networks you own or have permission to scan!**
-Unauthorized scanning may:
-- Violate Terms of Service
-- Be illegal in some jurisdictions
-- Trigger security alerts
-- Result in network blocking
-
-### Alternative Usage
-For a sequential scan (slower but less intrusive):
-```bash
-for i in {1..254}; do
-    IP="$NETWORK.$i"
-    if ping -c 1 -W 1 "$IP" &>/dev/null; then
-        echo "Host $IP is up"
-    fi
-done
-```
-
----
-
-## Best Practices for All Scripts
-
-### 1. Logging
-Add logging to all scripts:
-```bash
-LOG_FILE="/var/log/system_monitor.log"
-echo "[$(date)] Script started" >> "$LOG_FILE"
-```
-
-### 2. Error Handling
-Enhance error handling:
-```bash
-set -e  # Exit on error
-set -u  # Exit on undefined variables
-```
-
-### 3. Script Organization
-Store scripts in a dedicated directory:
-```bash
-mkdir ~/scripts
-export PATH="$PATH:~/scripts"
-```
-
-### 4. Regular Updates
-Keep scripts updated for:
-- Security patches
-- Compatibility with new OS versions
-- Additional features
-
-### 5. Testing
-Test scripts in a safe environment before deployment:
-- Virtual machines
-- Isolated networks
-- Non-critical systems
-
----
-
-## Troubleshooting Guide
-
-### Common Issues and Solutions
-
-| Issue | Possible Cause | Solution |
-|-------|---------------|----------|
-| "Permission denied" | Script not executable | `chmod +x script.sh` |
-| "Command not found" | Missing utilities | Install required packages |
-| No output from ping | Firewall blocking ICMP | Check firewall settings |
-| Script exits immediately | Incorrect shebang | Ensure first line is `#!/bin/bash` |
-| Network scan too slow | High latency | Increase timeout or reduce concurrency |
-
-### Debugging Tips
-1. **Enable verbose mode:** Add `set -x` at the top of scripts
-2. **Check syntax:** `bash -n script.sh`
-3. **Test components:** Run individual commands manually
-4. **Check dependencies:** `which ping`, `which pgrep`, etc.
-
----
-
-## Security Considerations
-
-1. **Principle of Least Privilege:**
-   - Run scripts with minimal necessary permissions
-   - Consider creating a dedicated user for monitoring tasks
-
-2. **Input Validation:**
-   - All scripts validate user input
-   - Network scanner uses regex to prevent malformed input
-
-3. **Logging and Auditing:**
-   - Keep logs of automated script executions
-   - Regular review of script outputs
-
-4. **Secure Storage:**
-   - Store scripts with proper permissions (e.g., 755)
-   - Consider encrypting sensitive script outputs
-
----
-
-## Support and Maintenance
-
-### Version Control
-Store scripts in Git:
-```bash
-git init
-git add *.sh
-git commit -m "Initial monitoring scripts"
-```
-
-### Regular Maintenance Tasks
-1. **Monthly:** Review and update thresholds
-2. **Quarterly:** Test scripts on updated systems
-3. **Annually:** Review and update documentation
-
-### Getting Help
-- Check script syntax: `shellcheck script.sh`
-- Review system logs: `journalctl -xe`
-- Consult Bash documentation: `man bash`
-
----
-
-## Appendix: Quick Reference Commands
-
-### Installation Summary
-```bash
-# Create all scripts
-for script in check_disk_usage check_process check_internet network_scanner; do
-    nano ${script}.sh
-    chmod +x ${script}.sh
-done
-```
-
-### One-liner Equivalents
-```bash
-# Disk usage check
-df -h | awk '$5+0 > 50 {print "Warning: "$6" is "$5" full"}'
-
-# Process check
-pgrep nginx && echo "Running" || echo "Not running"
-
-# Internet check
-ping -c 1 8.8.8.8 >/dev/null && echo "Up" || echo "Down"
-
-# Quick network scan (requires nmap)
-nmap -sn 192.168.1.0/24
-```
-
----
-
-This documentation provides comprehensive guidance for installing, configuring, running, and maintaining the four system monitoring scripts. Always test scripts in your specific environment and adjust parameters as needed for your use case.
